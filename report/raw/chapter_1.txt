@@ -1,0 +1,83 @@
+
+# 📘 Chapter 1: Recognition of Need
+
+## 1.1 Introduction
+
+Nextstepbd is a Bangladesh-based technology company specializing in software development, automation solutions, and consultancy services. The company operates with a team of approximately 50 developers and focuses on delivering customized digital solutions for both local and international clients. Over the years, Nextstepbd has developed a strong reputation for building scalable software systems and providing innovative automation services to improve business efficiency.
+
+The company’s core services include standalone software development such as doctor management systems, AI-based customer support systems, and sales automation tools. In addition, Nextstepbd offers consultancy services focused on internal workflow automation for organizations. One of its notable projects includes collaboration with a multinational company where sales data collected via SMS was automatically integrated into a centralized system for analytics, inventory tracking, and supply chain reporting. The company also provides social media customer support solutions, helping businesses manage client interactions efficiently.
+
+Nextstepbd operates in a dynamic and fast-growing environment where adaptability and rapid communication are essential. The organizational structure is relatively flat, enabling quick decision-making and flexibility in project execution. However, as the company has grown, certain inefficiencies and structural limitations have started to emerge within its operational processes and information systems.
+
+The company currently relies on a combination of custom-built tools and widely used platforms such as Microsoft Excel, Google Sheets, GitHub, WhatsApp, Slack, and Email to manage its operations. While these tools provide flexibility and ease of use, they are not fully integrated, resulting in a semi-structured system that depends heavily on manual coordination.
+
+Communication plays a critical role in the company’s daily operations. WhatsApp is heavily used for both client communication and internal coordination, while Slack is used primarily for international collaboration. Email is reserved for formal communication and final reporting. This multi-channel communication approach has improved responsiveness but has also introduced challenges related to tracking, documentation, and data consistency.
+
+The current workflow typically begins with client requirements communicated through WhatsApp or shared documents. Managers then review these requirements and assign tasks to developers, who use GitHub for development and version control. Internal coordination occurs mainly through WhatsApp groups, and outputs are compiled using Excel or Google Sheets before being delivered to clients via email or shared links.
+
+Although this workflow is functional, it lacks centralization and relies heavily on manual processes. As a result, inefficiencies, communication gaps, and scalability challenges have become increasingly noticeable.
+
+---
+
+## 1.2 Problem Identification
+
+Through observation of the company’s operations, informal interviews with team members, and analysis of the current system, several key problems have been identified. These issues are common in rapidly growing technology companies but require structured solutions to ensure long-term sustainability and efficiency.
+
+---
+
+### 1.2.1 Problem 01: Fragmented System and Lack of Integration
+
+Nextstepbd currently operates using multiple disconnected tools such as WhatsApp, Google Sheets, Excel, GitHub, and Email. While each tool serves a specific purpose, there is no centralized system that integrates all operations into a unified platform.
+
+This fragmentation leads to data duplication, inconsistency, and difficulty in maintaining a single source of truth. Employees often need to manually transfer information between platforms, increasing the risk of errors and reducing overall efficiency. The absence of integration also makes it difficult to track project progress and access consolidated data for decision-making.
+
+---
+
+### 1.2.2 Problem 02: Over-Reliance on Informal Communication Channels
+
+WhatsApp plays a dominant role in both internal and external communication within the company. Although it enables fast and real-time interaction, it is not designed as a professional project management or documentation tool.
+
+Important discussions, requirements, and decisions are often buried within chat threads, making them difficult to retrieve and track. There is no structured way to manage tasks, assign responsibilities, or monitor progress through WhatsApp. This results in miscommunication, missed information, and reduced accountability.
+
+---
+
+### 1.2.3 Problem 03: Unstructured Workflow and Weak Requirement Management
+
+The current workflow lacks formal structure and standardization. Client requirements are often communicated informally through messages or shared documents without following a standardized format.
+
+As a result, requirements may be incomplete, unclear, or subject to frequent changes. Developers may need to interpret or assume missing details, leading to inconsistencies between client expectations and delivered outputs. This increases the likelihood of rework, delays, and client dissatisfaction.
+
+---
+
+### 1.2.4 Problem 04: Absence of Centralized Task and Project Management System
+
+Task assignment and project tracking are primarily handled through manual communication, especially via WhatsApp. There is no dedicated system to manage tasks, deadlines, dependencies, or progress tracking.
+
+This lack of visibility creates challenges in monitoring project status and identifying bottlenecks. Managers are required to manually follow up with team members, which increases their workload and reduces overall efficiency. Developers also lack clarity regarding priorities and deadlines.
+
+---
+
+### 1.2.5 Problem 05: Inefficient Data Management and Reporting
+
+The company relies heavily on Microsoft Excel and Google Sheets for data management and reporting. While these tools are useful for basic tasks, they require significant manual effort and are prone to human error.
+
+Data is often scattered across multiple files, making it difficult to maintain consistency and accuracy. Additionally, the absence of real-time analytics limits the company’s ability to make timely and informed decisions.
+
+---
+
+### 1.2.6 Problem 06: Scalability and Dependency Issues
+
+As the company continues to grow, the current system faces scalability challenges. Many processes depend heavily on specific individuals, particularly managers who act as intermediaries between clients and developers.
+
+This creates bottlenecks and increases the risk of delays if key individuals are unavailable. The lack of standardized processes and centralized systems makes it difficult to efficiently onboard new employees and manage larger teams.
+
+---
+
+## 1.3 Conclusion
+
+The analysis of Nextstepbd’s current operational system reveals that while the company has successfully established a functional workflow using widely available tools, it lacks the structure and integration required for sustainable growth.
+
+The key challenges identified include system fragmentation, over-reliance on informal communication, unstructured workflows, lack of centralized task management, inefficient data handling, and scalability limitations. These issues collectively impact productivity, communication efficiency, and decision-making capabilities.
+
+Addressing these problems through the design and implementation of an integrated information system will significantly enhance operational efficiency, improve coordination, and support the company’s long-term growth objectives. The subsequent chapters will further analyze these issues and propose feasible solutions to transform the existing system into a more structured and scalable framework.
+
