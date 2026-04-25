@@ -4,6 +4,9 @@ Use this prompt each week with any AI agent.
 
 ## Full Prompt
 
+TARGET_TEX_FILE = isad_report.txt
+WEEK_INPUT_TEXT = input.txt
+
 You are generating LaTeX for an academic report that is written incrementally over multiple weeks.
 
 Context:
