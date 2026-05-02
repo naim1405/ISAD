@@ -37,6 +37,7 @@
 % PAGE SETUP
 % ------------------------------------------------
 \geometry{margin=1in}
+\setlength{\headheight}{14.5pt} % Fixed fancyhdr warning
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
@@ -775,7 +776,7 @@ Change Request Delta & Tracks mid-development changes with cost/time implication
 \begin{tikzpicture}[
     node distance=1.1cm,
     every node/.style={font=\scriptsize},
-    step/.style={
+    wf_step/.style={
         rectangle,
         rounded corners,
         draw=accent,
@@ -788,15 +789,15 @@ Change Request Delta & Tracks mid-development changes with cost/time implication
     arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
 ]
 
-\node[step] (client) {Client Request};
-\node[step, right=of client] (template) {SRS Drafting};
-\node[step, right=of template] (review) {Technical Review};
-\node[step, right=of review] (approve) {Client Sign-off};
+\node[wf_step] (client) {Client Request};
+\node[wf_step, right=of client] (template) {SRS Drafting};
+\node[wf_step, right=of template] (review) {Technical Review};
+\node[wf_step, right=of review] (approve) {Client Sign-off};
 
-\node[step, below=1.3cm of approve] (task) {Task Boards};
-\node[step, left=of task] (dev) {Development};
-\node[step, left=of dev] (test) {QA \& Review};
-\node[step, left=of test] (delivery) {Delivery};
+\node[wf_step, below=1.3cm of approve] (task) {Task Boards};
+\node[wf_step, left=of task] (dev) {Development};
+\node[wf_step, left=of dev] (test) {QA \& Review};
+\node[wf_step, left=of test] (delivery) {Delivery};
 
 \draw[arrow] (client) -- (template);
 \draw[arrow] (template) -- (review);
