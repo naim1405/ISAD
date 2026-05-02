@@ -24,6 +24,11 @@
 \usepackage{enumitem}
 \usepackage{pifont}
 \usepackage{microtype}
+\usepackage{pgf}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{main}
+\pgfsetlayers{background,main}
 
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc}
 \pgfplotsset{compat=1.18}
@@ -376,51 +381,67 @@ This workflow is practical for a small team and allows quick communication. Howe
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tikzpicture}[
-    node distance=1cm,
-    every node/.style={font=\scriptsize},
-    step/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.5cm,
-        minimum height=0.9cm,
-        align=center
+    every node/.style={font=\sffamily\small},
+    swimlane/.style={draw=gray!50, dashed, thick},
+    box/.style={
+        rectangle, 
+        rounded corners, 
+        draw=primary, 
+        fill=secondary, 
+        thick, 
+        text width=2.8cm, 
+        align=center, 
+        minimum height=1.2cm
     },
-    risk/.style={
-        rectangle,
-        rounded corners,
-        draw=orange!80!black,
-        fill=softcream,
-        thick,
-        text width=2.5cm,
-        minimum height=0.9cm,
-        align=center
+    riskbox/.style={
+        rectangle, 
+        rounded corners, 
+        draw=orange!80!black, 
+        fill=softcream, 
+        thick, 
+        text width=2.8cm, 
+        align=center, 
+        minimum height=1.2cm
     },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
+    arrow/.style={->, >=stealth, thick, color=primary},
+    labelnode/.style={font=\sffamily\Large\bfseries, color=primary}
 ]
 
-\node[step] (client) {Client\\Requirement};
-\node[step, right=of client] (manager) {Manager\\Review};
-\node[step, right=of manager] (assign) {Task\\Assignment};
-\node[step, right=of assign] (dev) {Developer\\Work};
-\node[step, below=of dev] (github) {GitHub\\Version Control};
-\node[risk, left=of github] (chat) {WhatsApp\\Coordination};
-\node[step, left=of chat] (report) {Excel / Sheets\\Reporting};
-\node[step, left=of report] (delivery) {Email / Shared\\Delivery};
+% SWIMLANES
+\draw[swimlane] (0,2.5) -- (15,2.5);
+\draw[swimlane] (0,-2.5) -- (15,-2.5);
 
-\draw[arrow] (client) -- (manager);
-\draw[arrow] (manager) -- (assign);
-\draw[arrow] (assign) -- (dev);
-\draw[arrow] (dev) -- (github);
-\draw[arrow] (github) -- (chat);
-\draw[arrow] (chat) -- (report);
-\draw[arrow] (report) -- (delivery);
+% LANE LABELS
+\node[labelnode, left] at (-0.5, 4.5) {Client};
+\node[labelnode, left] at (-0.5, 0) {Project Manager};
+\node[labelnode, left] at (-0.5, -4.5) {Developer (Team)};
+
+% NODES
+\node[riskbox] (req) at (1, 4.5) {Send Requirement\\(WhatsApp / Email)};
+\node[box] (log) at (3.5, 0) {Manual Sorting \&\\Logging (Sheets)};
+\node[riskbox] (assign) at (6, 0) {Assign Task\\(WhatsApp Group)};
+\node[box] (code) at (8.5, -4.5) {Write Code \&\\Commit (GitHub)};
+\node[riskbox] (notify) at (11, -4.5) {Notify Done\\(WhatsApp)};
+\node[box] (report) at (11, 0) {Compile Report\\(Excel / Sheets)};
+\node[riskbox] (delivery) at (13.5, 4.5) {Final Delivery\\(Email / Slack)};
+
+% ARROWS
+\draw[arrow] (req) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Unstructured Data} (log);
+\draw[arrow] (log) -- (assign);
+\draw[arrow] (assign) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Informal Comm.} (code);
+\draw[arrow] (code) -- (notify);
+\draw[arrow] (notify) edge[bend right=20] node[right, xshift=0.1cm] {\footnotesize Manual Ping} (report);
+\draw[arrow] (report) edge[bend left=20] node[right, xshift=0.1cm] {\footnotesize Shared Link} (delivery);
+
+% BACKGROUND HIGHLIGHT FOR RISK AREA
+\begin{pgfonlayer}{background}
+    \fill[orange!5, rounded corners] (2.2, 1.5) rectangle (12.5, -6);
+    \node[orange!80!black, font=\bfseries] at (7.35, -1) {High Dependency \& Fragmentation Zone};
+\end{pgfonlayer}
 
 \end{tikzpicture}
 }
-\caption{Current Operational Workflow of NextStepBD}
+\caption{Current Operational Swimlane Diagram Showing the PM Bottleneck}
 \end{figure}
 
 \begin{highlightBox}
@@ -437,59 +458,51 @@ The need is therefore not simply to introduce new software. The actual need is t
 
 \section{Problem Identification}
 
-Through observation of the company’s operations, informal interviews with team members, and analysis of the current workflow, six major problem areas have been identified. These problems are common in growing technology companies that depend on multiple disconnected tools.
+Through observation of the company’s operations, informal interviews with team members, and an analysis of the current workflow, five major problem areas have been identified. These act as the core constraints to the organization's scalability and stability, ordered below by their severity.
 
-\subsection{Problem 01: Fragmented System and Lack of Integration}
-
-\begin{problemBox}
-NextStepBD currently operates using multiple disconnected tools such as WhatsApp, Google Sheets, Excel, GitHub, Slack, and Email. While each tool serves a specific purpose, there is no centralized system that integrates all operations into a unified platform.
-\end{problemBox}
-
-The main issue is not the use of these tools individually, but the absence of connection between them. Communication, development, reporting, and task tracking remain separated. This leads to data duplication, inconsistency, and difficulty in maintaining a single source of truth. Employees may need to manually transfer information from one platform to another, which increases the chance of error and reduces efficiency.
-
-\subsection{Problem 02: Over-Reliance on Informal Communication Channels}
+\subsection{Problem 01: Fragmented System Architecture and Lack of Integration}
 
 \begin{problemBox}
-WhatsApp plays a dominant role in both internal and external communication. Although it enables fast communication, it is not designed as a professional project management, documentation, or decision-tracking platform.
+NextStepBD uses multiple disconnected platforms such as WhatsApp, Google Sheets, GitHub, Slack, and Email. There is no centralized system connecting communication, development, and tracking.
 \end{problemBox}
 
-Important discussions, client requirements, approvals, and decisions can become buried inside long chat threads. This makes it difficult to retrieve previous decisions or verify who approved a particular change. Since WhatsApp does not provide structured task tracking, responsibilities and deadlines may remain unclear.
+The foundational issue is the absence of connection between these tools. Code is managed in GitHub, communication is lost in WhatsApp, and tasks are manually updated in Sheets. This lack of integration leads to poor traceability, disconnected version control, hidden knowledge, and inefficient reporting.
 
-\subsection{Problem 03: Unstructured Workflow and Weak Requirement Management}
+\subsection{Problem 02: The Project Manager Bottleneck and Central Dependency}
 
 \begin{problemBox}
-The current workflow lacks a formal requirement collection and approval process. Client requirements are often communicated through messages or shared documents without following a standard format.
+Project Managers act as the single communication bridge between clients and developers. If a manager is unavailable, the entire development pipeline stalls.
 \end{problemBox}
 
-When requirements are incomplete or unclear, developers may need to make assumptions. This can create a mismatch between client expectations and delivered output. Frequent changes without proper documentation can also increase rework and delay project delivery.
+Because task assignment and requirement interpretations are strictly relayed by the Project Manager, they become a single point of failure. This creates deep knowledge silos. Developers lack a direct source of truth for the project, leading to work stoppages whenever a central coordinator becomes overloaded.
 
-\subsection{Problem 04: Absence of Centralized Task and Project Management System}
+\subsection{Problem 03: Unstructured Requirement Gathering and Scope Creep}
 
 \begin{problemBox}
-Task assignment and project tracking are mostly handled through manual communication. There is no dedicated centralized system to manage tasks, deadlines, dependencies, ownership, and progress tracking.
+Client requirements are frequently accepted via informal WhatsApp messages without standard documentation. This results in shifting expectations and mid-development changes.
 \end{problemBox}
 
-Managers often need to follow up manually with developers to know task status. Developers may also face confusion about priority and deadlines. Without a centralized dashboard, it becomes difficult to identify bottlenecks, delayed tasks, or overloaded team members.
+Treating chat messages as formal software requirements creates ambiguity. Developers are forced to make assumptions, causing a mismatch between client expectations and the final product. The lack of standard SRS (Software Requirement Specifications) leads to endless rework, missed deadlines, and timeline overruns.
 
-\subsection{Problem 05: Inefficient Data Management and Reporting}
+\subsection{Problem 04: Absence of a Centralized Task Tracking System}
 
 \begin{problemBox}
-The company relies heavily on Microsoft Excel and Google Sheets for reporting and data management. These tools are useful for basic tasks but become inefficient when data volume increases or multiple users update files manually.
+There is no dedicated software to track who is working on what, when tasks are due, or how much time a specific feature actually took to build.
 \end{problemBox}
 
-Data may become scattered across different files and versions. Manual reporting increases the possibility of calculation errors, outdated information, and inconsistent records. The absence of real-time dashboards also limits management’s ability to make fast and informed decisions.
+Without a source of truth for task progress, developers guess their priorities. Furthermore, management has zero visibility into actual team bandwidth. It is virtually impossible to compare estimated development time with actual time taken, making resource planning highly inefficient.
 
-\subsection{Problem 06: Scalability and Dependency Issues}
+\subsection{Problem 05: Quality Assurance and Deployment Vulnerabilities}
 
 \begin{problemBox}
-As the company grows, the current workflow creates dependency on specific individuals, especially managers who coordinate between clients and developers.
+The technical pipeline lacks modern software engineering safeguards. Developers test their own code informally, and deployments to production are performed manually.
 \end{problemBox}
 
-If key persons are unavailable, task assignment, requirement clarification, reporting, and decision-making may be delayed. The lack of documented processes also makes it difficult to onboard new employees quickly. This creates scalability challenges for future growth.
+Without a dedicated Quality Assurance (QA) process or automated test workflows, the risk of pushing bugs to clients is unsustainably high. Additionally, manual deployments lack the safety of a CI/CD pipeline, increasing the risk of human error during releases and posing a direct threat to client trust.
 
 \section{Problem Severity Overview}
 
-The following graph shows the estimated severity level of the identified problems based on their impact on productivity, communication, accountability, and scalability.
+The following graph shows the estimated severity level of the identified problems based on their impact on operations, stability, and scalability.
 
 \begin{figure}[H]
 \centering
@@ -497,17 +510,16 @@ The following graph shows the estimated severity level of the identified problem
 \begin{axis}[
     xbar,
     width=0.95\textwidth,
-    height=7cm,
+    height=6.5cm,
     xmin=0,
     xmax=10,
-    xlabel={Severity Score},
+    xlabel={Severity Score (Out of 10)},
     symbolic y coords={
-        Scalability,
-        Reporting,
-        Task Management,
-        Requirement,
-        Communication,
-        Integration
+        QA \& Deployment,
+        Task Tracking,
+        Requirement Gathering,
+        Manager Bottleneck,
+        System Fragmentation
     },
     ytick=data,
     nodes near coords,
@@ -516,12 +528,11 @@ The following graph shows the estimated severity level of the identified problem
     title={Problem Severity Assessment}
 ]
 \addplot[fill=primary!75] coordinates {
-    (7,Scalability)
-    (8,Reporting)
-    (9,{Task Management})
-    (9,Requirement)
-    (8,Communication)
-    (10,Integration)
+    (7,{QA \& Deployment})
+    (8,{Task Tracking})
+    (9,{Requirement Gathering})
+    (9,{Manager Bottleneck})
+    (10,{System Fragmentation})
 };
 \end{axis}
 \end{tikzpicture}
@@ -532,9 +543,9 @@ The following graph shows the estimated severity level of the identified problem
 
 The recognition of need shows that NextStepBD has successfully established a functional working system using available digital tools. However, the system lacks the structure, integration, and centralized control required for sustainable growth.
 
-The major challenges include fragmented systems, over-reliance on informal communication, unstructured requirement management, absence of centralized task tracking, inefficient reporting, and scalability limitations. These problems are connected to each other. For example, weak requirement management creates task confusion, task confusion increases communication dependency, and scattered communication makes reporting less reliable.
+The major challenges include a fragmented system architecture, an unsustainable reliance on project managers, unstructured requirement management, the absence of centralized task tracking, and significant software testing vulnerabilities. These problems compound one another: weak requirement management creates task confusion, the lack of an integrated system enforces the manager bottleneck, and manual processes result in unstable deployments.
 
-Therefore, the company needs an integrated information system that can connect communication, requirement management, task tracking, development workflow, reporting, and documentation. Chapter 2 analyzes the feasibility of solving these problems using technical, economic, and operational perspectives.
+Therefore, the company needs an integrated information system that can connect requirement management, task tracking, development workflow, testing, and continuous delivery. Chapter 2 analyzes the feasibility of solving these problems using technical, economic, and operational perspectives.
 
 \newpage
 
@@ -545,7 +556,7 @@ Therefore, the company needs an integrated information system that can connect c
 
 \section{Introduction}
 
-This chapter presents an initial feasibility study for the six major problems identified in Chapter 1. The purpose of this chapter is to evaluate whether the proposed improvements are technically possible, economically reasonable, and operationally acceptable for NextStepBD.
+This chapter presents an initial feasibility study for the five major problems identified in Chapter 1. The purpose of this chapter is to evaluate whether the proposed improvements are technically possible, economically reasonable, and operationally acceptable for NextStepBD.
 
 The feasibility framework used in this chapter follows the standard \textbf{Technical, Economic, and Operational} model.
 
@@ -621,23 +632,25 @@ The feasibility framework used in this chapter follows the standard \textbf{Tech
 
 \section{Initial Feasibility Analysis}
 
-\subsection{Problem 01: Fragmented System and Lack of Integration}
+\textbf{Baseline Assumptions for Calculations:} NextStepBD is defined as an organization of approximately 50 employees (developers, UI/UX, QA, PMs). Economic feasibility assumes an internal exchange mapping of \$1 USD $\approx$ 120 BDT. All software cost estimations are based on standardized enterprise monthly licensing fees. Employee training costs assume an average internal valuation of \$15/hour per developer.
+
+\subsection{Problem 01: Fragmented System Architecture and Lack of Integration}
 
 \begin{problemBox}
-NextStepBD uses multiple disconnected platforms such as WhatsApp, GitHub, Google Sheets, Excel, Slack, and Email. There is no centralized system that connects communication, requirement collection, development progress, task management, and reporting.
+NextStepBD uses multiple disconnected platforms such as WhatsApp, GitHub, Google Sheets, Excel, Slack, and Email. There is no centralized system connecting communication, development, and tracking.
 \end{problemBox}
 
 \begin{summaryBox}
-An integrated workflow management system is technically feasible because several cloud-based platforms support integration with GitHub, Google Workspace, Slack, and Email. Economically, it can reduce manual work and coordination delays. Operationally, it is suitable if implemented gradually.
+An integrated workflow management system is technically feasible because several cloud-based platforms support integration with GitHub, Google Workspace, Slack, and Email. Economically, it can reduce manual work. Operationally, it is suitable if adopted gradually.
 \end{summaryBox}
 
 \subsubsection{Details of Findings}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Jira, ClickUp, Notion, Zoho Projects, Monday.com, and GitHub Projects can integrate task management, document storage, reporting, and communication.
-    \item \textbf{Economic Feasibility:} Estimated annual cost may range from BDT 3--8 lakhs. The cost is justified by reduced manual coordination, fewer errors, and faster reporting.
-    \item \textbf{Operational Feasibility:} Employees already use digital tools, so adoption is realistic with proper training and policies.
-    \item \textbf{Risk Assessment:} Resistance from employees can be reduced through pilot implementation and management support.
+    \item \textbf{Technical Feasibility:} The technical literacy required to adopt Jira Software or Notion is low, as the team already uses digital-first workflows (GitHub, Slack). Integrating Jira via webhooks into Slack and GitHub is a native, out-of-the-box feature requiring no deep API coding.
+    \item \textbf{Economic Feasibility:} A Jira Standard license costs \$8.15/user/month. For 50 users, this equals \$4,890 annually (approx. 5.86 Lakh BDT). If the platform saves each employee just 2 hours of manual tracking a month, the ROI (Return on Investment) wildly outweighs the software licensing cost.
+    \item \textbf{Operational Feasibility:} Employees already use digital tools, so adoption is realistic. However, strict policy enforcement is needed to stop "shadow IT" (where developers secretly revert to Google Sheets).
+    \item \textbf{Risk \& Mitigation:} Change resistance. \textbf{Mitigation:} Phase the rollout. Onboard only the project managers in Month 1, followed by team leads in Month 2.
 \end{itemize}
 
 \begin{table}[H]
@@ -648,43 +661,41 @@ An integrated workflow management system is technically feasible because several
 \rowcolor{secondary}
 \textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
 \hline
-Technical & High & Cloud-based tools can connect GitHub, Google Sheets, Slack, and Email. \\
+Technical & High & Native webhook integration between Jira, Slack, and GitHub requires zero custom development. \\
 \hline
-Economic & High & Reduces manual work, reporting delay, duplication, and coordination cost. \\
+Economic & High & Approx. 5.86 Lakh BDT/yr is easily offset by the labor hours saved from chasing status updates. \\
 \hline
-Operational & Medium & Requires training, policy development, and gradual adoption. \\
+Operational & Medium & Requires enforcing strict data-entry policies to prevent developers from bypassing the system. \\
 \hline
-Overall Viability & Feasible & Recommended for early implementation. \\
+Overall Viability & Feasible & Highly recommended to resolve the foundational problem. \\
 \hline
 \end{tabularx}
-\caption{Integrated System Implementation -- TEO Feasibility Summary}
+\caption{System Integration -- TEO Feasibility Summary}
 \end{table}
 
 \begin{recommendBox}
-\textbf{Priority Action:} Adopt a centralized project and workflow management platform within 3--4 months.
+\textbf{Priority Action:} Adopt a centralized project and workflow management platform across all departments.
 
-\textbf{Business Value:} This will reduce manual coordination, improve task visibility, and create a single reliable source for project information.
-
-\textbf{Implementation Note:} Begin with a small pilot project before full organizational adoption.
+\textbf{Business Value:} Eliminates isolated information silos and creates a single reliable source for project data.
 \end{recommendBox}
 
-\subsection{Problem 02: Over-Reliance on Informal Communication Channels}
+\subsection{Problem 02: The Project Manager Bottleneck and Central Dependency}
 
 \begin{problemBox}
-WhatsApp is heavily used for client communication and internal coordination, but it is not designed for official documentation, task assignment, decision tracking, or project monitoring.
+Project Managers act as the single communication bridge. If a manager is unavailable, task assignment stalls, creating a severe operational bottleneck.
 \end{problemBox}
 
 \begin{summaryBox}
-A structured communication policy is feasible. WhatsApp can remain available for quick updates, but formal decisions, approvals, task updates, and requirements should be recorded in a centralized system.
+Relieving the PM bottleneck is highly feasible by shifting from a "push" management style to a transparent "pull" system where developers can view project roadmaps directly.
 \end{summaryBox}
 
 \subsubsection{Details of Findings}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Slack, Microsoft Teams, Google Chat, and project platforms can provide searchable channels and structured records.
-    \item \textbf{Economic Feasibility:} Since Slack is already used, better utilization would not require a major extra investment.
-    \item \textbf{Operational Feasibility:} Employees are already familiar with chat-based communication, making the transition practical.
-    \item \textbf{Risk Assessment:} Employees may continue using WhatsApp informally unless communication rules are clearly defined.
+    \item \textbf{Technical Feasibility:} Minimal technical hurdles. Setting up a central document repository (like Notion or Confluence Wiki) only requires UI configuration. The infrastructure exists.
+    \item \textbf{Economic Feasibility:} High. Notion costs \$10/user/month (10x50x12 = \$6,000/yr or ~7.2 Lakh BDT) but many features are included in Jira (Confluence) bundles. Conversely, GitHub Wiki is entirely free for existing repositories (0 BDT).
+    \item \textbf{Operational Feasibility:} High operational friction. Developers must proactively check wikis rather than waiting to be told what to do via WhatsApp. This is a severe cultural shift.
+    \item \textbf{Risk \& Mitigation:} Information hoarding. \textbf{Mitigation:} Tie manager KPIs to how effectively they document client requests on the central portal.
 \end{itemize}
 
 \begin{table}[H]
@@ -695,45 +706,39 @@ A structured communication policy is feasible. WhatsApp can remain available for
 \rowcolor{secondary}
 \textbf{Area} & \textbf{Current State} & \textbf{Proposed State} \\
 \hline
-Client Communication & Mostly WhatsApp and Email & Structured communication log with Email and project portal \\
+Task Discovery & PM manually messages developers & Developers check centralized board \\
 \hline
-Internal Discussion & WhatsApp groups & Slack or project-based official channels \\
+Project Context & Kept in PM's head / WhatsApp & Documented in accessible Wiki \\
 \hline
-Decision Tracking & Difficult to retrieve & Decisions recorded in centralized system \\
-\hline
-Task Assignment & Informal messages & Assigned through task board with deadline \\
-\hline
-Documentation & Scattered & Searchable and centralized \\
+Approval Delays & High when PM is busy & Reduced via peer-review protocols \\
 \hline
 \end{tabularx}
-\caption{Communication System -- Current State vs Proposed State}
+\caption{Bottleneck Resolution -- Current vs Proposed State}
 \end{table}
 
 \begin{recommendBox}
-\textbf{Priority Action:} Introduce a formal communication policy.
+\textbf{Priority Action:} Establish a transparent knowledge base and self-serve task boards.
 
-\textbf{Business Value:} This will reduce lost information and improve accountability.
-
-\textbf{Implementation Note:} Urgent messages may remain on WhatsApp, but requirements, approvals, and task updates must be documented officially.
+\textbf{Business Value:} Democratizes project knowledge and speeds up development cycles by removing strict dependencies.
 \end{recommendBox}
 
-\subsection{Problem 03: Unstructured Workflow and Weak Requirement Management}
+\subsection{Problem 03: Unstructured Requirement Gathering and Scope Creep}
 
 \begin{problemBox}
-Client requirements are often received through messages or shared documents without a standard requirement format. This creates incomplete, unclear, or frequently changing requirements.
+Client requirements are accepted via informal WhatsApp messages, leading to mid-development changes, unclear expectations, and heavy rework.
 \end{problemBox}
 
 \begin{summaryBox}
-A structured requirement management process is highly feasible. NextStepBD can introduce requirement templates, approval checkpoints, and change request forms with low cost.
+Implementing a strict Software Requirement Specification (SRS) intake process is economically near-zero cost and technically simple, though it requires enforcing boundaries with clients.
 \end{summaryBox}
 
 \subsubsection{Details of Findings}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Google Forms, Notion, Jira, ClickUp, GitHub Issues, or a custom portal can manage requirements.
-    \item \textbf{Economic Feasibility:} The cost is low because the company already uses digital tools.
-    \item \textbf{Operational Feasibility:} Managers, developers, and clients will benefit from clearer requirement documentation.
-    \item \textbf{Risk Assessment:} The requirement format must remain simple so that clients and managers actually use it.
+    \item \textbf{Technical Feasibility:} Google Forms, internal portals, or Jira issue collectors can standardize requirement intake.
+    \item \textbf{Economic Feasibility:} Free to implement using existing platforms.
+    \item \textbf{Operational Feasibility:} Will require clients to adjust how they submit requests, demanding PMs to enforce the process.
+    \item \textbf{Risk Assessment:} Clients may initially resist filling out forms instead of sending texts.
 \end{itemize}
 
 \begin{table}[H]
@@ -746,30 +751,22 @@ A structured requirement management process is highly feasible. NextStepBD can i
 \hline
 Requirement ID & Provides a unique identification number for tracking. \\
 \hline
-Client Name & Identifies the source of the requirement. \\
+User Story / Scope & Defines exactly who the feature is for and what it does. \\
 \hline
-Requirement Description & Explains what needs to be developed. \\
+Acceptance Criteria & Defines when the requirement is officially Complete. \\
 \hline
-Priority & Defines whether the requirement is High, Medium, or Low priority. \\
+Client Sign-off & Formal approval before development begins. \\
 \hline
-Acceptance Criteria & Defines when the requirement will be considered complete. \\
-\hline
-Responsible Person & Assigns ownership to a manager or developer. \\
-\hline
-Approval Status & Shows whether the requirement is Pending, Approved, Revised, or Rejected. \\
-\hline
-Change History & Records modifications and updates. \\
+Change Request Delta & Tracks mid-development changes with cost/time implications. \\
 \hline
 \end{tabularx}
-\caption{Proposed Requirement Management Template}
+\caption{Proposed Requirement Management Checkpoints}
 \end{table}
 
 \begin{recommendBox}
-\textbf{Priority Action:} Create a lightweight Software Requirement Specification template.
+\textbf{Priority Action:} Enforce a standard Software Requirement Specification (SRS) sign-off process before coding starts.
 
-\textbf{Business Value:} This will reduce misunderstanding, improve requirement clarity, and decrease rework.
-
-\textbf{Implementation Note:} Start with a short form before introducing a detailed SRS format.
+\textbf{Business Value:} Drastically reduces scope creep, stops endless rework loops, and protects profit margins.
 \end{recommendBox}
 
 \begin{figure}[H]
@@ -791,15 +788,15 @@ Change History & Records modifications and updates. \\
     arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
 ]
 
-\node[step] (client) {Client\\Requirement};
-\node[step, right=of client] (template) {Requirement\\Template};
-\node[step, right=of template] (review) {Manager\\Review};
-\node[step, right=of review] (approve) {Client\\Approval};
+\node[step] (client) {Client Request};
+\node[step, right=of client] (template) {SRS Drafting};
+\node[step, right=of template] (review) {Technical Review};
+\node[step, right=of review] (approve) {Client Sign-off};
 
-\node[step, below=1.3cm of approve] (task) {Task\\Creation};
-\node[step, left=of task] (dev) {Development\\Work};
-\node[step, left=of dev] (test) {Testing and\\Feedback};
-\node[step, left=of test] (delivery) {Final\\Delivery};
+\node[step, below=1.3cm of approve] (task) {Task Boards};
+\node[step, left=of task] (dev) {Development};
+\node[step, left=of dev] (test) {QA \& Review};
+\node[step, left=of test] (delivery) {Delivery};
 
 \draw[arrow] (client) -- (template);
 \draw[arrow] (template) -- (review);
@@ -808,30 +805,29 @@ Change History & Records modifications and updates. \\
 \draw[arrow] (task) -- (dev);
 \draw[arrow] (dev) -- (test);
 \draw[arrow] (test) -- (delivery);
-\draw[arrow, dashed] (test.north) |- node[left, font=\scriptsize]{Revision Required} (review.south);
 
 \end{tikzpicture}
 }
 \caption{Proposed Requirement-to-Delivery Workflow}
 \end{figure}
 
-\subsection{Problem 04: Absence of Centralized Task and Project Management System}
+\subsection{Problem 04: Absence of a Centralized Task Tracking System}
 
 \begin{problemBox}
-Task assignment and project progress tracking are mainly handled through manual communication. There is no single dashboard for deadlines, dependencies, progress, bottlenecks, and responsibility.
+Task assignment and project progress tracking are handled manually via chat. There is no single dashboard for tracking deadlines, progress, blockers, or estimated vs. actual development times.
 \end{problemBox}
 
 \begin{summaryBox}
-A centralized task and project management system is highly feasible. Since the company already uses GitHub, task management can be integrated with GitHub Issues, pull requests, and project boards.
+A centralized task and project management system is highly feasible. Because developers already use GitHub for version control, project tracking can be embedded directly into their existing environment using GitHub Projects.
 \end{summaryBox}
 
 \subsubsection{Details of Findings}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} GitHub Projects, Jira, ClickUp, Trello, and Zoho Projects can provide Kanban boards, deadlines, and task ownership.
-    \item \textbf{Economic Feasibility:} GitHub Projects can be used at low cost, while advanced platforms may be adopted later.
-    \item \textbf{Operational Feasibility:} Developers already use GitHub, making adoption practical.
-    \item \textbf{Risk Assessment:} The dashboard will be unreliable if task status is not updated regularly.
+    \item \textbf{Technical Feasibility:} The technical barrier is practically zero. Developers already push code to GitHub. Mapping a pull request (e.g., "Fixes \#42") to an issue card on a GitHub Project board is an automated, native feature.
+    \item \textbf{Economic Feasibility:} Free. Instead of purchasing an external project tool, utilizing GitHub Projects is included in the company's existing GitHub base architecture (0 BDT additional cost).
+    \item \textbf{Operational Feasibility:} Highly straightforward for developers since it lives inside their IDE ecosystem, but project managers will require a brief 2-hour workshop to learn how to operate an Agile board.
+    \item \textbf{Risk \& Mitigation:} The board goes stale. \textbf{Mitigation:} Institute a mandatory 15-minute daily "Stand-up" meeting where the board serves as the only valid metric of progress.
 \end{itemize}
 
 \begin{table}[H]
@@ -842,43 +838,41 @@ A centralized task and project management system is highly feasible. Since the c
 \rowcolor{secondary}
 \textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
 \hline
-Technical & High & GitHub Projects and other project tools are suitable for software teams. \\
+Technical & High & Native integration with codebase and existing developer accounts requires zero new accounts. \\
 \hline
-Economic & High & Low-cost implementation with strong productivity benefit. \\
+Economic & High & No additional software licensing costs needed (0 BDT). \\
 \hline
-Operational & High & Developers already use GitHub, making adoption practical. \\
+Operational & High & Smooth developer transition; minimal context switching from code to boards. \\
 \hline
-Overall Viability & Highly Feasible & Recommended for immediate implementation. \\
+Overall Viability & Highly Feasible & Essential for tracking team velocity and output. \\
 \hline
 \end{tabularx}
-\caption{Task Management System -- TEO Feasibility Summary}
+\caption{Task Tracking System -- TEO Feasibility Summary}
 \end{table}
 
 \begin{recommendBox}
-\textbf{Priority Action:} Implement GitHub Projects or a similar centralized task management system.
+\textbf{Priority Action:} Implement agile task boards (e.g., in GitHub Projects or Jira) with strict limits on "In Progress" work.
 
-\textbf{Business Value:} This will improve task visibility, reduce manual follow-up, and help managers identify bottlenecks.
-
-\textbf{Implementation Note:} Every task should include owner, deadline, priority, status, and related GitHub issue.
+\textbf{Business Value:} Provides real-time visibility into team velocity, preventing resource bottlenecks before they happen.
 \end{recommendBox}
 
-\subsection{Problem 05: Inefficient Data Management and Reporting}
+\subsection{Problem 05: Quality Assurance and Deployment Vulnerabilities}
 
 \begin{problemBox}
-NextStepBD relies heavily on Excel and Google Sheets for reporting and data management. These tools become inefficient when data volume increases or multiple users update files manually.
+Developers test their own code informally without automated testing. Final deployments are done manually, causing a high risk of pushing breaking bugs to live environments.
 \end{problemBox}
 
 \begin{summaryBox}
-The reporting system can be improved through a centralized database and dashboard-based reporting. The company can begin with dashboards connected to existing Google Sheets and later move important data to a centralized database.
+Introducing foundational CI/CD (Continuous Integration/Continuous Deployment) and dedicated peer review is extremely feasible and critical for stabilizing the product lifecycle.
 \end{summaryBox}
 
 \subsubsection{Details of Findings}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Google Looker Studio, Microsoft Power BI, Airtable, Zoho Analytics, or a custom dashboard can automate reporting.
-    \item \textbf{Economic Feasibility:} Initial cost can be controlled by using existing Google Sheets with dashboard tools.
-    \item \textbf{Operational Feasibility:} Managers already use spreadsheets, so dashboard-based reporting will be easier to adopt.
-    \item \textbf{Risk Assessment:} Poor data entry discipline can reduce report accuracy.
+    \item \textbf{Technical Feasibility:} Moderate challenge. While GitHub Actions scripts are easy to write, the engineering team must learn test-driven methodologies. Training is required to enforce writing unit tests alongside feature arrays.
+    \item \textbf{Economic Feasibility:} The cloud infrastructure is cheap. Renting a Virtual Private Server (VPS) via AWS EC2 or DigitalOcean for staging environments costs roughly \$20-\$40/month (~35,000 BDT/yr). The hidden cost is developer time spent writing tests.
+    \item \textbf{Operational Feasibility:} Difficult. Developers will initially complain that writing tests "slows them down," clashing with NextStepBD's fast, flexible culture. 
+    \item \textbf{Risk \& Mitigation:} Developers bypassing tests. \textbf{Mitigation:} Protect branch merging. Code cannot be merged into the `main` branch unless it passes CI checks and has one verified peer review.
 \end{itemize}
 
 \begin{table}[H]
@@ -889,73 +883,20 @@ The reporting system can be improved through a centralized database and dashboar
 \rowcolor{secondary}
 \textbf{Item} & \textbf{Estimated Annual Cost} & \textbf{Expected Benefit} \\
 \hline
-Dashboard Tool Setup & BDT 1--2 Lakhs & Faster report generation \\
+CI/CD Infrastructure \& Staging VPS & \$40/mo = \$480/yr ($\approx$57,600 BDT) & Safe environment for clients to test before public release. \\
 \hline
-Data Cleaning and Standardization & BDT 1 Lakh & Improved data accuracy \\
+Test Engineering Training Hours & 50 devs $\times$ 5 hrs $\times$ \$15/hr ($\approx$4.5 Lakh BDT one-time) & Huge reduction in production bugs; builds technical resilience. \\
 \hline
-Training & BDT 0.5 Lakh & Better user adoption \\
-\hline
-Manual Reporting Time Reduction & -- & Saves manager and admin time \\
-\hline
-Error Reduction & -- & Improves decision-making quality \\
+Peer Review Process & Administrative Time & Stops rogue code; enforces coding standards. \\
 \hline
 \end{tabularx}
-\caption{Reporting Improvement -- Estimated Cost-Benefit Analysis}
+\caption{QA and Automation -- Estimated Cost-Benefit Analysis}
 \end{table}
 
 \begin{recommendBox}
-\textbf{Priority Action:} Introduce a centralized reporting dashboard.
+\textbf{Priority Action:} Mandate peer code reviews for all merges and implement a basic automated deployment pipeline for staging environments.
 
-\textbf{Business Value:} This will improve reporting speed, reduce manual calculation errors, and support faster decision-making.
-
-\textbf{Implementation Note:} Standard data entry rules and validation formats should be introduced before dashboard automation.
-\end{recommendBox}
-
-\subsection{Problem 06: Scalability and Dependency Issues}
-
-\begin{problemBox}
-The current workflow creates dependency on specific individuals, especially managers who coordinate between clients and developers. If these key individuals are unavailable, work may be delayed.
-\end{problemBox}
-
-\begin{summaryBox}
-Scalability can be improved by standardizing workflows, documenting processes, and introducing role-based responsibility. This is economically justified because it reduces dependency risk and improves continuity.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} SOPs, onboarding checklists, knowledge bases, and workflow automation can be implemented using Notion, Confluence, Google Drive, or GitHub Wiki.
-    \item \textbf{Economic Feasibility:} The main investment is process design, documentation, and training.
-    \item \textbf{Operational Feasibility:} The flat structure supports quick decision-making, but growth requires clearer roles and backup responsibility.
-    \item \textbf{Risk Assessment:} Documentation may become outdated if not maintained regularly.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Area} & \textbf{Current Issue} & \textbf{Proposed Improvement} \\
-\hline
-Manager Dependency & Managers handle coordination manually. & Use workflow system and assign backup responsibility. \\
-\hline
-Employee Onboarding & Knowledge transfer is informal. & Create onboarding checklist and knowledge base. \\
-\hline
-Process Documentation & Documentation is limited or scattered. & Maintain SOPs in a central repository. \\
-\hline
-Decision Continuity & Work slows down when key persons are unavailable. & Define role-based approval and escalation process. \\
-\hline
-\end{tabularx}
-\caption{Scalability Improvement Plan}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Create a centralized knowledge base and standard operating procedures.
-
-\textbf{Business Value:} This will support future growth, reduce operational dependency, and make onboarding easier.
-
-\textbf{Implementation Note:} Documentation should be reviewed monthly to keep it updated.
+\textbf{Business Value:} Guarantees product stability, stops regression loops, and significantly boosts client trust.
 \end{recommendBox}
 
 \section{Comparative Feasibility Summary}
@@ -969,20 +910,18 @@ Decision Continuity & Work slows down when key persons are unavailable. & Define
 \rowcolor{secondary}
 \textbf{No.} & \textbf{Problem} & \textbf{Tech.} & \textbf{Econ.} & \textbf{Ops.} & \textbf{Est. Cost/yr} & \textbf{Priority} \\
 \hline
-01 & Fragmented System and Lack of Integration & H & H & M & BDT 3--8L & Urgent \\
+01 & Fragmented System Architecture and Lack of Integration & H & H & M & BDT 3--8L & Urgent \\
 \hline
-02 & Over-Reliance on Informal Communication Channels & H & H & M & BDT 1--3L & High \\
+02 & The Project Manager Bottleneck and Central Dependency & H & H & M & BDT 1--2L & High \\
 \hline
-03 & Unstructured Workflow and Weak Requirement Management & H & H & H & BDT 1--2L & Urgent \\
+03 & Unstructured Requirement Gathering and Scope Creep & H & H & H & BDT 0--1L & Urgent \\
 \hline
-04 & Absence of Centralized Task and Project Management System & H & H & H & BDT 2--5L & Urgent \\
+04 & Absence of a Centralized Task Tracking System & H & H & H & BDT 0--2L & Urgent \\
 \hline
-05 & Inefficient Data Management and Reporting & H & M & M & BDT 2--4L & High \\
-\hline
-06 & Scalability and Dependency Issues & M & H & M & BDT 1--3L & Medium \\
+05 & Quality Assurance and Deployment Vulnerabilities & H & M & M & BDT 1--3L & High \\
 \hline
 \end{tabularx}
-\caption{Comparative Feasibility Analysis -- All Six Problems}
+\caption{Comparative Feasibility Analysis -- Top 5 Core Problems}
 
 \vspace{0.2cm}
 \small{\textbf{Note:} H = High, M = Medium. Cost values are approximate annual estimates.}
@@ -995,11 +934,11 @@ Decision Continuity & Work slows down when key persons are unavailable. & Define
     ybar,
     width=0.95\textwidth,
     height=7cm,
-    bar width=13pt,
+    bar width=15pt,
     ymin=0,
     ymax=10,
     ylabel={Feasibility Score},
-    symbolic x coords={P01,P02,P03,P04,P05,P06},
+    symbolic x coords={P01,P02,P03,P04,P05},
     xtick=data,
     nodes near coords,
     nodes near coords align={vertical},
@@ -1008,9 +947,9 @@ Decision Continuity & Work slows down when key persons are unavailable. & Define
     major grid style={draw=gray!25},
     title={TEO Feasibility Score by Problem}
 ]
-\addplot[fill=primary!70] coordinates {(P01,9) (P02,8) (P03,10) (P04,10) (P05,7) (P06,7)};
-\addplot[fill=accent!70] coordinates {(P01,9) (P02,9) (P03,9) (P04,9) (P05,7) (P06,8)};
-\addplot[fill=orange!70] coordinates {(P01,7) (P02,7) (P03,9) (P04,9) (P05,7) (P06,7)};
+\addplot[fill=primary!70] coordinates {(P01,9) (P02,8) (P03,10) (P04,10) (P05,7)};
+\addplot[fill=accent!70] coordinates {(P01,9) (P02,9) (P03,9) (P04,9) (P05,7)};
+\addplot[fill=orange!70] coordinates {(P01,7) (P02,6) (P03,9) (P04,9) (P05,6)};
 \legend{Technical, Economic, Operational}
 \end{axis}
 \end{tikzpicture}
@@ -1038,11 +977,11 @@ Decision Continuity & Work slows down when key persons are unavailable. & Define
     arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
 ]
 
-\node[phase] (ph1) {Phase 1\\Month 1--2\\Tool Selection};
-\node[phase, right=of ph1] (ph2) {Phase 2\\Month 3--4\\Pilot Rollout};
-\node[phase, right=of ph2] (ph3) {Phase 3\\Month 5--6\\Integration};
-\node[phase, right=of ph3] (ph4) {Phase 4\\Month 7--9\\Documentation};
-\node[phase, right=of ph4] (ph5) {Phase 5\\Month 10--12\\Optimization};
+\node[phase] (ph1) {Phase 1\\Month 1--2\\Tracking \& SRS};
+\node[phase, right=of ph1] (ph2) {Phase 2\\Month 3--4\\Integration};
+\node[phase, right=of ph2] (ph3) {Phase 3\\Month 5--6\\PM Delegation};
+\node[phase, right=of ph3] (ph4) {Phase 4\\Month 7--9\\CI/CD Tests};
+\node[phase, right=of ph4] (ph5) {Phase 5\\Month 10--12\\Scaling};
 
 \draw[arrow] (ph1) -- (ph2);
 \draw[arrow] (ph2) -- (ph3);
@@ -1062,15 +1001,15 @@ Decision Continuity & Work slows down when key persons are unavailable. & Define
 \rowcolor{secondary}
 \textbf{Phase} & \textbf{Major Activities} & \textbf{Duration} \\
 \hline
-Phase 1 & Select project management platform, create task board, and define requirement template. & Month 1--2 \\
+Phase 1 & Create GitHub project boards and enforce standard SRS sign-off rules. & Month 1--2 \\
 \hline
-Phase 2 & Pilot implementation with selected projects and train managers and developers. & Month 3--4 \\
+Phase 2 & Pick a unified system ecosystem and connect GitHub, Slack, and storage. & Month 3--4 \\
 \hline
-Phase 3 & Integrate GitHub, communication channels, and reporting dashboards. & Month 5--6 \\
+Phase 3 & Shift knowledge from PMs to public team accessible wikis. & Month 5--6 \\
 \hline
-Phase 4 & Create knowledge base, standard operating procedures, onboarding guide, and backup role structure. & Month 7--9 \\
+Phase 4 & Establish peer code reviews and basic deployment automation pipelines. & Month 7--9 \\
 \hline
-Phase 5 & Review performance, collect feedback, and optimize system usage. & Month 10--12 \\
+Phase 5 & Review performance, scale solutions, and refine testing depth. & Month 10--12 \\
 \hline
 \end{tabularx}
 \caption{Detailed Implementation Roadmap}
@@ -1082,17 +1021,16 @@ Phase 5 & Review performance, collect feedback, and optimize system usage. & Mon
 \begin{axis}[
     xbar,
     width=0.95\textwidth,
-    height=7cm,
+    height=6.5cm,
     xmin=0,
     xmax=10,
     xlabel={Priority Score},
     symbolic y coords={
-        Scalability,
-        Reporting,
-        Communication,
-        Integration,
-        Requirement,
-        Task Management
+        QA \& Deployments,
+        Manager Bottleneck,
+        System Integration,
+        Requirement Specs,
+        Task Tracking
     },
     ytick=data,
     nodes near coords,
@@ -1101,12 +1039,11 @@ Phase 5 & Review performance, collect feedback, and optimize system usage. & Mon
     title={Implementation Priority Score}
 ]
 \addplot[fill=accent!75] coordinates {
-    (6,Scalability)
-    (7,Reporting)
-    (8,Communication)
-    (9,Integration)
-    (10,Requirement)
-    (10,{Task Management})
+    (7,{QA \& Deployments})
+    (8,{Manager Bottleneck})
+    (9,{System Integration})
+    (10,{Requirement Specs})
+    (10,{Task Tracking})
 };
 \end{axis}
 \end{tikzpicture}
@@ -1115,10 +1052,8 @@ Phase 5 & Review performance, collect feedback, and optimize system usage. & Mon
 
 \section{Conclusion}
 
-The initial feasibility study shows that the major problems identified in NextStepBD's current operational system are solvable through practical and cost-effective information system improvements. The company does not need to replace all existing tools immediately. Instead, it should connect and organize them through a centralized workflow, task management, requirement management, communication, reporting, and documentation structure.
+The initial feasibility study ensures that the top five critical operational boundaries holding back NextStepBD's scalability can be overcome reasonably. The company does not need heavy capital injections; rather, it requires an overhaul of its organizational workflow and engineering principles.
 
-The most urgent improvements are the implementation of a centralized task and project management system, structured requirement management, and integration of disconnected tools. These initiatives directly affect daily productivity, project delivery, accountability, and client satisfaction.
-
-Communication policy and reporting automation should be implemented next, followed by documentation and scalability improvements. Overall, the proposed solutions are technically feasible, economically justified, and operationally realistic. If implemented in phases, the improved system will help NextStepBD achieve stronger coordination, better accountability, faster reporting, improved client satisfaction, and sustainable organizational growth.
+The most urgent changes are the establishment of a centralized task tracking system and formalizing requirement gathering before writing any code. Addressing these first provides an immediate return on efficiency. Following these, solving the PM bottleneck and cementing basic CI/CD testing systems will ensure quality isn't sacrificed for speed. Overall, standardizing these internal pipelines is highly feasible and sets the technical and cultural foundation required for the organization's next stage of growth.
 
 \end{document}
