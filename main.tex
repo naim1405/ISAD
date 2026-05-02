@@ -614,16 +614,16 @@ The feasibility framework used in this chapter follows the standard \textbf{Tech
 \node[process] (need) {Need\\Recognition};
 \node[process, right=of need] (analysis) {TEO\\Analysis};
 \node[decision, right=of analysis] (decision) {Decision};
-\node[process, below=1.4cm of decision] (pilot) {Pilot\\Implementation};
-\node[process, left=of pilot] (monitor) {Monitoring\\and Feedback};
-\node[process, left=of monitor] (scale) {Full-Scale\\Adoption};
+\node[process, below=1.9cm of decision] (pilot) {Pilot\\Implementation};
+\node[process] (monitor) at (analysis |- pilot) {Monitoring\\and Feedback};
+\node[process] (scale) at (need |- pilot) {Full-Scale\\Adoption};
 
 \draw[arrow] (need) -- (analysis);
 \draw[arrow] (analysis) -- (decision);
 \draw[arrow] (decision) -- node[right, font=\scriptsize]{Feasible} (pilot);
 \draw[arrow] (pilot) -- (monitor);
 \draw[arrow] (monitor) -- (scale);
-\draw[arrow] (scale) |- (need);
+\draw[arrow] (scale) -- (need);
 \draw[arrow, dashed] (decision.north) -- ++(0,0.9) -| node[above, font=\scriptsize]{Revise / Defer} (analysis.north);
 
 \end{tikzpicture}
