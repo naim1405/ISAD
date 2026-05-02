@@ -53,6 +53,7 @@
 \definecolor{softrose}{HTML}{FCE4EC}
 \definecolor{softgray}{HTML}{F5F5F5}
 \definecolor{darkgray}{HTML}{333333}
+\definecolor{nextstepblue}{HTML}{005BB5} % Vibrant Corporate Blue for Cover
 
 % ------------------------------------------------
 % HYPERLINK SETUP
@@ -193,45 +194,33 @@
 % ------------------------------------------------
 \begin{titlepage}
     \centering
-    \vspace*{1cm}
+    \vspace*{0.5cm}
 
-    {\Large \textbf{Information System Analysis and Design}}\\[0.4cm]
-    {\large Academic Laboratory Report}\\[1.4cm]
+    % University Logo & Name
+    \includegraphics[width=0.2\textwidth]{ruet_logo.png}\\[0.4cm]
+    {\LARGE \textbf{Rajshahi University of Engineering \& Technology}}\\[1.5cm]
 
-    {\Huge \textbf{NextStepBD}}\\[0.4cm]
-    {\Large Information System Analysis Report}\\[1.2cm]
+    % Report Titles & Horizontal Rules for Professional Look
+    {\color{nextstepblue}\rule{\textwidth}{2pt}}\\[0.8cm]
+    {\Huge \textbf{NextStepBD}}\\[0.5cm]
+    {\Large \textbf{Information System Analysis and Design Report}}\\[0.8cm]
+    {\Large \textbf{Course Title:} Information System Analysis and Design Sessional}\\[0.3cm]
+    {\large \textbf{Course Code:} CSE 4110}\\[0.6cm]
+    {\color{nextstepblue}\rule{\textwidth}{2pt}}\\[2.5cm]
 
-    \begin{tcolorbox}[
-        colback=secondary,
-        colframe=primary,
-        width=0.9\textwidth,
-        arc=4mm,
-        boxrule=1pt
-    ]
-        \centering
-        {\Large \textbf{Chapter 1: Recognition of Need}}\\[0.2cm]
-        {\Large \textbf{Chapter 2: Initial Feasibility Study}}
-    \end{tcolorbox}
-
-    \vspace{1.4cm}
-
-    \textbf{Prepared For:}\\
-    Md. Rabiul Islam\\
-    Computer Science and Engineering\\
-    Rajshahi University of Engineering and Engineering \\[1.2cm]
-
-    \textbf{Prepared By:}\\
-    Team NextStepBD\\
-    Mst. Mim Afsana Mim\\
-    Md. Naimuzzaman\\
-    Arpita Karmokar\\
-    Md Shehab Sarker\\[1.2cm]
-    
-    \textbf{Subject Company:}\\
-    NextStepBD\\[0.5cm]
+    % Two-column layout using tabularx format
+    \large
+    \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\raggedleft\arraybackslash}X @{}}
+        {\Large \textcolor{nextstepblue}{\textbf{Submitted By:}}} & {\Large \textcolor{nextstepblue}{\textbf{Submitted To:}}} \\[0.4cm]
+        Mst. Mim Afsana Mim (\textit{2103043}) & \textbf{Dr. Md. Rabiul Islam} \\
+        Md. Naimuzzaman (\textit{2103044}) & Professor \\
+        Arpita Karmokar (\textit{2103045}) & Dept. of Computer Science \& \\
+        Md Shehab Sarker (\textit{2103046}) & Engineering \\
+        & Rajshahi University of Engineering \& Technology \\
+         \\
+    \end{tabularx}
 
     \vfill
-    {\large \today}
 \end{titlepage}
 
 \tableofcontents
