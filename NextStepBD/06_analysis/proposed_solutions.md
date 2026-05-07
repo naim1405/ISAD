@@ -47,23 +47,40 @@ By dissolving the borders between tools, IAMS removes friction, accelerates deli
 
 ---
 
-## 4. Actionable Implementation & Stakeholder Plan
+## 4. Comprehensive Implementation & Rollout Plan
 
-To transition from proposal to execution, we will follow a concrete 4-week alignment and prototyping phase for the Integrated Agency Management System (IAMS). 
+To transition from proposal to execution, we will follow a structured, enterprise-grade implementation plan spanning 12 weeks. This ensures minimal operational disruption while rolling out the Integrated Agency Management System (IAMS) across NextStepBD.
 
-### Week 1: Stakeholder Alignment & Feedback
-*   **Day 1-2: Management Workshop:** PMs and the management team meet to review the IAMS workflow maps. **Action:** Finalize the PM Triage Dashboard workflow and approve the off-the-shelf software stack to ensure high ROI.
-*   **Day 3-4: Developer Sync:** System architects present GitHub integration plans to the development team. **Action:** Document technical constraints, define required ticket metadata, and map repository webhook triggers.
-*   **Day 5: JSM Portal Configuration & Pilot:** Configure the out-of-the-box Jira Service Management (JSM) portal with mandatory intake fields and test it with 2 existing, trusted clients. **Action:** Capture direct usability feedback on the requirement submission forms and tweak mandatory fields as needed.
+### Phase 1: Discovery & Requirements Finalization (Weeks 1-2)
+*   **Stakeholder Workshops:** Conduct in-depth alignment sessions with Management, PMs, and Lead Developers to finalize workflow maps and metadata requirements.
+*   **Vendor & Licensing Procurement:** Finalize enterprise licensing for Jira Service Management (JSM), Jira Software, and required marketplace plugins (e.g., ScriptRunner).
+*   **Current State Audit:** Fully document the existing scattered data in Google Sheets and GitHub to prepare for the data migration strategy.
 
-### Week 2: System Modeling & Architecture (ISAD Chapter 3)
-*   **Day 6-8: Data Flow Finalization:** The analysis team designs DFD Level 0 and Level 1, incorporating Week 1 feedback to map exactly how data moves from Client to PM to Developer.
-*   **Day 9-10: System Architecture & Access Lock:** System architects map out Jira Issue Types, automated Jira workflows, and Jira/ScriptRunner Role-Based Access Controls (RBAC) defining the SSOT geometry. **Action:** Formal sign-off on Chapter 3 System Models.
+### Phase 2: System Architecture & Design (Weeks 3-4)
+*   **Process Modeling:** Data analysts finalize DFDs (Level 0, 1, 2) and ERDs to map exactly how data flows from Client to PM to Developer.
+*   **Security & RBAC Design:** System architects map out strict Role-Based Access Controls (RBAC), defining permission tiers for external clients, internal PMs, and developers.
+*   **Integration Mapping:** Define the technical API and webhook specifications connecting GitHub (commits/PRs) and Slack to Jira tickets.
 
-### Week 3: Prototyping & Environment Setup
-*   **Day 11-13: System Configuration & Workflows:** The IT/Operations team configures the Jira Service Management gateway, defining mandatory intake fields for clients (reproduction steps, priority, etc.), and sets up the strict Slack/GitHub webhook integrations.
-*   **Day 14-15: Pilot Project Selection:** Identify one upcoming, low-risk project to serve as the IAMS beta test. **Action:** Provision a sandbox environment in Jira/Slack tailored to this specific project's parameters.
+### Phase 3: Application Development & System Integration (Weeks 5-8)
+*   **Core Configuration:** IT/Operations configures the target platforms, establishing Jira Custom Issue Types, automated workflows, and the JSM Triage Dashboard with mandatory intake fields.
+*   **Integration Layer Development:** A dedicated engineering pod develops the custom middleware (e.g., Node.js/Python microservices or AWS Lambdas) required to orchestrate API calls directly between Jira, Slack, and GitHub.
+*   **Webhook & Automation Coding:** Developers write and deploy the procedural logic (e.g., parsing GitHub commit payloads to auto-transition Jira tickets, dynamically provisioning private Slack channels for new Jira epics based on PM approval).
+*   **Data Migration Scripting:** Write and execute robust ETL (Extract, Transform, Load) scripts to map, clean, and port active legacy project data from scattered Google Sheets into the newly structured Jira environment.
 
-### Week 4: Pilot Execution & Final Sign-off
-*   **Day 16-18: Shadow Run (Beta Testing):** The selected pilot project is managed using the IAMS prototype. For this project, WhatsApp and Google Sheets are strictly prohibited.
-*   **Day 19-20: Impact Evaluation:** Compare pilot run metrics (task assignment speed, data retrieval time, communication loss) against historical averages. **Action:** Proceed to full-scale development if core metrics indicate a >20% reduction in operational friction.
+### Phase 4: Testing & Quality Assurance (Weeks 9-10)
+*   **Integration Testing:** QA thoroughly verifies that data flows seamlessly across the custom IAMS middleware without duplication, API rate-limiting issues, or latency.
+*   **Security & Penetration Testing:** Verify that RBAC prevents unauthorized access (e.g., ensuring clients cannot see internal developer comments or code repositories).
+*   **User Acceptance Testing (UAT):** A select group of PMs and Team Leads execute dummy projects through the system to identify friction points.
+
+### Phase 5: Training & Pilot Launch (Weeks 11-12)
+*   **Role-Based Training:** Conduct targeted training sessions:
+    *   *Management/PMs:* Dashboard reporting, ticket triage, and client communication.
+    *   *Developers:* Jira-GitHub sync, logging time, and Slack integrations.
+    *   *Clients:* Issuing credentials and training on the new JSM submission portal.
+*   **Pilot Project Execution:** Select one low-risk, upcoming project to serve as the IAMS beta test. For this project, legacy tools (WhatsApp, Google Sheets) are strictly prohibited.
+
+### Phase 6: Full Deployment & Post-Go-Live Support (Week 13 & Beyond)
+*   **Organization-Wide Rollout:** Migrate all active projects into the IAMS ecosystem.
+*   **Sunsetting Legacy Systems:** Formally deprecate and archive WhatsApp groups and fragmented Google Sheets.
+*   **Impact Evaluation:** Measure process metrics (task assignment speed, time-to-resolution, communication drop-offs) against historical averages to confirm ROI.
+*   **Continuous Improvement:** Establish a monthly feedback loop to refine automation rules and dashboard visualizations based on user feedback.
