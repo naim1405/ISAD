@@ -12,32 +12,20 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{booktabs}
-\usepackage{longtable}
 \usepackage{multirow}
 \usepackage{tikz}
-\usepackage{pgfplots}
 \usepackage[most]{tcolorbox}
-\usepackage{fancyhdr}
-\usepackage{titlesec}
 \usepackage{setspace}
 \usepackage{hyperref}
 \usepackage{enumitem}
-\usepackage{pifont}
 \usepackage{microtype}
-\usepackage{pgf}
 
-\pgfdeclarelayer{background}
-\pgfdeclarelayer{main}
-\pgfsetlayers{background,main}
-
-\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, fit, backgrounds, shadows}
-\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc}
 
 % ------------------------------------------------
 % PAGE SETUP
 % ------------------------------------------------
 \geometry{margin=1in}
-\setlength{\headheight}{14.5pt} % Fixed fancyhdr warning
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
@@ -50,1141 +38,48 @@
 \definecolor{accent}{HTML}{00897B}
 \definecolor{softteal}{HTML}{E0F2F1}
 \definecolor{softcream}{HTML}{FFF8E1}
-\definecolor{softrose}{HTML}{FCE4EC}
 \definecolor{softgray}{HTML}{F5F5F5}
 \definecolor{darkgray}{HTML}{333333}
-\definecolor{nextstepblue}{HTML}{005BB5} % Vibrant Corporate Blue for Cover
-
-\definecolor{stage1bg}{RGB}{220,235,252}
-\definecolor{stage1bd}{RGB}{52,109,193}
-\definecolor{stage2bg}{RGB}{255,243,205}
-\definecolor{stage2bd}{RGB}{214,158,46}
-\definecolor{stage3bg}{RGB}{212,237,218}
-\definecolor{stage3bd}{RGB}{40,140,80}
-\definecolor{phase1}{HTML}{1B9E77}
-\definecolor{phase2}{HTML}{D95F02}
-\definecolor{phase3}{HTML}{7570B3}
-\definecolor{phase4}{HTML}{E7298A}
-\definecolor{phase5}{HTML}{66A61E}
-\definecolor{phase6}{HTML}{E6AB02}
-\definecolor{lightgray2}{HTML}{F5F5F5}
-\definecolor{textink}{HTML}{1F2937}
-\definecolor{wbsline}{HTML}{334155}
-\definecolor{wbspaper}{HTML}{FCFCFA}
-\definecolor{arrowcol}{RGB}{90,90,90}
-\definecolor{headerbg}{RGB}{44,62,100}
-\definecolor{rowodd}{RGB}{245,248,255}
-\definecolor{roweven}{RGB}{255,255,255}
-
+\definecolor{nextstepblue}{HTML}{005BB5}
 
 % ------------------------------------------------
 % HYPERLINK SETUP
-% Contents, List of Figures, and List of Tables are black
 % ------------------------------------------------
 \hypersetup{
     colorlinks=true,
-    linkcolor=black,
-    urlcolor=black,
-    citecolor=black
+    linkcolor=primary,
+    urlcolor=nextstepblue,
+    citecolor=accent
 }
 
 % ------------------------------------------------
-% HEADER AND FOOTER
-% ------------------------------------------------
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{Information System Analysis Report}
-\fancyhead[R]{}
-\fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-
-% ------------------------------------------------
-% TITLE FORMATTING
-% ------------------------------------------------
-\titleformat{\chapter}
-  {\normalfont\huge\bfseries\color{primary}}
-  {Chapter \thechapter}
-  {20pt}
-  {}
-
-\titleformat{\section}
-  {\normalfont\Large\bfseries\color{primary}}
-  {\thesection}
-  {1em}
-  {}
-
-\titleformat{\subsection}
-  {\normalfont\large\bfseries\color{accent}}
-  {\thesubsection}
-  {1em}
-  {}
-
-\titleformat{\subsubsection}
-  {\normalfont\normalsize\bfseries\color{primary}}
-  {}
-  {0pt}
-  {}
-
-% ------------------------------------------------
-% CUSTOM BOXES
+% BOX STYLES
 % ------------------------------------------------
 \newtcolorbox{highlightBox}{
-    enhanced,
     colback=secondary,
     colframe=primary,
-    boxrule=1pt,
-    arc=1mm,
-    left=9pt,
-    right=9pt,
-    top=9pt,
-    bottom=9pt,
-    borderline west={4pt}{0pt}{primary}
-}
-
-\newtcolorbox{problemBox}{
-    enhanced,
-    colback=softrose,
-    colframe=primary!80!black,
-    boxrule=1pt,
-    arc=1mm,
-    left=9pt,
-    right=9pt,
-    top=9pt,
-    bottom=9pt,
-    fonttitle=\bfseries,
-    title=\textbf{Problem Statement},
-    borderline west={4pt}{0pt}{primary!80!black}
-}
-
-\newtcolorbox{summaryBox}{
-    enhanced,
-    colback=softteal,
-    colframe=accent,
-    boxrule=1pt,
-    arc=1mm,
-    left=9pt,
-    right=9pt,
-    top=9pt,
-    bottom=9pt,
-    fonttitle=\bfseries,
-    title=\textbf{Feasibility Summary},
-    borderline west={4pt}{0pt}{accent}
-}
-
-\newtcolorbox{recommendBox}{
-    enhanced,
-    colback=softcream,
-    colframe=orange!80!black,
-    boxrule=1.3pt,
-    arc=1mm,
-    left=11pt,
-    right=11pt,
-    top=12pt,
-    bottom=10pt,
-    fonttitle=\bfseries\large,
-    title=\textbf{\ding{72} Recommended Action},
-    attach boxed title to top left={xshift=5mm,yshift=-2mm},
-    boxed title style={
-        colback=orange!80!black,
-        colframe=orange!80!black,
-        coltext=white,
-        arc=1mm
-    },
-    borderline west={5pt}{0pt}{orange!80!black}
+    boxrule=0.8pt,
+    arc=2mm,
+    left=8pt,
+    right=8pt,
+    top=6pt,
+    bottom=6pt
 }
 
 \newtcolorbox{noteBox}{
-    enhanced,
-    colback=softgray,
-    colframe=primary,
-    boxrule=1pt,
-    arc=1mm,
-    left=9pt,
-    right=9pt,
-    top=9pt,
-    bottom=9pt,
-    borderline west={4pt}{0pt}{primary}
-}
-
-% ------------------------------------------------
-% DOCUMENT START
-% ------------------------------------------------
-\begin{document}
-
-% ------------------------------------------------
-% TITLE PAGE
-% ------------------------------------------------
-\begin{titlepage}
-\newgeometry{top=0.45in,bottom=0.45in,left=0.75in,right=0.75in}
-\thispagestyle{empty}
-
-% Cover background accents
-\begin{tikzpicture}[remember picture, overlay]
-    \fill[white] (current page.south west) rectangle (current page.north east);
-
-    % Soft lower panel
-    \fill[nextstepblue!7]
-        (current page.south west) rectangle ([yshift=5.35cm]current page.south east);
-
-    % Decorative soft circles
-    \fill[primary!7]
-        ([xshift=-1.35cm,yshift=-0.75cm]current page.north east) circle (1.7cm);
-    \fill[accent!8]
-        ([xshift=1.25cm,yshift=0.85cm]current page.south west) circle (2.0cm);
-
-    % Bottom strip
-    \fill[nextstepblue!28]
-        (current page.south west) rectangle ([yshift=0.25cm]current page.south east);
-\end{tikzpicture}
-
-\centering
-\vspace*{0.05cm}
-
-% University Logo
-\includegraphics[width=0.105\textwidth]{ruet_logo.png}\\[0.18cm]
-
-% University Name
-{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{RAJSHAHI UNIVERSITY OF}}\\[-0.04cm]
-{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{ENGINEERING \& TECHNOLOGY}}\\[0.12cm]
-
-{\normalsize\textcolor{darkgray!75}{Department of Computer Science \& Engineering}}\\[0.45cm]
-
-% Main Report Title
-{\fontsize{19}{22}\selectfont\bfseries\textcolor{darkgray}{Information System Analysis and Design}}\\[0.08cm]
-{\fontsize{14}{16}\selectfont\bfseries\textcolor{darkgray}{Report on}}\\[0.20cm]
-
-% Highlighted company name
-\begin{tcolorbox}[
-    enhanced,
-    width=0.70\textwidth,
-    colback=white,
-    colframe=nextstepblue,
-    boxrule=1.35pt,
-    arc=4mm,
+    colback=softcream,
+    colframe=accent,
+    boxrule=0.8pt,
+    arc=2mm,
     left=8pt,
     right=8pt,
-    top=8pt,
-    bottom=8pt,
-    drop shadow=black!16,
-    borderline north={1.6pt}{0pt}{accent},
-    borderline south={1.6pt}{0pt}{primary},
-    borderline west={4pt}{0pt}{accent},
-    borderline east={4pt}{0pt}{primary}
-]
-\centering
-{\fontsize{30}{32}\selectfont\bfseries
-\textcolor{primary}{Next}
-\textcolor{accent}{Step}
-\textcolor{nextstepblue}{BD}
-}\\[-0.03cm]
-{\color{accent}\rule{0.38\textwidth}{1pt}}
-\end{tcolorbox}
+    top=6pt,
+    bottom=6pt
+}
 
-\vspace{0.22cm}
-
-% Course Info
-\begin{tcolorbox}[
-    enhanced,
-    width=0.76\textwidth,
-    colback=nextstepblue!5,
-    colframe=nextstepblue!60,
-    boxrule=0.8pt,
-    arc=3mm,
-    left=7pt,
-    right=7pt,
-    top=5pt,
-    bottom=5pt
-]
-\centering
-{\small \textbf{Course Title:} Information System Analysis and Design Sessional}\\[0.04cm]
-{\small \textbf{Course Code:} CSE 4110}
-\end{tcolorbox}
-
-\vspace{0.22cm}
-
-{\color{nextstepblue}\rule{0.54\textwidth}{1.6pt}}\\[0.25cm]
-
-% Submitted Information with center divider line
-\begin{tcolorbox}[
-    enhanced,
-    width=0.88\textwidth,
-    colback=white!94,
-    colframe=nextstepblue!60,
-    boxrule=1pt,
-    arc=5mm,
-    left=11pt,
-    right=11pt,
-    top=10pt,
-    bottom=10pt,
-    drop shadow=black!12
-]
-\small
-\renewcommand{\arraystretch}{1.18}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X !{\color{nextstepblue!70}\vrule width 1.1pt} >{\raggedright\arraybackslash}X@{}}
-
-{\large\bfseries\textcolor{nextstepblue}{Submitted By:}} 
-&
-{\large\bfseries\textcolor{nextstepblue}{Submitted To:}} 
-\\[0.14cm]
-
-Mst. Mim Afsana Mim \hfill \textit{2103043}
-&
-{\bfseries\textcolor{primary}{Dr. Md. Rabiul Islam}}
-\\
-
-Md. Naimuzzaman \hfill \textit{2103044}
-&
-Professor
-\\
-
-Arpita Karmokar \hfill \textit{2103045}
-&
-Department of Computer Science
-\\
-
-Md. Shehab Sarker \hfill \textit{2103046}
-&
-and Engineering
-\\
-
-&
-Rajshahi University of Engineering \& Technology
-\\
-
-\end{tabularx}
-\end{tcolorbox}
-
-\vfill
-
-{\small \textbf{Date of Submission:} \today}
-
-\restoregeometry
-\end{titlepage}
+\begin{document}
 
 \tableofcontents
-\listoffigures
-\listoftables
-\newpage
-
-% ================================================================
-% CHAPTER 1
-% ================================================================
-\chapter{Recognition of Need}
-
-\section{Introduction}
-
-NextStepBD is a Bangladesh-based technology company that provides software development, automation solutions, and consultancy services. The company focuses on building customized digital solutions for local and international clients. Its work environment is fast-moving and client-driven, where quick communication, flexible decision-making, and rapid project execution are important for daily operations.
-
-The company provides both product-based and service-based solutions. Its product development activities include standalone software systems such as doctor management systems, AI-based customer support platforms, and sales automation tools. Alongside software development, NextStepBD also provides consultancy services for internal workflow automation. One notable example is an automation solution where sales data collected through SMS was entered into a centralized software system for analytics, inventory tracking, and supply chain reporting.
-
-\begin{highlightBox}
-\textbf{Recognition of Need:} NextStepBD has a functional working system, but the system is not fully centralized. The company uses several separate tools for communication, development, reporting, and coordination. This creates a need for a more integrated information system that can support future growth.
-\end{highlightBox}
-
-The company currently relies on a combination of custom-built tools and commonly used platforms such as Microsoft Excel, Google Sheets, GitHub, WhatsApp, Slack, and Email. These tools are useful individually, but they are not connected through a single system. As a result, managers and employees often need to coordinate manually, transfer information between platforms, and search through different communication channels to find project-related information.
-
-\section{Company Overview}
-
-NextStepBD operates as an IT-based software and automation company. Its business model is based on delivering customized digital solutions according to client needs. The company works with software systems, AI-based tools, workflow automation, and customer support solutions. This makes the organization dependent on accurate requirement collection, strong coordination between teams, proper task assignment, and reliable communication with clients.
-
-The organizational structure of NextStepBD is relatively flat. This helps the company make decisions quickly and respond to client requests faster. However, the same structure also creates dependency on a limited number of managers or coordinators. These individuals often act as the bridge between clients and developers. If proper documentation and task tracking systems are not maintained, the workflow can become unclear and difficult to scale.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Area} & \textbf{Description} \\
-\hline
-Company Name & NextStepBD \\
-\hline
-Business Type & IT-based software development, automation, and consultancy company \\
-\hline
-Core Activities & Customized software development, workflow automation, AI-based support tools, sales automation, and reporting solutions \\
-\hline
-Working Style & Client-driven, flexible, fast communication-based, and semi-structured \\
-\hline
-Current Operational Approach & Uses multiple separate tools for communication, development, reporting, and coordination \\
-\hline
-Major Need & A centralized and integrated information system to improve coordination, tracking, reporting, and scalability \\
-\hline
-\end{tabularx}
-\caption{NextStepBD -- Organizational Profile}
-\end{table}
-
-\section{Business Activities and Service Context}
-
-NextStepBD serves clients by designing and developing software systems that solve practical business problems. The company’s services can be understood through three major areas: software development, automation consultancy, and customer support solutions.
-
-In software development, the company builds standalone systems based on client requirements. These systems may include management software, operational software, or business-specific applications. In automation consultancy, NextStepBD helps organizations reduce manual work by designing automated workflows. For example, sales data collection through SMS and automatic entry into a reporting system shows how the company uses technology to improve business efficiency. In customer support solutions, the company helps businesses manage social media communication and client interactions more effectively.
-
-These activities require continuous communication between clients, managers, and developers. Requirements must be collected clearly, tasks must be assigned properly, progress must be tracked, and reports must be prepared accurately. Therefore, the quality of the company’s internal information system directly affects project delivery and client satisfaction.
-
-\section{Existing System and Tools Used}
-
-The current system of NextStepBD is not based on one centralized platform. Instead, it is formed by a combination of several digital tools. WhatsApp is heavily used for fast communication with clients and internal teams. Slack is used mainly for more structured or international collaboration. Email is used for formal communication and final reporting. GitHub supports development and version control. Excel and Google Sheets are used for reporting, data management, financial records, and client-side collaboration.
-
-This tool-based system gives flexibility, but it also creates fragmentation. Information about the same project may exist in WhatsApp messages, Google Sheets, GitHub repositories, and email threads. A manager may need to check multiple platforms to understand the actual progress of a project. Similarly, developers may receive instructions from chat messages while technical updates are maintained in GitHub. This separation creates a gap between communication and execution.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Tool / Platform} & \textbf{Operational Role} \\
-\hline
-WhatsApp & Used for quick client communication, internal coordination, informal discussions, and urgent updates. \\
-\hline
-Slack & Used for structured team communication and international collaboration in selected cases. \\
-\hline
-Email & Used for formal communication, official document sharing, and final report delivery. \\
-\hline
-GitHub & Used for source code management, version control, and developer collaboration. \\
-\hline
-Microsoft Excel and Google Sheets & Used for reporting, financial records, shared data handling, and client-side collaboration. \\
-\hline
-Custom Tools & Used for automation, data processing, analytics, and workflow support in specific projects. \\
-\hline
-\end{tabularx}
-\caption{Current Tools and Their Operational Role}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\scriptsize},
-    tool/.style={
-        rectangle,
-        rounded corners,
-        draw=accent,
-        fill=softteal,
-        thick,
-        text width=2.4cm,
-        minimum height=0.9cm,
-        align=center
-    },
-    center/.style={
-        circle,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.3cm,
-        minimum size=2.4cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[center] (ops) at (0,0) {Current\\Operations};
-
-\node[tool] (wa) at (-5,2) {WhatsApp};
-\node[tool] (slack) at (0,3) {Slack};
-\node[tool] (email) at (5,2) {Email};
-\node[tool] (github) at (-5,-2) {GitHub};
-\node[tool] (excel) at (0,-3) {Excel};
-\node[tool] (sheets) at (5,-2) {Google Sheets};
-
-\draw[arrow] (wa) -- (ops);
-\draw[arrow] (slack) -- (ops);
-\draw[arrow] (email) -- (ops);
-\draw[arrow] (github) -- (ops);
-\draw[arrow] (excel) -- (ops);
-\draw[arrow] (sheets) -- (ops);
-
-\end{tikzpicture}
-}
-\caption{Current Tool-Based Operational Environment}
-\end{figure}
-
-\section{Current Workflow}
-
-The current workflow of NextStepBD begins when a client communicates requirements through WhatsApp, shared documents, Google Sheets, or email. The manager reviews the requirement and assigns tasks to developers. Developers then work on the assigned task using GitHub for version control. During development, internal communication takes place mainly through WhatsApp groups or direct messages. After the work is completed, reports are prepared using Excel or Google Sheets and delivered to the client through email or shared links.
-
-This workflow is practical for a small team and allows quick communication. However, it becomes less effective as the number of projects, clients, and developers increases. Since the workflow depends on manual coordination, project information can become scattered. For example, the client’s requirement may be in WhatsApp, task progress may be in GitHub, and final reporting may be in Google Sheets. Without a centralized system, it becomes difficult to maintain a single source of truth.
-
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    swimlane/.style={draw=gray!50, dashed, thick},
-    box/.style={
-        rectangle, 
-        rounded corners, 
-        draw=primary, 
-        fill=secondary, 
-        thick, 
-        text width=2.8cm, 
-        align=center, 
-        minimum height=1.2cm
-    },
-    riskbox/.style={
-        rectangle, 
-        rounded corners, 
-        draw=orange!80!black, 
-        fill=softcream, 
-        thick, 
-        text width=2.8cm, 
-        align=center, 
-        minimum height=1.2cm
-    },
-    arrow/.style={->, >=stealth, thick, color=primary},
-    labelnode/.style={font=\sffamily\Large\bfseries, color=primary}
-]
-
-% SWIMLANES
-\draw[swimlane] (0,2.5) -- (21,2.5);
-\draw[swimlane] (0,-2.5) -- (21,-2.5);
-
-% LANE LABELS
-\node[labelnode, left] at (-0.5, 4.5) {Client};
-\node[labelnode, left] at (-0.5, 0) {Project Manager};
-\node[labelnode, left] at (-0.5, -4.5) {Developer (Team)};
-
-% NODES
-\node[riskbox] (req) at (1.5, 4.5) {Send Requirement\\(WhatsApp / Email)};
-\node[box] (log) at (5.0, 0) {Manual Sorting \&\\Logging (Sheets)};
-\node[riskbox] (assign) at (8.5, 0) {Assign Task\\(WhatsApp Group)};
-\node[box] (code) at (12.0, -4.5) {Write Code \&\\Commit (GitHub)};
-\node[riskbox] (notify) at (15.5, -4.5) {Notify Done\\(WhatsApp)};
-\node[box] (report) at (15.5, 0) {Compile Report\\(Excel / Sheets)};
-\node[riskbox] (delivery) at (19.0, 4.5) {Final Delivery\\(Email / Slack)};
-
-% ARROWS
-\draw[arrow] (req) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Unstructured Data} (log);
-\draw[arrow] (log) -- (assign);
-\draw[arrow] (assign) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Informal Comm.} (code);
-\draw[arrow] (code) -- (notify);
-\draw[arrow] (notify) edge[bend right=20] node[right, xshift=0.1cm] {\footnotesize Manual Ping} (report);
-\draw[arrow] (report) edge[bend left=20] node[right, xshift=0.1cm] {\footnotesize Shared Link} (delivery);
-
-% BACKGROUND HIGHLIGHT FOR RISK AREA
-\begin{pgfonlayer}{background}
-    \fill[orange!5, rounded corners] (3.0, 1.5) rectangle (17.5, -6);
-    \node[orange!80!black, font=\bfseries] at (10.25, -2.00) {High Dependency \& Fragmentation Zone};
-\end{pgfonlayer}
-
-\end{tikzpicture}
-}
-\caption{Current Operational Swimlane Diagram Showing the PM Bottleneck}
-\end{figure}
-
-\begin{highlightBox}
-\textbf{System Observation:} The existing workflow works, but it is heavily dependent on manual communication. The system lacks a centralized dashboard where requirements, tasks, development progress, reports, and decisions can be tracked together.
-\end{highlightBox}
-
-\section{Need for System Improvement}
-
-The main need for improvement comes from the gap between the company’s growing operational requirements and its current semi-structured information system. As NextStepBD handles more clients and more development tasks, the existing tool-based workflow may become difficult to manage. Manual coordination can slow down decision-making, increase dependency on managers, and create confusion among developers.
-
-A modern information system should not only store data but also connect people, processes, and tools. For NextStepBD, this means the improved system should connect client requirements, task assignment, developer work, communication history, reporting data, and project status. Such a system would help managers monitor progress, developers understand priorities, and clients receive more structured updates.
-
-The need is therefore not simply to introduce new software. The actual need is to create a more organized and integrated work environment where every project has clear requirements, assigned tasks, documented communication, visible progress, and reliable reporting.
-
-\section{Problem Identification}
-
-Through observation of the company’s operations, informal interviews with team members, and an analysis of the current workflow, five major problem areas have been identified. These act as the core constraints to the organization's scalability and stability, ordered below by their severity.
-
-\subsection{Problem 01: Fragmented System Architecture and Lack of Integration}
-
-\begin{problemBox}
-NextStepBD uses multiple disconnected platforms such as WhatsApp, Google Sheets, GitHub, Slack, and Email. There is no centralized system connecting communication, development, and tracking.
-\end{problemBox}
-
-The foundational issue is the absence of connection between these tools. Code is managed in GitHub, communication is lost in WhatsApp, and tasks are manually updated in Sheets. This lack of integration leads to poor traceability, disconnected version control, hidden knowledge, and inefficient reporting.
-
-\subsection{Problem 02: The Project Manager Bottleneck and Central Dependency}
-
-\begin{problemBox}
-Project Managers act as the single communication bridge between clients and developers. If a manager is unavailable, the entire development pipeline stalls.
-\end{problemBox}
-
-Because task assignment and requirement interpretations are strictly relayed by the Project Manager, they become a single point of failure. This creates deep knowledge silos. Developers lack a direct source of truth for the project, leading to work stoppages whenever a central coordinator becomes overloaded.
-
-\subsection{Problem 03: Unstructured Requirement Gathering and Scope Creep}
-
-\begin{problemBox}
-Client requirements are frequently accepted via informal WhatsApp messages without standard documentation. This results in shifting expectations and mid-development changes.
-\end{problemBox}
-
-Treating chat messages as formal software requirements creates ambiguity. Developers are forced to make assumptions, causing a mismatch between client expectations and the final product. The lack of standard SRS (Software Requirement Specifications) leads to endless rework, missed deadlines, and timeline overruns.
-
-\subsection{Problem 04: Absence of a Centralized Task Tracking System}
-
-\begin{problemBox}
-There is no dedicated software to track who is working on what, when tasks are due, or how much time a specific feature actually took to build.
-\end{problemBox}
-
-Without a source of truth for task progress, developers guess their priorities. Furthermore, management has zero visibility into actual team bandwidth. It is virtually impossible to compare estimated development time with actual time taken, making resource planning highly inefficient.
-
-\subsection{Problem 05: Quality Assurance and Deployment Vulnerabilities}
-
-\begin{problemBox}
-The technical pipeline lacks modern software engineering safeguards. Developers test their own code informally, and deployments to production are performed manually.
-\end{problemBox}
-
-Without a dedicated Quality Assurance (QA) process or automated test workflows, the risk of pushing bugs to clients is unsustainably high. Additionally, manual deployments lack the safety of a CI/CD pipeline, increasing the risk of human error during releases and posing a direct threat to client trust.
-
-\section{Problem Severity Overview}
-
-The following graph shows the estimated severity level of the identified problems based on their impact on operations, stability, and scalability.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    xbar,
-    width=0.95\textwidth,
-    height=6.5cm,
-    xmin=0,
-    xmax=10,
-    xlabel={Severity Score (Out of 10)},
-    symbolic y coords={
-        QA \& Deployment,
-        Task Tracking,
-        Requirement Gathering,
-        Manager Bottleneck,
-        System Fragmentation
-    },
-    ytick=data,
-    nodes near coords,
-    grid=major,
-    major grid style={draw=gray!25},
-    title={Problem Severity Assessment}
-]
-\addplot[fill=primary!75] coordinates {
-    (7,{QA \& Deployment})
-    (8,{Task Tracking})
-    (9,{Requirement Gathering})
-    (9,{Manager Bottleneck})
-    (10,{System Fragmentation})
-};
-\end{axis}
-\end{tikzpicture}
-\caption{Estimated Severity of Identified Problems}
-\end{figure}
-
-\section{Chapter 1 Conclusion}
-
-The recognition of need shows that NextStepBD has successfully established a functional working system using available digital tools. However, the system lacks the structure, integration, and centralized control required for sustainable growth.
-
-The major challenges include a fragmented system architecture, an unsustainable reliance on project managers, unstructured requirement management, the absence of centralized task tracking, and significant software testing vulnerabilities. These problems compound one another: weak requirement management creates task confusion, the lack of an integrated system enforces the manager bottleneck, and manual processes result in unstable deployments.
-
-Therefore, the company needs an integrated information system that can connect requirement management, task tracking, development workflow, testing, and continuous delivery. Chapter 2 analyzes the feasibility of solving these problems using technical, economic, and operational perspectives.
-
-\newpage
-
-% ================================================================
-% CHAPTER 2
-% ================================================================
-\chapter{Initial Feasibility Study}
-
-\section{Introduction}
-
-This chapter presents an initial feasibility study for the five major problems identified in Chapter 1. The purpose of this chapter is to evaluate whether the proposed improvements are technically possible, economically reasonable, and operationally acceptable for NextStepBD.
-
-The feasibility framework used in this chapter follows the standard \textbf{Technical, Economic, and Operational} model.
-
-\begin{noteBox}
-\textbf{Feasibility Focus:} The objective of this chapter is not only to propose solutions, but also to determine which solutions are realistic, affordable, and suitable for NextStepBD's current operational environment.
-\end{noteBox}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Feasibility Dimension} & \textbf{Evaluation Question} \\
-\hline
-\textbf{Technical Feasibility} & Can the proposed solution be implemented using available technology, tools, infrastructure, and technical skills? \\
-\hline
-\textbf{Economic Feasibility} & Are the expected benefits greater than the cost of implementation, training, operation, and maintenance? \\
-\hline
-\textbf{Operational Feasibility} & Can the organization realistically adopt and continue using the solution within its existing workflow and culture? \\
-\hline
-\end{tabularx}
-\caption{TEO Feasibility Evaluation Criteria}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    node distance=1.6cm,
-    every node/.style={font=\scriptsize},
-    process/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.7cm,
-        minimum height=0.9cm,
-        align=center
-    },
-    decision/.style={
-        diamond,
-        draw=accent,
-        fill=softcream,
-        thick,
-        aspect=1.8,
-        text width=2.2cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[process] (need) {Need\\Recognition};
-\node[process, right=of need] (analysis) {TEO\\Analysis};
-\node[decision, right=of analysis] (decision) {Decision};
-\node[process, below=1.9cm of decision] (pilot) {Pilot\\Implementation};
-\node[process] (monitor) at (analysis |- pilot) {Monitoring\\and Feedback};
-\node[process] (scale) at (need |- pilot) {Full-Scale\\Adoption};
-
-\draw[arrow] (need) -- (analysis);
-\draw[arrow] (analysis) -- (decision);
-\draw[arrow] (decision) -- node[right, font=\scriptsize]{Feasible} (pilot);
-\draw[arrow] (pilot) -- (monitor);
-\draw[arrow] (monitor) -- (scale);
-\draw[arrow] (scale) -- (need);
-\draw[arrow, dashed] (decision.north) -- ++(0,0.9) -| node[above, font=\scriptsize]{Revise / Defer} (analysis.north);
-
-\end{tikzpicture}
-}
-\caption{Initial Feasibility Governance Cycle for NextStepBD}
-\end{figure}
-
-\section{Initial Feasibility Analysis}
-
-\textbf{Baseline Assumptions for Calculations:} NextStepBD is defined as an organization of approximately 50 employees (developers, UI/UX, QA, PMs). Economic feasibility assumes an internal exchange mapping of \$1 USD $\approx$ 120 BDT. All software cost estimations are based on standardized enterprise monthly licensing fees. Employee training costs assume an average internal valuation of \$15/hour per developer.
-
-\subsection{Problem 01: Fragmented System Architecture and Lack of Integration}
-
-\begin{problemBox}
-NextStepBD uses multiple disconnected platforms such as WhatsApp, GitHub, Google Sheets, Excel, Slack, and Email. There is no centralized system connecting communication, development, and tracking.
-\end{problemBox}
-
-\begin{summaryBox}
-An integrated workflow management system is technically feasible because several cloud-based platforms support integration with GitHub, Google Workspace, Slack, and Email. Economically, it can reduce manual work. Operationally, it is suitable if adopted gradually.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} The technical literacy required to adopt Jira Software or Notion is low, as the team already uses digital-first workflows (GitHub, Slack). Integrating Jira via webhooks into Slack and GitHub is a native, out-of-the-box feature requiring no deep API coding.
-    \item \textbf{Economic Feasibility:} A Jira Standard license costs \$8.15/user/month. For 50 users, this equals \$4,890 annually (approx. 5.86 Lakh BDT). If the platform saves each employee just 2 hours of manual tracking a month, the ROI (Return on Investment) wildly outweighs the software licensing cost.
-    \item \textbf{Operational Feasibility:} Employees already use digital tools, so adoption is realistic. However, strict policy enforcement is needed to stop "shadow IT" (where developers secretly revert to Google Sheets).
-    \item \textbf{Risk \& Mitigation:} Change resistance. \textbf{Mitigation:} Phase the rollout. Onboard only the project managers in Month 1, followed by team leads in Month 2.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
-\hline
-Technical & High & Native webhook integration between Jira, Slack, and GitHub requires zero custom development. \\
-\hline
-Economic & High & Approx. 5.86 Lakh BDT/yr is easily offset by the labor hours saved from chasing status updates. \\
-\hline
-Operational & Medium & Requires enforcing strict data-entry policies to prevent developers from bypassing the system. \\
-\hline
-Overall Viability & Feasible & Highly recommended to resolve the foundational problem. \\
-\hline
-\end{tabularx}
-\caption{System Integration -- TEO Feasibility Summary}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Adopt a centralized project and workflow management platform across all departments.
-
-\textbf{Business Value:} Eliminates isolated information silos and creates a single reliable source for project data.
-\end{recommendBox}
-
-\subsection{Problem 02: The Project Manager Bottleneck and Central Dependency}
-
-\begin{problemBox}
-Project Managers act as the single communication bridge. If a manager is unavailable, task assignment stalls, creating a severe operational bottleneck.
-\end{problemBox}
-
-\begin{summaryBox}
-Relieving the PM bottleneck is highly feasible by shifting from a "push" management style to a transparent "pull" system where developers can view project roadmaps directly.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Minimal technical hurdles. Setting up a central document repository (like Notion or Confluence Wiki) only requires UI configuration. The infrastructure exists.
-    \item \textbf{Economic Feasibility:} High. Notion costs \$10/user/month (10x50x12 = \$6,000/yr or ~7.2 Lakh BDT) but many features are included in Jira (Confluence) bundles. Conversely, GitHub Wiki is entirely free for existing repositories (0 BDT).
-    \item \textbf{Operational Feasibility:} High operational friction. Developers must proactively check wikis rather than waiting to be told what to do via WhatsApp. This is a severe cultural shift.
-    \item \textbf{Risk \& Mitigation:} Information hoarding. \textbf{Mitigation:} Tie manager KPIs to how effectively they document client requests on the central portal.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Area} & \textbf{Current State} & \textbf{Proposed State} \\
-\hline
-Task Discovery & PM manually messages developers & Developers check centralized board \\
-\hline
-Project Context & Kept in PM's head / WhatsApp & Documented in accessible Wiki \\
-\hline
-Approval Delays & High when PM is busy & Reduced via peer-review protocols \\
-\hline
-\end{tabularx}
-\caption{Bottleneck Resolution -- Current vs Proposed State}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Establish a transparent knowledge base and self-serve task boards.
-
-\textbf{Business Value:} Democratizes project knowledge and speeds up development cycles by removing strict dependencies.
-\end{recommendBox}
-
-\subsection{Problem 03: Unstructured Requirement Gathering and Scope Creep}
-
-\begin{problemBox}
-Client requirements are accepted via informal WhatsApp messages, leading to mid-development changes, unclear expectations, and heavy rework.
-\end{problemBox}
-
-\begin{summaryBox}
-Implementing a strict Software Requirement Specification (SRS) intake process is economically near-zero cost and technically simple, though it requires enforcing boundaries with clients.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Google Forms, internal portals, or Jira issue collectors can standardize requirement intake.
-    \item \textbf{Economic Feasibility:} Free to implement using existing platforms.
-    \item \textbf{Operational Feasibility:} Will require clients to adjust how they submit requests, demanding PMs to enforce the process.
-    \item \textbf{Risk Assessment:} Clients may initially resist filling out forms instead of sending texts.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Field} & \textbf{Purpose} \\
-\hline
-Requirement ID & Provides a unique identification number for tracking. \\
-\hline
-User Story / Scope & Defines exactly who the feature is for and what it does. \\
-\hline
-Acceptance Criteria & Defines when the requirement is officially Complete. \\
-\hline
-Client Sign-off & Formal approval before development begins. \\
-\hline
-Change Request Delta & Tracks mid-development changes with cost/time implications. \\
-\hline
-\end{tabularx}
-\caption{Proposed Requirement Management Checkpoints}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Enforce a standard Software Requirement Specification (SRS) sign-off process before coding starts.
-
-\textbf{Business Value:} Drastically reduces scope creep, stops endless rework loops, and protects profit margins.
-\end{recommendBox}
-
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    node distance=1.1cm,
-    every node/.style={font=\scriptsize},
-    wf_step/.style={
-        rectangle,
-        rounded corners,
-        draw=accent,
-        fill=softteal,
-        thick,
-        text width=2.5cm,
-        minimum height=0.85cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[wf_step] (client) {Client Request};
-\node[wf_step, right=of client] (template) {SRS Drafting};
-\node[wf_step, right=of template] (review) {Technical Review};
-\node[wf_step, right=of review] (approve) {Client Sign-off};
-
-\node[wf_step, below=1.3cm of approve] (task) {Task Boards};
-\node[wf_step, left=of task] (dev) {Development};
-\node[wf_step, left=of dev] (test) {QA \& Review};
-\node[wf_step, left=of test] (delivery) {Delivery};
-
-\draw[arrow] (client) -- (template);
-\draw[arrow] (template) -- (review);
-\draw[arrow] (review) -- (approve);
-\draw[arrow] (approve) -- (task);
-\draw[arrow] (task) -- (dev);
-\draw[arrow] (dev) -- (test);
-\draw[arrow] (test) -- (delivery);
-
-\end{tikzpicture}
-}
-\caption{Proposed Requirement-to-Delivery Workflow}
-\end{figure}
-
-\subsection{Problem 04: Absence of a Centralized Task Tracking System}
-
-\begin{problemBox}
-Task assignment and project progress tracking are handled manually via chat. There is no single dashboard for tracking deadlines, progress, blockers, or estimated vs. actual development times.
-\end{problemBox}
-
-\begin{summaryBox}
-A centralized task and project management system is highly feasible. Because developers already use GitHub for version control, project tracking can be embedded directly into their existing environment using GitHub Projects.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} The technical barrier is practically zero. Developers already push code to GitHub. Mapping a pull request (e.g., "Fixes \#42") to an issue card on a GitHub Project board is an automated, native feature.
-    \item \textbf{Economic Feasibility:} Free. Instead of purchasing an external project tool, utilizing GitHub Projects is included in the company's existing GitHub base architecture (0 BDT additional cost).
-    \item \textbf{Operational Feasibility:} Highly straightforward for developers since it lives inside their IDE ecosystem, but project managers will require a brief 2-hour workshop to learn how to operate an Agile board.
-    \item \textbf{Risk \& Mitigation:} The board goes stale. \textbf{Mitigation:} Institute a mandatory 15-minute daily "Stand-up" meeting where the board serves as the only valid metric of progress.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
-\hline
-Technical & High & Native integration with codebase and existing developer accounts requires zero new accounts. \\
-\hline
-Economic & High & No additional software licensing costs needed (0 BDT). \\
-\hline
-Operational & High & Smooth developer transition; minimal context switching from code to boards. \\
-\hline
-Overall Viability & Highly Feasible & Essential for tracking team velocity and output. \\
-\hline
-\end{tabularx}
-\caption{Task Tracking System -- TEO Feasibility Summary}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Implement agile task boards (e.g., in GitHub Projects or Jira) with strict limits on "In Progress" work.
-
-\textbf{Business Value:} Provides real-time visibility into team velocity, preventing resource bottlenecks before they happen.
-\end{recommendBox}
-
-\subsection{Problem 05: Quality Assurance and Deployment Vulnerabilities}
-
-\begin{problemBox}
-Developers test their own code informally without automated testing. Final deployments are done manually, causing a high risk of pushing breaking bugs to live environments.
-\end{problemBox}
-
-\begin{summaryBox}
-Introducing foundational CI/CD (Continuous Integration/Continuous Deployment) and dedicated peer review is extremely feasible and critical for stabilizing the product lifecycle.
-\end{summaryBox}
-
-\subsubsection{Details of Findings}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Technical Feasibility:} Moderate challenge. While GitHub Actions scripts are easy to write, the engineering team must learn test-driven methodologies. Training is required to enforce writing unit tests alongside feature arrays.
-    \item \textbf{Economic Feasibility:} The cloud infrastructure is cheap. Renting a Virtual Private Server (VPS) via AWS EC2 or DigitalOcean for staging environments costs roughly \$20-\$40/month (~35,000 BDT/yr). The hidden cost is developer time spent writing tests.
-    \item \textbf{Operational Feasibility:} Difficult. Developers will initially complain that writing tests "slows them down," clashing with NextStepBD's fast, flexible culture. 
-    \item \textbf{Risk \& Mitigation:} Developers bypassing tests. \textbf{Mitigation:} Protect branch merging. Code cannot be merged into the `main` branch unless it passes CI checks and has one verified peer review.
-\end{itemize}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{5cm}|p{4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Item} & \textbf{Estimated Annual Cost} & \textbf{Expected Benefit} \\
-\hline
-CI/CD Infrastructure \& Staging VPS & \$40/mo = \$480/yr ($\approx$57,600 BDT) & Safe environment for clients to test before public release. \\
-\hline
-Test Engineering Training Hours & 50 devs $\times$ 5 hrs $\times$ \$15/hr ($\approx$4.5 Lakh BDT one-time) & Huge reduction in production bugs; builds technical resilience. \\
-\hline
-Peer Review Process & Administrative Time & Stops rogue code; enforces coding standards. \\
-\hline
-\end{tabularx}
-\caption{QA and Automation -- Estimated Cost-Benefit Analysis}
-\end{table}
-
-\begin{recommendBox}
-\textbf{Priority Action:} Mandate peer code reviews for all merges and implement a basic automated deployment pipeline for staging environments.
-
-\textbf{Business Value:} Guarantees product stability, stops regression loops, and significantly boosts client trust.
-\end{recommendBox}
-
-\section{Comparative Feasibility Summary}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\small
-\begin{tabularx}{\textwidth}{|c|X|c|c|c|c|c|}
-\hline
-\rowcolor{secondary}
-\textbf{No.} & \textbf{Problem} & \textbf{Tech.} & \textbf{Econ.} & \textbf{Ops.} & \textbf{Est. Cost/yr} & \textbf{Priority} \\
-\hline
-01 & Fragmented System Architecture and Lack of Integration & H & H & M & BDT 3--8L & Urgent \\
-\hline
-02 & The Project Manager Bottleneck and Central Dependency & H & H & M & BDT 1--2L & High \\
-\hline
-03 & Unstructured Requirement Gathering and Scope Creep & H & H & H & BDT 0--1L & Urgent \\
-\hline
-04 & Absence of a Centralized Task Tracking System & H & H & H & BDT 0--2L & Urgent \\
-\hline
-05 & Quality Assurance and Deployment Vulnerabilities & H & M & M & BDT 1--3L & High \\
-\hline
-\end{tabularx}
-\caption{Comparative Feasibility Analysis -- Top 5 Core Problems}
-
-\vspace{0.2cm}
-\small{\textbf{Note:} H = High, M = Medium. Cost values are approximate annual estimates.}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=0.95\textwidth,
-    height=7cm,
-    bar width=15pt,
-    ymin=0,
-    ymax=10,
-    ylabel={Feasibility Score},
-    symbolic x coords={P01,P02,P03,P04,P05},
-    xtick=data,
-    nodes near coords,
-    nodes near coords align={vertical},
-    legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3},
-    grid=major,
-    major grid style={draw=gray!25},
-    title={TEO Feasibility Score by Problem}
-]
-\addplot[fill=primary!70] coordinates {(P01,9) (P02,8) (P03,10) (P04,10) (P05,7)};
-\addplot[fill=accent!70] coordinates {(P01,9) (P02,9) (P03,9) (P04,9) (P05,7)};
-\addplot[fill=orange!70] coordinates {(P01,7) (P02,6) (P03,9) (P04,9) (P05,6)};
-\legend{Technical, Economic, Operational}
-\end{axis}
-\end{tikzpicture}
-\caption{Technical, Economic, and Operational Feasibility Comparison}
-\end{figure}
-
-\section{Recommended Implementation Roadmap}
-
-\begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    node distance=0.65cm,
-    every node/.style={font=\scriptsize},
-    phase/.style={
-        rectangle,
-        rounded corners,
-        draw=accent,
-        fill=softteal,
-        thick,
-        text width=2.6cm,
-        minimum height=1.1cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[phase] (ph1) {Phase 1\\Month 1--2\\Tracking \& SRS};
-\node[phase, right=of ph1] (ph2) {Phase 2\\Month 3--4\\Integration};
-\node[phase, right=of ph2] (ph3) {Phase 3\\Month 5--6\\PM Delegation};
-\node[phase, right=of ph3] (ph4) {Phase 4\\Month 7--9\\CI/CD Tests};
-\node[phase, right=of ph4] (ph5) {Phase 5\\Month 10--12\\Scaling};
-
-\draw[arrow] (ph1) -- (ph2);
-\draw[arrow] (ph2) -- (ph3);
-\draw[arrow] (ph3) -- (ph4);
-\draw[arrow] (ph4) -- (ph5);
-
-\end{tikzpicture}
-}
-\caption{Proposed Implementation Roadmap}
-\end{figure}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabularx}{\textwidth}{|p{3cm}|X|p{3cm}|}
-\hline
-\rowcolor{secondary}
-\textbf{Phase} & \textbf{Major Activities} & \textbf{Duration} \\
-\hline
-Phase 1 & Create GitHub project boards and enforce standard SRS sign-off rules. & Month 1--2 \\
-\hline
-Phase 2 & Pick a unified system ecosystem and connect GitHub, Slack, and storage. & Month 3--4 \\
-\hline
-Phase 3 & Shift knowledge from PMs to public team accessible wikis. & Month 5--6 \\
-\hline
-Phase 4 & Establish peer code reviews and basic deployment automation pipelines. & Month 7--9 \\
-\hline
-Phase 5 & Review performance, scale solutions, and refine testing depth. & Month 10--12 \\
-\hline
-\end{tabularx}
-\caption{Detailed Implementation Roadmap}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    xbar,
-    width=0.95\textwidth,
-    height=6.5cm,
-    xmin=0,
-    xmax=10,
-    xlabel={Priority Score},
-    symbolic y coords={
-        QA \& Deployments,
-        Manager Bottleneck,
-        System Integration,
-        Requirement Specs,
-        Task Tracking
-    },
-    ytick=data,
-    nodes near coords,
-    grid=major,
-    major grid style={draw=gray!25},
-    title={Implementation Priority Score}
-]
-\addplot[fill=accent!75] coordinates {
-    (7,{QA \& Deployments})
-    (8,{Manager Bottleneck})
-    (9,{System Integration})
-    (10,{Requirement Specs})
-    (10,{Task Tracking})
-};
-\end{axis}
-\end{tikzpicture}
-\caption{Priority Ranking of Proposed Improvements}
-\end{figure}
-
-\section{Conclusion}
-
-The initial feasibility study ensures that the top five critical operational boundaries holding back NextStepBD's scalability can be overcome reasonably. The company does not need heavy capital injections; rather, it requires an overhaul of its organizational workflow and engineering principles.
-
-The most urgent changes are the establishment of a centralized task tracking system and formalizing requirement gathering before writing any code. Addressing these first provides an immediate return on efficiency. Following these, solving the PM bottleneck and cementing basic CI/CD testing systems will ensure quality isn't sacrificed for speed. Overall, standardizing these internal pipelines is highly feasible and sets the technical and cultural foundation required for the organization's next stage of growth.
-
-
 \newpage
 
 % ================================================================
@@ -1194,16 +89,16 @@ The most urgent changes are the establishment of a centralized task tracking sys
 
 \section{Planning Introduction}
 
-Project planning is a structured management process that establishes the objectives, scope, schedule, resources, communication structure, and implementation strategy required for successful project execution. It provides a clear roadmap that guides the project team from initiation to deployment while keeping organisational goals, stakeholder expectations, and operational limitations aligned throughout the project lifecycle.
+Project planning is a structured management process that defines the objectives, scope, schedule, resources, communication structure, and implementation strategy required for successful project execution. It provides a roadmap that guides the project team from initiation to deployment while ensuring that organisational goals, stakeholder expectations, and operational limitations remain aligned throughout the project lifecycle.
 
-For technology integration initiatives, planning is especially important because such projects involve multiple interdependent activities, technical uncertainties, resource limitations, and coordination among different stakeholder groups. A well-defined planning process helps the organisation reduce implementation risk, allocate responsibilities clearly, control schedule performance, and maintain continuity during system change.
+For technology integration projects, planning is especially important because such projects involve multiple connected activities, technical dependencies, resource limitations, and coordination among different stakeholder groups. Without proper planning, the implementation process may become delayed, responsibilities may become unclear, and the final system may fail to meet business expectations.
 
 In the context of the Integrated Agency Management System (IAMS) project at NextStepBD, planning was necessary because the project aimed to replace fragmented operational practices with a centralized and integrated workflow environment. The proposed solution involved platform integration, process redesign, communication control, role-based access, and coordination between management, project managers, developers, operations staff, and clients.
 
-The planning process for IAMS evolved through three major stages: the initial proposed plan, stakeholder discussion and evaluation, and the revised implementation plan. This iterative approach helped the project team move from a broad custom-development idea to a more practical SaaS-based integration strategy.
+The planning process for IAMS evolved through three major stages: the initial proposed plan, stakeholder discussion and evaluation, and the revised implementation plan. This iterative planning approach helped the project team move from a broad custom-development idea to a more practical SaaS-based integration strategy.
 
 \begin{highlightBox}
-\textbf{Planning Focus:} Chapter 3 explains how the project plan was developed, reviewed, revised, and structured for implementation. It also presents the Work Breakdown Structure and Gantt Chart for the proposed IAMS implementation plan.
+\textbf{Planning Focus:} This chapter explains how the project plan was developed, reviewed, revised, and structured for implementation. It also presents the Work Breakdown Structure and Gantt Chart for the proposed IAMS implementation plan.
 \end{highlightBox}
 
 \section{Initial Proposed Plan}
@@ -1252,7 +147,7 @@ The Coding Team Lead identified technical and architectural risks. The original 
 
 After stakeholder evaluation, the project strategy was revised from a fully custom development initiative into a SaaS-based integration project following a \textbf{Buy over Build} philosophy. Instead of building a monolithic internal platform, the revised plan proposed integrating existing enterprise tools that already support project tracking, issue management, communication, documentation, and development collaboration.
 
-Under the revised approach, Jira Software would act as the \textbf{Single Source of Truth (SSOT)} for project and operational data. Jira Service Management would manage structured client communication and triage workflows. Slack and GitHub would support collaboration and development automation. Confluence would be used for documentation and knowledge management, while ScriptRunner and automation features would support workflow customization.
+Under the revised approach, Jira Software would act as the \textbf{Single Source of Truth (SSOT)} for project and operational data. Jira Service Management would manage structured client communication and triage workflows. Slack and GitHub would support collaboration and development automation. Confluence would be used for documentation and knowledge management, while automation tools would support workflow customization.
 
 The revised plan reduced implementation complexity, development effort, project duration, and financial risk. It also preserved developer productivity by minimizing non-billable internal software development work. As a result, the final project planning framework became more realistic, scalable, and aligned with stakeholder expectations.
 
@@ -1262,133 +157,80 @@ The revised plan reduced implementation complexity, development effort, project 
     \item Slack for team communication and notification flow.
     \item GitHub for development collaboration and version control.
     \item Confluence for documentation and knowledge base management.
-    \item ScriptRunner and automation tools for workflow customization.
+    \item Automation tools for workflow customization.
 \end{itemize}
 
 \begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tikzpicture}[
-    node distance = 1.6cm,
-    box/.style    = {rectangle, rounded corners=6pt, minimum width=4.2cm,
-                     minimum height=1cm, align=center, font=\bfseries\small},
-    item/.style   = {rectangle, rounded corners=3pt, minimum width=3.9cm,
-                     text width=3.7cm, align=left, font=\footnotesize,
-                     inner sep=5pt},
-    arrow/.style  = {-{Stealth[length=8pt,width=6pt]}, line width=2pt,
-                     color=arrowcol},
+    node distance=1.4cm,
+    every node/.style={font=\scriptsize},
+    stage/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=3.8cm,
+        minimum height=1cm,
+        align=center
+    },
+    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
 ]
 
-\node[box, fill=stage1bg, draw=stage1bd, line width=1.5pt] (h1)
-    {Stage 1\\Initial Proposed Plan};
+\node[stage] (s1) at (0,0) {Stage 1\\Initial Proposed Plan};
+\node[stage] (s2) at (5,0) {Stage 2\\Stakeholder Discussion};
+\node[stage] (s3) at (10,0) {Stage 3\\Revised Plan};
 
-\node[box, fill=stage2bg, draw=stage2bd, line width=1.5pt,
-      right=1.8cm of h1] (h2)
-    {Stage 2\\Stakeholder Discussion};
+\draw[arrow] (s1) -- (s2);
+\draw[arrow] (s2) -- (s3);
 
-\node[box, fill=stage3bg, draw=stage3bd, line width=1.5pt,
-      right=1.8cm of h2] (h3)
-    {Stage 3\\Revised Plan};
+\node[stage, fill=softgray] (d1) at (0,-2.4)
+{Custom platform\\Internal database\\Custom dashboard\\High development effort};
 
-\draw[arrow] (h1.east) -- (h2.west);
-\draw[arrow] (h2.east) -- (h3.west);
+\node[stage, fill=softcream] (d2) at (5,-2.4)
+{ROI concern\\Governance concern\\Technical complexity\\SaaS alternatives};
 
-\node[item, fill=stage1bg, draw=stage1bd, below=0.4cm of h1] (i1a)
-    {$\bullet$\ Custom-built ERP-style platform};
-\node[item, fill=stage1bg, draw=stage1bd, below=0.15cm of i1a] (i1b)
-    {$\bullet$\ Internal database development};
-\node[item, fill=stage1bg, draw=stage1bd, below=0.15cm of i1b] (i1c)
-    {$\bullet$\ Automated task assignment};
-\node[item, fill=stage1bg, draw=stage1bd, below=0.15cm of i1c] (i1d)
-    {$\bullet$\ Custom reporting dashboard};
-\node[item, fill=stage1bg, draw=stage1bd, below=0.15cm of i1d] (i1e)
-    {$\bullet$\ Full in-house software development};
+\node[stage, fill=softteal] (d3) at (10,-2.4)
+{Buy over Build\\Jira as SSOT\\JSM client portal\\Slack and GitHub integration};
 
-\node[item, fill=stage2bg, draw=stage2bd, below=0.4cm of h2] (i2a)
-    {$\bullet$\ CEO raised ROI concerns};
-\node[item, fill=stage2bg, draw=stage2bd, below=0.15cm of i2a] (i2b)
-    {$\bullet$\ PM raised workflow governance concerns};
-\node[item, fill=stage2bg, draw=stage2bd, below=0.15cm of i2b] (i2c)
-    {$\bullet$\ Team Lead raised technical complexity concerns};
-\node[item, fill=stage2bg, draw=stage2bd, below=0.15cm of i2c] (i2d)
-    {$\bullet$\ Discussion on developer productivity impact};
-\node[item, fill=stage2bg, draw=stage2bd, below=0.15cm of i2d] (i2e)
-    {$\bullet$\ Evaluation of SaaS alternatives};
-
-\node[item, fill=stage3bg, draw=stage3bd, below=0.4cm of h3] (i3a)
-    {$\bullet$\ Buy over Build strategy};
-\node[item, fill=stage3bg, draw=stage3bd, below=0.15cm of i3a] (i3b)
-    {$\bullet$\ Jira as Single Source of Truth};
-\node[item, fill=stage3bg, draw=stage3bd, below=0.15cm of i3b] (i3c)
-    {$\bullet$\ JSM client portal implementation};
-\node[item, fill=stage3bg, draw=stage3bd, below=0.15cm of i3c] (i3d)
-    {$\bullet$\ Slack and GitHub integration};
-\node[item, fill=stage3bg, draw=stage3bd, below=0.15cm of i3d] (i3e)
-    {$\bullet$\ API and webhook automation};
-\node[item, fill=stage3bg, draw=stage3bd, below=0.15cm of i3e] (i3f)
-    {$\bullet$\ Reduced cost and implementation time};
+\draw[arrow] (s1) -- (d1);
+\draw[arrow] (s2) -- (d2);
+\draw[arrow] (s3) -- (d3);
 
 \end{tikzpicture}
 }
-\caption{Evolution of the IAMS project planning strategy from an initial custom software proposal to a SaaS-based integration architecture following stakeholder review.}
+\caption{Evolution of the IAMS project planning strategy}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.4}
+\renewcommand{\arraystretch}{1.35}
 \small
-\begin{tabularx}{\textwidth}{
-    >{\bfseries}p{4.0cm}
-    >{\raggedright\arraybackslash}X
-    >{\raggedright\arraybackslash}X
-}
-\toprule
-\rowcolor{headerbg}
-\textcolor{white}{\textbf{Planning Area}} &
-\textcolor{white}{\textbf{Initial Proposed Plan}} &
-\textcolor{white}{\textbf{Revised Integration Plan}} \\
-\midrule
-\rowcolor{rowodd}
-Development Approach &
-Custom-built internal platform &
-SaaS integration architecture \\
-\rowcolor{roweven}
-Core Technology &
-Custom database and application &
-Jira, JSM, Slack, GitHub, ScriptRunner \\
-\rowcolor{rowodd}
-Project Duration &
-Estimated 6--12 months &
-12-week deployment \\
-\rowcolor{roweven}
-Development Effort &
-Full-scale software development &
-Configuration and integration \\
-\rowcolor{rowodd}
-Cost Structure &
-High variable development cost &
-Predictable SaaS licensing cost \\
-\rowcolor{roweven}
-Developer Resource Usage &
-Heavy internal resource consumption &
-Minimal disruption to billable work \\
-\rowcolor{rowodd}
-Workflow Management &
-Custom workflow implementation &
-Jira-based workflow automation \\
-\rowcolor{roweven}
-Client Communication &
-Direct system interaction &
-Structured JSM portal \\
-\rowcolor{rowodd}
-Maintenance Responsibility &
-Fully internal maintenance &
-Vendor-supported SaaS ecosystem \\
-\rowcolor{roweven}
-ROI Outlook &
-Delayed and uncertain &
-Faster and more predictable \\
-\bottomrule
+\begin{tabularx}{\textwidth}{|p{4cm}|X|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Planning Area} & \textbf{Initial Proposed Plan} & \textbf{Revised Integration Plan} \\
+\hline
+Development Approach & Custom-built internal platform & SaaS integration architecture \\
+\hline
+Core Technology & Custom database and application & Jira, JSM, Slack, GitHub, Confluence \\
+\hline
+Project Duration & Estimated 6--12 months & Shorter phased deployment \\
+\hline
+Development Effort & Full-scale software development & Configuration and integration \\
+\hline
+Developer Resource Usage & Heavy internal resource consumption & Minimal disruption to billable work \\
+\hline
+Workflow Management & Custom workflow implementation & Jira-based workflow automation \\
+\hline
+Client Communication & Direct system interaction & Structured JSM portal \\
+\hline
+Maintenance Responsibility & Fully internal maintenance & Vendor-supported SaaS ecosystem \\
+\hline
+ROI Outlook & Delayed and uncertain & Faster and more predictable \\
+\hline
 \end{tabularx}
 \caption{Comparison between the initial proposed plan and the revised integration plan}
 \end{table}
@@ -1397,32 +239,130 @@ Faster and more predictable \\
 
 The Work Breakdown Structure (WBS) divides the IAMS project into smaller and manageable work packages. It helps the project team understand deliverables, assign responsibilities, monitor progress, and control implementation activities step by step.
 
-For the NextStepBD IAMS project, the WBS is organized into six major phases: discovery and requirements, system architecture and design, development and integration, testing, training and pilot launch, and full deployment with optimization. This structure ensures that each part of the project can be tracked independently while still contributing to the overall implementation objective.
+For the NextStepBD IAMS project, the WBS is organized into six major phases: discovery and requirements, system architecture and design, development and integration, testing and review, training and pilot launch, and full deployment with optimization. This structure ensures that each part of the project can be tracked independently while still contributing to the overall implementation objective.
 
-\begin{table}[H]
+\begin{figure}[H]
 \centering
-\renewcommand{\arraystretch}{1.3}
-\small
-\begin{tabularx}{\textwidth}{|p{3.4cm}|p{4.4cm}|X|}
-\hline
-\rowcolor{secondary}
-\textbf{Phase} & \textbf{Work Package} & \textbf{Main Tasks} \\
-\hline
-1. Discovery and Requirements & W1--W2 & Stakeholder workshops, vendor and licensing procurement, current-state data audit. \\
-\hline
-2. System Architecture and Design & W3--W4 & Process modeling, RBAC and security design, API and webhook mapping. \\
-\hline
-3. Development and Integration & W5--W8 & Jira/JSM configuration, middleware development, webhook automation, legacy data migration scripting. \\
-\hline
-4. Testing and Review & W9--W10 & Cross-platform integration testing, security/access testing, User Acceptance Testing. \\
-\hline
-5. Training and Pilot Launch & W11--W12 & End-user training, pilot project launch, feedback collection. \\
-\hline
-6. Full Deployment and Optimization & W13+ & Organization-wide rollout, monitoring, issue resolution, and workflow optimization. \\
-\hline
-\end{tabularx}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\scriptsize},
+    root/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=4.5cm,
+        minimum height=1cm,
+        align=center
+    },
+    phase/.style={
+        rectangle,
+        rounded corners,
+        draw=accent,
+        fill=softteal,
+        thick,
+        text width=4.3cm,
+        minimum height=0.95cm,
+        align=center
+    },
+    task/.style={
+        rectangle,
+        rounded corners,
+        draw=darkgray!60,
+        fill=white,
+        text width=4.3cm,
+        minimum height=0.75cm,
+        align=left,
+        inner sep=4pt
+    },
+    arrow/.style={thick, -{Latex[length=2.3mm]}, color=primary}
+]
+
+% Root
+\node[root] (root) at (0,0) {\textbf{IAMS Program Delivery}};
+
+% Top-row phases
+\node[phase] (p1) at (-6,-2) {1. Discovery \& Requirements\\W1--W2};
+\node[phase] (p2) at (0,-2) {2. System Architecture \& Design\\W3--W4};
+\node[phase] (p3) at (6,-2) {3. Development \& Integration\\W5--W8};
+
+% Bottom-row phases
+\node[phase] (p4) at (-6,-7) {4. Testing \& Review\\W9--W10};
+\node[phase] (p5) at (0,-7) {5. Training \& Pilot Launch\\W11--W12};
+\node[phase] (p6) at (6,-7) {6. Full Deployment \& Optimization\\W13+};
+
+% Root arrows
+\draw[arrow] (root) -- (p1);
+\draw[arrow] (root) -- (p2);
+\draw[arrow] (root) -- (p3);
+
+% Sequential phase arrows
+\draw[arrow] (p1) -- (p4);
+\draw[arrow] (p2) -- (p5);
+\draw[arrow] (p3) -- (p6);
+
+% Phase 1 tasks
+\node[task] (p1a) at (-6,-3.2) {1.1 Stakeholder workshops};
+\node[task] (p1b) at (-6,-4.15) {1.2 Vendor and licensing procurement};
+\node[task] (p1c) at (-6,-5.1) {1.3 Current-state data audit};
+
+% Phase 2 tasks
+\node[task] (p2a) at (0,-3.2) {2.1 Process modeling};
+\node[task] (p2b) at (0,-4.15) {2.2 RBAC and security design};
+\node[task] (p2c) at (0,-5.1) {2.3 API and webhook mapping};
+
+% Phase 3 tasks
+\node[task] (p3a) at (6,-3.2) {3.1 Jira/JSM core configuration};
+\node[task] (p3b) at (6,-4.15) {3.2 Integration middleware setup};
+\node[task] (p3c) at (6,-5.1) {3.3 Webhook and automation coding};
+\node[task] (p3d) at (6,-6.05) {3.4 Legacy data migration scripting};
+
+% Phase 4 tasks
+\node[task] (p4a) at (-6,-8.2) {4.1 Cross-platform integration testing};
+\node[task] (p4b) at (-6,-9.15) {4.2 Security and access testing};
+\node[task] (p4c) at (-6,-10.1) {4.3 User Acceptance Testing};
+
+% Phase 5 tasks
+\node[task] (p5a) at (0,-8.2) {5.1 End-user training};
+\node[task] (p5b) at (0,-9.15) {5.2 Pilot project launch};
+\node[task] (p5c) at (0,-10.1) {5.3 Feedback collection};
+
+% Phase 6 tasks
+\node[task] (p6a) at (6,-8.2) {6.1 Organization-wide rollout};
+\node[task] (p6b) at (6,-9.15) {6.2 Monitoring and issue resolution};
+\node[task] (p6c) at (6,-10.1) {6.3 Workflow optimization};
+
+% Arrows for tasks
+\draw[arrow] (p1) -- (p1a);
+\draw[arrow] (p1a) -- (p1b);
+\draw[arrow] (p1b) -- (p1c);
+
+\draw[arrow] (p2) -- (p2a);
+\draw[arrow] (p2a) -- (p2b);
+\draw[arrow] (p2b) -- (p2c);
+
+\draw[arrow] (p3) -- (p3a);
+\draw[arrow] (p3a) -- (p3b);
+\draw[arrow] (p3b) -- (p3c);
+\draw[arrow] (p3c) -- (p3d);
+
+\draw[arrow] (p4) -- (p4a);
+\draw[arrow] (p4a) -- (p4b);
+\draw[arrow] (p4b) -- (p4c);
+
+\draw[arrow] (p5) -- (p5a);
+\draw[arrow] (p5a) -- (p5b);
+\draw[arrow] (p5b) -- (p5c);
+
+\draw[arrow] (p6) -- (p6a);
+\draw[arrow] (p6a) -- (p6b);
+\draw[arrow] (p6b) -- (p6c);
+
+\end{tikzpicture}
+}
 \caption{Work Breakdown Structure for the IAMS implementation plan}
-\end{table}
+\end{figure}
 
 \section{Gantt Chart}
 
@@ -1439,39 +379,38 @@ The implementation plan begins with discovery and requirements, followed by syst
 \rowcolor{secondary}
 \textbf{Project Activity} & \textbf{May 2026} & \textbf{June 2026} & \textbf{July 2026} & \textbf{August 2026} \\
 \hline
-Discovery and Requirements & \cellcolor{phase1!65} & & & \\
+Discovery and Requirements & \cellcolor{accent!55} & & & \\
 \hline
-Stakeholder Workshops & \cellcolor{phase1!45} & & & \\
+Stakeholder Workshops & \cellcolor{accent!35} & & & \\
 \hline
-Vendor and Licensing Procurement & \cellcolor{phase1!45} & & & \\
+Vendor and Licensing Procurement & \cellcolor{accent!35} & & & \\
 \hline
-System Architecture and Design & \cellcolor{phase2!45} & \cellcolor{phase2!65} & & \\
+System Architecture and Design & \cellcolor{primary!25} & \cellcolor{primary!45} & & \\
 \hline
-RBAC and Security Design & & \cellcolor{phase2!55} & & \\
+RBAC and Security Design & & \cellcolor{primary!35} & & \\
 \hline
-API and Webhook Mapping & & \cellcolor{phase2!55} & & \\
+API and Webhook Mapping & & \cellcolor{primary!35} & & \\
 \hline
-Development and Integration & & \cellcolor{phase3!55} & \cellcolor{phase3!65} & \\
+Development and Integration & & \cellcolor{nextstepblue!35} & \cellcolor{nextstepblue!55} & \\
 \hline
-Jira/JSM Core Configuration & & \cellcolor{phase3!45} & & \\
+Jira/JSM Core Configuration & & \cellcolor{nextstepblue!30} & & \\
 \hline
-Webhook and Automation Coding & & & \cellcolor{phase3!55} & \\
+Webhook and Automation Coding & & & \cellcolor{nextstepblue!45} & \\
 \hline
-Testing and Review & & & \cellcolor{phase4!55} & \\
+Testing and Review & & & \cellcolor{accent!25} & \\
 \hline
-Training and Pilot Launch & & & \cellcolor{phase5!45} & \cellcolor{phase5!55} \\
+Training and Pilot Launch & & & \cellcolor{accent!20} & \cellcolor{accent!40} \\
 \hline
-Full Deployment and Optimization & & & & \cellcolor{phase6!65} \\
+Full Deployment and Optimization & & & & \cellcolor{primary!45} \\
 \hline
 \end{tabularx}
 \caption{Gantt Chart for the IAMS implementation schedule}
 \end{table}
 
-\section{Chapter 3 Conclusion}
+\section{Conclusion}
 
-This chapter described the planning process for the proposed IAMS project at NextStepBD. The planning process began with an initial custom software development proposal, but stakeholder discussion revealed concerns related to cost, development time, technical complexity, governance, and long-term maintenance. As a result, the project plan was revised into a SaaS-based integration strategy using Jira, Jira Service Management, Slack, GitHub, Confluence, and automation tools.
+This chapter described the planning process for the proposed IAMS project at NextStepBD. The planning process began with an initial custom software development proposal, but stakeholder discussion revealed concerns related to development time, technical complexity, workflow governance, and long-term maintenance. As a result, the project plan was revised into a SaaS-based integration strategy using Jira, Jira Service Management, Slack, GitHub, Confluence, and automation tools.
 
-The revised plan is more practical for NextStepBD because it reduces development workload, shortens implementation time, minimizes financial risk, and supports a controlled workflow structure. The Work Breakdown Structure divides the project into manageable work packages, while the Gantt Chart provides a phased timeline for implementation. Overall, Chapter 3 shows that successful system development depends not only on technical feasibility but also on careful planning, stakeholder involvement, and realistic implementation strategy.
-
+The revised plan is more practical for NextStepBD because it reduces development workload, shortens implementation time, minimizes implementation risk, and supports a controlled workflow structure. The Work Breakdown Structure divides the project into manageable work packages, while the Gantt Chart provides a phased timeline for implementation. Overall, this chapter shows that successful system development depends not only on technical feasibility but also on careful planning, stakeholder involvement, and realistic implementation strategy.
 
 \end{document}
