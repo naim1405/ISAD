@@ -254,8 +254,8 @@ ROI Outlook & Delayed and uncertain & Faster and more predictable \\
 \node[system] (jira) at (11,-3) {Jira Software\\(SSOT / Board)};
 \node[actor] (dev) at (5.5,-3) {Development\\Team};
 
-\node[system] (git) at (2.5,-6) {GitHub\\(Version Control)};
-\node[system] (slack) at (8.5,-6) {Slack\\(Internal Comms)};
+\node[system] (git) at (1.5,-6) {GitHub\\(Version Control)};
+\node[system] (slack) at (9.5,-6) {Slack\\(Internal Comms)};
 
 % Arrows (Direct flows)
 \draw[arrow] (client) -- node[midway, above=2pt, fill=white, inner sep=1pt] {\scriptsize Submit request} (jsm);
@@ -263,12 +263,12 @@ ROI Outlook & Delayed and uncertain & Faster and more predictable \\
 \draw[arrow] (pm) -- node[midway, right=3pt, fill=white, inner sep=1pt] {\scriptsize Approve/Convert} (jira);
 \draw[arrow] (jira) -- node[midway, above=2pt, fill=white, inner sep=1pt] {\scriptsize Assign via Lead} (dev);
 
-\draw[arrow] (dev) |- node[midway, left=3pt, fill=white, inner sep=1pt] {\scriptsize Push code} (git);
-\draw[arrow] (dev) |- node[midway, right=3pt, fill=white, inner sep=1pt] {\scriptsize Discuss} (slack);
+\draw[arrow] (dev) |- node[midway, left=3pt, yshift=6pt, fill=white, inner sep=1pt] {\scriptsize Push code} (git);
+\draw[arrow] (dev) |- node[midway, right=3pt, yshift=6pt, fill=white, inner sep=1pt] {\scriptsize Discuss} (slack);
 
 % Arrows (Automated Webhooks - dashed)
-\draw[arrow, dashed, color=primary] (git) -| node[pos=0.2, below=2pt, fill=white, inner sep=1pt] {\scriptsize Webhook status update} (jira);
-\draw[arrow, dashed, color=primary] (slack) -| node[pos=0.2, below=2pt, fill=white, inner sep=1pt] {\scriptsize Chat thread linking} (jira);
+\draw[arrow, dashed, color=primary] (git.south) -- ++(0,-1.2) -- ++(12.5,0) |- node[pos=0.2, left=12pt, below=2pt, fill=white, inner sep=1pt] {\scriptsize Webhook status update} (jira.east);
+\draw[arrow, dashed, color=primary] (slack.south) -- ++(0,-0.6) -| node[pos=0.2, below=2pt, fill=white, inner sep=1pt] {\scriptsize Chat thread linking} (jira.south east);
 
 % Return notification to JSM
 \draw[arrow, dashed, color=primary] (jira) to[bend right=25] node[midway, left=12pt, below=2pt,  fill=white, inner sep=1pt] {\scriptsize Auto status notification} (jsm);
