@@ -193,36 +193,153 @@
 % TITLE PAGE
 % ------------------------------------------------
 \begin{titlepage}
-    \centering
-    \vspace*{0.5cm}
+\newgeometry{top=0.45in,bottom=0.45in,left=0.75in,right=0.75in}
+\thispagestyle{empty}
 
-    % University Logo & Name
-    \includegraphics[width=0.2\textwidth]{ruet_logo.png}\\[0.4cm]
-    {\LARGE \textbf{Rajshahi University of Engineering \& Technology}}\\[1.5cm]
+% Cover background accents
+\begin{tikzpicture}[remember picture, overlay]
+    \fill[white] (current page.south west) rectangle (current page.north east);
 
-    % Report Titles & Horizontal Rules for Professional Look
-    {\color{nextstepblue}\rule{\textwidth}{2pt}}\\[0.8cm]
-    {\Huge \textbf{NextStepBD}}\\[0.5cm]
-    {\Large \textbf{Information System Analysis and Design Report}}\\[0.8cm]
-    {\Large \textbf{Course Title:} Information System Analysis and Design Sessional}\\[0.3cm]
-    {\large \textbf{Course Code:} CSE 4110}\\[0.6cm]
-    {\color{nextstepblue}\rule{\textwidth}{2pt}}\\[2.5cm]
+    % Soft lower panel
+    \fill[nextstepblue!7]
+        (current page.south west) rectangle ([yshift=5.35cm]current page.south east);
 
-    % Two-column layout using tabularx format
-    \large
-    \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\raggedleft\arraybackslash}X @{}}
-        {\Large \textcolor{nextstepblue}{\textbf{Submitted By:}}} & {\Large \textcolor{nextstepblue}{\textbf{Submitted To:}}} \\[0.4cm]
-        Mst. Mim Afsana Mim (\textit{2103043}) & \textbf{Dr. Md. Rabiul Islam} \\
-        Md. Naimuzzaman (\textit{2103044}) & Professor \\
-        Arpita Karmokar (\textit{2103045}) & Dept. of Computer Science \& \\
-        Md Shehab Sarker (\textit{2103046}) & Engineering \\
-        & Rajshahi University of Engineering \& Technology \\
-         \\
-    \end{tabularx}
+    % Decorative soft circles
+    \fill[primary!7]
+        ([xshift=-1.35cm,yshift=-0.75cm]current page.north east) circle (1.7cm);
+    \fill[accent!8]
+        ([xshift=1.25cm,yshift=0.85cm]current page.south west) circle (2.0cm);
 
-    \vfill
+    % Bottom strip
+    \fill[nextstepblue!28]
+        (current page.south west) rectangle ([yshift=0.25cm]current page.south east);
+\end{tikzpicture}
+
+\centering
+\vspace*{0.05cm}
+
+% University Logo
+\includegraphics[width=0.105\textwidth]{ruet_logo.png}\\[0.18cm]
+
+% University Name
+{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{RAJSHAHI UNIVERSITY OF}}\\[-0.04cm]
+{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{ENGINEERING \& TECHNOLOGY}}\\[0.12cm]
+
+{\normalsize\textcolor{darkgray!75}{Department of Computer Science \& Engineering}}\\[0.45cm]
+
+% Main Report Title
+{\fontsize{19}{22}\selectfont\bfseries\textcolor{darkgray}{Information System Analysis and Design}}\\[0.08cm]
+{\fontsize{14}{16}\selectfont\bfseries\textcolor{darkgray}{Report on}}\\[0.20cm]
+
+% Highlighted company name
+\begin{tcolorbox}[
+    enhanced,
+    width=0.70\textwidth,
+    colback=white,
+    colframe=nextstepblue,
+    boxrule=1.35pt,
+    arc=4mm,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt,
+    drop shadow=black!16,
+    borderline north={1.6pt}{0pt}{accent},
+    borderline south={1.6pt}{0pt}{primary},
+    borderline west={4pt}{0pt}{accent},
+    borderline east={4pt}{0pt}{primary}
+]
+\centering
+{\fontsize{30}{32}\selectfont\bfseries
+\textcolor{primary}{Next}
+\textcolor{accent}{Step}
+\textcolor{nextstepblue}{BD}
+}\\[-0.03cm]
+{\color{accent}\rule{0.38\textwidth}{1pt}}
+\end{tcolorbox}
+
+\vspace{0.22cm}
+
+% Course Info
+\begin{tcolorbox}[
+    enhanced,
+    width=0.76\textwidth,
+    colback=nextstepblue!5,
+    colframe=nextstepblue!60,
+    boxrule=0.8pt,
+    arc=3mm,
+    left=7pt,
+    right=7pt,
+    top=5pt,
+    bottom=5pt
+]
+\centering
+{\small \textbf{Course Title:} Information System Analysis and Design Sessional}\\[0.04cm]
+{\small \textbf{Course Code:} CSE 4110}
+\end{tcolorbox}
+
+\vspace{0.22cm}
+
+{\color{nextstepblue}\rule{0.54\textwidth}{1.6pt}}\\[0.25cm]
+
+% Submitted Information with center divider line
+\begin{tcolorbox}[
+    enhanced,
+    width=0.88\textwidth,
+    colback=white!94,
+    colframe=nextstepblue!60,
+    boxrule=1pt,
+    arc=5mm,
+    left=11pt,
+    right=11pt,
+    top=10pt,
+    bottom=10pt,
+    drop shadow=black!12
+]
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X !{\color{nextstepblue!70}\vrule width 1.1pt} >{\raggedright\arraybackslash}X@{}}
+
+{\large\bfseries\textcolor{nextstepblue}{Submitted By:}} 
+&
+{\large\bfseries\textcolor{nextstepblue}{Submitted To:}} 
+\\[0.14cm]
+
+Mst. Mim Afsana Mim \hfill \textit{2103043}
+&
+{\bfseries\textcolor{primary}{Dr. Md. Rabiul Islam}}
+\\
+
+Md. Naimuzzaman \hfill \textit{2103044}
+&
+Professor
+\\
+
+Arpita Karmokar \hfill \textit{2103045}
+&
+Department of Computer Science
+\\
+
+Md. Shehab Sarker \hfill \textit{2103046}
+&
+and Engineering
+\\
+
+&
+Rajshahi University of Engineering \& Technology
+\\
+
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+{\small \textbf{Date of Submission:} \today}
+
 \end{titlepage}
 
+\restoregeometry
+\clearpage
 \tableofcontents
 \listoffigures
 \listoftables
