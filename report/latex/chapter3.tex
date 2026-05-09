@@ -12,20 +12,32 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{multirow}
 \usepackage{tikz}
+\usepackage{pgfplots}
 \usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
 \usepackage{setspace}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{pifont}
 \usepackage{microtype}
+\usepackage{pgf}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{main}
+\pgfsetlayers{background,main}
 
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc}
+\pgfplotsset{compat=1.18}
 
 % ------------------------------------------------
 % PAGE SETUP
 % ------------------------------------------------
 \geometry{margin=1in}
+\setlength{\headheight}{14.5pt} % Fixed fancyhdr warning
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
@@ -38,43 +50,138 @@
 \definecolor{accent}{HTML}{00897B}
 \definecolor{softteal}{HTML}{E0F2F1}
 \definecolor{softcream}{HTML}{FFF8E1}
+\definecolor{softrose}{HTML}{FCE4EC}
 \definecolor{softgray}{HTML}{F5F5F5}
 \definecolor{darkgray}{HTML}{333333}
-\definecolor{nextstepblue}{HTML}{005BB5}
+\definecolor{nextstepblue}{HTML}{005BB5} % Vibrant Corporate Blue for Cover
 
 % ------------------------------------------------
 % HYPERLINK SETUP
+% Contents, List of Figures, and List of Tables are black
 % ------------------------------------------------
 \hypersetup{
     colorlinks=true,
-    linkcolor=primary,
-    urlcolor=nextstepblue,
-    citecolor=accent
+    linkcolor=black,
+    urlcolor=black,
+    citecolor=black
 }
 
 % ------------------------------------------------
-% BOX STYLES
+% HEADER AND FOOTER
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Information System Analysis Report}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------------------------------
+% TITLE FORMATTING
+% ------------------------------------------------
+\titleformat{\chapter}
+  {\normalfont\huge\bfseries\color{primary}}
+  {Chapter \thechapter}
+  {20pt}
+  {}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primary}}
+  {\thesection}
+  {1em}
+  {}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{accent}}
+  {\thesubsection}
+  {1em}
+  {}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{primary}}
+  {}
+  {0pt}
+  {}
+
+% ------------------------------------------------
+% CUSTOM BOXES
 % ------------------------------------------------
 \newtcolorbox{highlightBox}{
+    enhanced,
     colback=secondary,
     colframe=primary,
-    boxrule=0.8pt,
-    arc=2mm,
-    left=8pt,
-    right=8pt,
-    top=6pt,
-    bottom=6pt
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    borderline west={4pt}{0pt}{primary}
+}
+
+\newtcolorbox{problemBox}{
+    enhanced,
+    colback=softrose,
+    colframe=primary!80!black,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    fonttitle=\bfseries,
+    title=\textbf{Problem Statement},
+    borderline west={4pt}{0pt}{primary!80!black}
+}
+
+\newtcolorbox{summaryBox}{
+    enhanced,
+    colback=softteal,
+    colframe=accent,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    fonttitle=\bfseries,
+    title=\textbf{Feasibility Summary},
+    borderline west={4pt}{0pt}{accent}
+}
+
+\newtcolorbox{recommendBox}{
+    enhanced,
+    colback=softcream,
+    colframe=orange!80!black,
+    boxrule=1.3pt,
+    arc=1mm,
+    left=11pt,
+    right=11pt,
+    top=12pt,
+    bottom=10pt,
+    fonttitle=\bfseries\large,
+    title=\textbf{\ding{72} Recommended Action},
+    attach boxed title to top left={xshift=5mm,yshift=-2mm},
+    boxed title style={
+        colback=orange!80!black,
+        colframe=orange!80!black,
+        coltext=white,
+        arc=1mm
+    },
+    borderline west={5pt}{0pt}{orange!80!black}
 }
 
 \newtcolorbox{noteBox}{
-    colback=softcream,
-    colframe=accent,
-    boxrule=0.8pt,
-    arc=2mm,
-    left=8pt,
-    right=8pt,
-    top=6pt,
-    bottom=6pt
+    enhanced,
+    colback=softgray,
+    colframe=primary,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    borderline west={4pt}{0pt}{primary}
 }
 
 \begin{document}
