@@ -362,15 +362,10 @@ For the NextStepBD IAMS project, the WBS is organized into six major phases: dis
 \node[phase] (p5) at (0,-7.7) {5. Training \& Pilot Launch\\W11--W12};
 \node[phase] (p6) at (6,-7.7) {6. Full Deployment \& Optimization\\W13+};
 
-% Root arrows
+% Root arrows (Top Row)
 \draw[arrow] (root) -- (p1);
 \draw[arrow] (root) -- (p2);
 \draw[arrow] (root) -- (p3);
-
-% Sequential phase arrows
-\draw[arrow] (p1) -- (p4);
-\draw[arrow] (p2) -- (p5);
-\draw[arrow] (p3) -- (p6);
 
 % Phase 1 tasks
 \node[task] (p1a) at (-6,-3.2) {1.1 Stakeholder workshops};
@@ -447,7 +442,7 @@ The implementation plan begins with discovery and requirements, followed by syst
 \begin{tabularx}{\textwidth}{|p{4.6cm}|c|c|c|c|}
 \hline
 \rowcolor{secondary}
-\textbf{Project Activity} & \textbf{May 2026} & \textbf{June 2026} & \textbf{July 2026} & \textbf{August 2026} \\
+\textbf{Project Activity} & \textbf{Weeks 1--4} & \textbf{Weeks 5--8} & \textbf{Weeks 9--12} & \textbf{Week 13+} \\
 \hline
 Discovery and Requirements & \cellcolor{accent!55} & & & \\
 \hline
