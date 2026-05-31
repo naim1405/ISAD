@@ -281,8 +281,6 @@ The project team will allocate a data-cleaning sprint and provision a part-time 
 #### 3.3.3.3 Cost Management
 Resource needs include a data analyst (part-time), integration engineer support for migration tooling, and a portion of the PM's time. Infrastructure may require temporary compute/storage for staging and reconciliation tasks. Cost monitoring will use time-tracking and milestone-based controls; cost control strategies include prioritising high-impact data fields, automating cleaning where feasible, and deferring low-value data normalization.
 
-Detailed financial evaluation will be deferred to a later chapter as noted in the project governance.
-
 #### 3.3.3.4 Quality Management
 Quality objectives: (1) canonical schema completeness of mandatory fields for 90% of migrated records in pilot; (2) reconciliation discrepancy rate below defined threshold; (3) documented data lineage for billing-critical records.
 
