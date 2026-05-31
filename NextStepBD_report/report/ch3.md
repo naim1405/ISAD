@@ -191,8 +191,6 @@ Resource expectations focus on a small integration team: one integration enginee
 
 Cost monitoring will track planned versus actual effort across integration tasks and will monitor vendor subscription costs. Cost control strategies include staging connectors (start with Sheets and GitHub), using open-source middleware where appropriate, and deferring expensive enterprise connectors until the central model is proven.
 
-A reminder is included that comprehensive economic analysis will be completed in a subsequent chapter as part of project controls.
-
 #### 3.3.2.4 Quality Management
 Quality objectives: (1) successful, auditable synchronization for core data fields for 95% of sample records; (2) reconciliation reports generated automatically and checked weekly; (3) maintenance of provenance for all synchronized records.
 
