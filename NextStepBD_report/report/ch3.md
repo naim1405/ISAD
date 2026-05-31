@@ -16,6 +16,9 @@ This section presents planning activities tailored to each of the priority probl
 
 ### 3.3.1 Problem 01 — Fragmented Communication & Collaboration
 
+Problem context
+Nextstepbd depends heavily on chat-based communication for approvals, clarification, and day-to-day coordination. In practice, important decisions can remain buried in long message threads, which makes it difficult to trace what was agreed, who approved it, and which work item it relates to. This creates delays, repeated clarification, and weak evidence for delivery decisions.
+
 #### 3.3.1.1 Schedule Management
 Work Breakdown Structure (WBS)
 1. Fragmented Communication — Planning
@@ -69,10 +72,6 @@ gantt
   Documentation                 :a9, after a8, 5d
 ```
 
-Relationship between WBS and Gantt Chart
-
-The Gantt chart represents the sequence and timing of the WBS elements: analysis leads into root cause validation; validated findings proceed to stakeholder review and requirement refinement; refinement enables solution design and implementation planning; and these activities culminate in test, monitoring and documentation planning. The WBS decomposes work into manageable pieces and the Gantt chart places those pieces on a timeline with logical dependencies.
-
 #### 3.3.1.2 Stakeholder Engagement
 Following the problem presentation, a stakeholder validation workshop was facilitated with project managers, senior developers, and account leads. The workshop minutes recorded the following specific feedback and clarifications.
 
@@ -96,8 +95,6 @@ A high-level cost management approach for this problem focuses on resource ident
 
   Budget considerations include initial integration development and a small SaaS subscription for pilot monitoring dashboards if required. Cost monitoring will use standard cost performance indicators at planning stage (planned value for planning tasks) and a simple time-and-materials tracking for initial sprints. Cost control strategies include using open-source integration tools where possible, limiting pilot scope to two projects, and deferring expensive connectors until validated.
 
-It is noted that a detailed financial analysis and full economic evaluation will be produced in a subsequent chapter as required by the project governance.
-
 #### 3.3.1.4 Quality Management
 Quality objectives for addressing fragmented communication are: (1) capture 95% of formal approvals that relate to tracked requirements during the pilot; (2) reduce clarification cycles related to approvals by 50% in pilot projects; (3) ensure no unredacted PII is stored in the canonical database.
 
@@ -115,6 +112,9 @@ Quality assurance activities include review of parser rules, test suites for mes
 
 
 ### 3.3.2 Problem 02 — System Fragmentation & Lack of Integration
+
+Problem context
+Nextstepbd currently uses multiple tools and data stores that do not communicate consistently with one another. Information often has to be copied manually from one platform to another, which increases the chance of errors, duplicate records, and missed updates. The lack of integration also makes it harder for staff to get a single, reliable view of operational information.
 
 #### 3.3.2.1 Schedule Management
 Work Breakdown Structure (WBS)
@@ -168,10 +168,6 @@ gantt
   Documentation                    :b9, after b8, 5d
 ```
 
-Relationship between WBS and Gantt Chart
-
-The Gantt chart sequences the WBS activities: inventory and analysis inform root cause validation; stakeholder review and requirement refinement define the canonical model and connector priorities; solution design follows and yields the implementation planning activities which then enable testing and monitoring planning.
-
 #### 3.3.2.2 Stakeholder Engagement
 Stakeholders engaged for this topic included operations leads, finance representatives, and senior engineers. The stakeholder workshop produced the following substantive inputs.
 
@@ -210,6 +206,9 @@ Quality assurance: include contract tests, mock endpoint tests, and sample-based
 
 
 ### 3.3.3 Problem 03 — Data Management & Governance Deficiencies
+
+Problem context
+Several working records appear to be maintained in spreadsheets and informal files without a consistent data structure or ownership model. This makes it difficult to keep records accurate, track their origin, or decide which version should be treated as the current one. As the company grows, these weaknesses can affect reporting quality, billing accuracy, and general operational control.
 
 #### 3.3.3.1 Schedule Management
 Work Breakdown Structure (WBS)
@@ -263,10 +262,6 @@ gantt
   Documentation                   :c9, after c8, 5d
 ```
 
-Relationship between WBS and Gantt Chart
-
-The WBS breaks data governance tasks into logical planning steps; the Gantt chart places these steps into an ordered timeline so that canonical schema and migration planning follow governance consensus and validation.
-
 #### 3.3.3.2 Stakeholder Engagement
 Governance workshops involved finance, delivery leads and an operations representative. Stakeholders provided concrete feedback during validation sessions.
 
@@ -303,6 +298,9 @@ Quality assurance and control: implement migration dry-runs, contract tests for 
 
 
 ### 3.3.4 Problem 04 — Security & Access Control Risks
+
+Problem context
+Some operational information appears to move across tools with limited access control and limited audit visibility. This can lead to inconsistent handling of sensitive data, unclear responsibility for access decisions, and greater exposure if an account is shared or compromised. A more controlled approach is needed so that sensitive records can be handled with clearer rules and better traceability.
 
 #### 3.3.4.1 Schedule Management
 Work Breakdown Structure (WBS)
@@ -356,10 +354,6 @@ gantt
   Documentation                   :d9, after d8, 5d
 ```
 
-Relationship between WBS and Gantt Chart
-
-The WBS decomposes security planning into inventory, validation, stakeholder consultation and design tasks; the Gantt chart orders these tasks to ensure policy and technical design are validated before integration planning and test design.
-
 #### 3.3.4.2 Stakeholder Engagement
 Security planning workshops were held with legal counsel (internal or external), operations, and client-facing leads. The feedback from these sessions is recorded below.
 
@@ -394,6 +388,9 @@ Monitoring and control: continuous monitoring of audit logs and scheduled audits
 
 
 ### 3.3.5 Problem 05 — Scalability & Operational Bottlenecks
+
+Problem context
+As the company takes on more projects, a number of routine tasks still depend on a few key individuals and manual follow-up. This can slow onboarding, make task assignment inconsistent, and create bottlenecks when staff are unavailable. Without better process support, these issues can limit the organisation's ability to grow smoothly.
 
 #### 3.3.5.1 Schedule Management
 Work Breakdown Structure (WBS)
@@ -446,10 +443,6 @@ gantt
   Monitoring & Reporting Plan     :e8, after e7, 6d
   Documentation                   :e9, after e8, 5d
 ```
-
-Relationship between WBS and Gantt Chart
-
-The Gantt chart schedules the WBS items sequentially: bottleneck mapping and validation inform stakeholder review; refined requirements enable design of automation and onboarding; preparation of pilot metrics and monitoring follow design activities.
 
 #### 3.3.5.2 Stakeholder Engagement
 Stakeholder discussions involved HR, PMs and delivery leads. The meeting records contain actionable feedback that shapes the planning.
