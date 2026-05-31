@@ -371,8 +371,6 @@ The plan integrates lightweight SSO for internal systems and vault-based secrets
 #### 3.3.4.3 Cost Management
 Resource expectations include security architect advisory time (part-time), identity provider subscription (if a managed SSO is used), and engineering time to integrate SSO and secrets management. Cost monitoring will capture license and integration effort, and control will be exercised by phasing upgrades and evaluating trade-offs between managed and self-hosted solutions.
 
-A detailed economic evaluation for security investment will be performed later as part of overall project controls.
-
 #### 3.3.4.4 Quality Management
 Quality objectives: (1) implement audit logging for critical operations with 100% coverage of canonical record changes in pilot; (2) demonstrate controlled redaction/unredaction process; (3) implement RBAC for internal systems with role definitions and logging.
 
@@ -461,8 +459,6 @@ The plan incorporates a lightweight skills-tagging template, a mentoring roster 
 #### 3.3.5.3 Cost Management
 Anticipated resources include training content development (one instructional designer or contractor), part-time mentor allocations from senior staff, and engineering time to implement automation templates and reporting. Cost control measures include reusing existing documentation where possible and prioritising micro-training over full course development.
 
-Cost monitoring will track mentor hours, content creation costs and engineering time. Detailed financial analysis will be provided in subsequent chapters as required.
-
 #### 3.3.5.4 Quality Management
 Quality objectives: (1) reduce average onboarding time by measurable amount in pilot; (2) ensure automated assignment accuracy for routine tasks with an acceptable accuracy threshold (e.g., 90%); (3) maintain staff satisfaction as measured by post-pilot surveys.
 
@@ -476,5 +472,3 @@ Quality risks and mitigations: risk of misassignment and staff pushback; mitigat
 
 ## 3.4 Conclusion
 This chapter converts the findings from Chapters 1 and 2 into a practical planning framework. For each problem the project team has produced a Work Breakdown Structure (WBS), a planning-focused Gantt chart, a record of stakeholder feedback, and high-level cost and quality approaches. The focus is on preparing pilots and validation activities that reduce risk and keep disruption to a minimum.
-
-The next phase is to finalise detailed requirements and prepare procurement and technical specifications for the pilot work. Risk management and procurement will be covered in follow-up documents before implementation begins.
