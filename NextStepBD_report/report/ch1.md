@@ -27,7 +27,7 @@ Nextstepbd's operations can be summarised in repeating phases common to software
 The company operates in a delivery-centric context where accurate requirements capture, validated approvals, predictable delivery schedules, and reliable billing are essential for customer satisfaction and business viability.
 
 ## 1.4 Existing System and Tools Used
-Currently, Nextstepbd relies on a heterogeneous mix of informal and formal tools to support business processes. These include messaging platforms (primarily WhatsApp), Google Sheets for lightweight records and trackers, GitHub for source control and issue tracking, email for formal correspondence, and local shared documents. Deployment is performed using ad-hoc scripts specific to projects.
+Currently, Nextstepbd relies on a heterogeneous mix of informal and formal tools to support business processes. These include messaging platforms (primarily WhatsApp), Google Sheets for lightweight records and trackers, GitHub for source control and issue tracking, email for formal correspondence, and local shared documents. Deployment is performed using project-specific scripts.
 
 There is no single authoritative system acting as the company’s "system of record" for customers, projects, requirements and approvals; information exists in multiple places and often requires manual reconciliation.
 
@@ -62,7 +62,7 @@ The following sequence describes a typical workflow for handling a client reques
 2. The project manager (PM) or account lead records the request informally in chat and sometimes copies the details into a Google Sheet for tracking.
 3. The PM clarifies scope in chat and allocates work by creating tasks in GitHub or assigning developers directly.
 4. Developers implement the change and create pull requests; notifications are sent through chat channels.
-5. Quality assurance or the PM approves the change (often communicated via chat); deployment is executed with ad-hoc scripts.
+5. Quality assurance or the PM approves the change (often communicated via chat); deployment is executed with project-specific scripts.
 6. Financial and status updates are recorded manually in Sheets for billing and reporting.
 
 ### 1.5.1 Current Workflow (diagram)
@@ -82,7 +82,7 @@ flowchart TD
 
 ### Observations
 - Decisions and approvals are frequently recorded only in informal chat channels and not attached to formal project artifacts.
-- Multiple manual hand-offs and ad-hoc transfers of information increase the probability of errors and omissions.
+- Multiple manual hand-offs and unstructured transfers of information increase the probability of errors and omissions.
 - Financial and management reporting depend on manual reconciliation across disparate artefacts.
 
 ### 1.5.2 Process interpretation
@@ -115,7 +115,7 @@ The study identifies five priority problems that will be addressed in the remain
 - **Stakeholders:** Operations, finance, management.
 
 ### 1.7.3 Problem 3 — Data Management and Governance Deficiencies
-- **Description:** There is no single source of truth for core business entities; data duplication and ad-hoc updates compromise reporting and analysis.
+- **Description:** There is no single source of truth for core business entities; data duplication and unsystematic updates compromise reporting and analysis.
 - **Illustrative example:** Conflicting invoice records for the same client appear in different trackers, producing accounting discrepancies.
 - **Impact:** Financial risk and reduced managerial visibility.
 - **Stakeholders:** Finance, executive management.

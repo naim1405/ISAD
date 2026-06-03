@@ -172,7 +172,7 @@ gantt
 Stakeholders engaged for this topic included operations leads, finance representatives, and senior engineers. The stakeholder workshop produced the following substantive inputs.
 
 Validation and feedback
-Operations emphasised the prevalence of ad-hoc, manual reconciliation tasks consuming several person-days each month. Finance described specific reconciliation errors that had previously led to misinvoicing. Engineers identified several integration constraints, including lack of stable external IDs in some Sheets, inconsistent schema versions, and API rate limits for certain provider integrations. All parties prioritized connectors that directly reduce reconciliation labour (Sheets to canonical customer mapping and GitHub issue status to project trackers).
+Operations emphasised the prevalence of unsystematic, manual reconciliation tasks consuming several person-days each month. Finance described specific reconciliation errors that had previously led to misinvoicing. Engineers identified several integration constraints, including lack of stable external IDs in some Sheets, inconsistent schema versions, and API rate limits for certain provider integrations. All parties prioritized connectors that directly reduce reconciliation labour (Sheets to canonical customer mapping and GitHub issue status to project trackers).
 
 Concerns raised
 Engineering stakeholders warned about the time required to implement robust deduplication and mapping logic, particularly for legacy Sheets with inconsistent headings. Finance requested that the canonical model preserve provenance for all data to enable auditability. Operations requested that integrations be resilient and observable to avoid silent failures.

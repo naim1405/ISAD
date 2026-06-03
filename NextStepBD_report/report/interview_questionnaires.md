@@ -8,58 +8,103 @@ This file provides two sections: (1) Interview Questions — open, role-specific
 
 ### CEO
 1. Can you describe the company's current strategic priorities for the next 12–24 months?
+Answer: Over the next year or two we want to focus on growing revenue from our existing client base while improving how reliably we deliver projects. Practically, that means investing in processes and tools that reduce manual rework, improving predictability so clients receive work on time, and piloting automation to free up project managers. We're also exploring one or two productised services to create steadier recurring income.
 2. What are the most important operational risks you see today?
+Answer: The biggest risks I worry about are information getting lost in conversations, which then causes scope confusion or billing errors; having single people who are the only holders of certain knowledge; and security exposure from using informal channels for client details. Any of these can impact cashflow or client trust if left unaddressed.
 3. How do you measure service delivery success and client satisfaction?
+Answer: We look at on-time delivery and client satisfaction checks after engagements. We also track billing disputes and the time PMs spend resolving issues — reductions in those are strong indicators of improved delivery and clarity.
 4. Which processes or tools do you think limit the company's ability to scale?
+Answer: Relying on spreadsheets and chat for critical approvals limits our ability to scale. Without canonical identifiers for clients or contracts and without structured confirmations, we end up hiring more people just to maintain consistency.
 5. How are decisions about investment in tools, integrations, and people made?
+Answer: We balance ROI and time-to-value. For urgent pain points we favour low-friction SaaS pilots; for long-term capability or compliance needs we consider custom work. Larger expenditures require sponsor approval and a clear business case.
 6. How do you currently obtain evidence for client approvals, scope changes, or billing disputes?
+Answer: Most evidence today is patched together from chat threads, emails, occasional screenshots and entries in Sheets. That reactive approach is error-prone and inefficient when we need to prove what was agreed.
 7. What is your view on balancing quick fixes (SaaS) versus developing custom systems?
+Answer: I favour starting with SaaS when it buys speed and reduces immediate pain. If a pilot proves valuable or data ownership and auditability demand it, we will consider investing in custom systems.
 8. How do you prioritise competing requests from clients, delivery, and operations?
+Answer: We prioritise by client impact and revenue risk first, then by recurring manual effort that drives cost, and finally by ease and speed of implementation. This helps protect cashflow and reduce predictable overhead.
 9. Can you describe any recent incidents where fragmented communication or data issues caused a material problem?
+Answer: Recently a client’s informal approval was buried in a long chat and caused a scope mismatch that delayed invoicing. It required several people across teams to piece together the evidence, costing time and putting strain on the client relationship.
 10. What outcomes would make a project like this successful from your perspective?
+Answer: Success would look like a measurable drop in reconciliation and dispute resolution time, consistent traceable approval records in pilots, freed-up PM capacity, and positive feedback from pilot teams and at least one client participant.
 
 ### HR
 1. Describe the current onboarding process for new hires. What typically takes the longest?
+Answer: We provide welcome documents and pair new hires with a mentor. The longest parts are arranging tool access and transferring project-specific context; as a result it usually takes two to four weeks for a new hire to feel productive and confident in their role.
 2. How are role responsibilities and handoffs documented and enforced?
+Answer: Formal job descriptions exist, but day-to-day handoffs are usually recorded in managers' notes or informal documents. Enforcement is largely manager-driven rather than centrally enforced, which can create inconsistencies across teams.
 3. How is staff workload and capacity tracked today?
+Answer: We rely on spreadsheets and manager estimates to track workload and capacity. Because there is no unified live dashboard, capacity issues can go unnoticed until they become urgent and require reactive rebalancing.
 4. Are there recurring staffing or skills gaps that affect delivery?
+Answer: Yes — onboarding depth for junior staff and the absence of a maintained skills inventory mean we sometimes lack specialists when demand spikes. This leads to temporary reassignments and occasional delivery delays.
 5. What HR policies govern access to client data and communications?
+Answer: We rely on confidentiality clauses in contracts and standard account permissions for tools. We do not yet have automated company-wide controls for chat history or shared documents, which increases risk around sensitive client data.
 6. How do you collect feedback from staff about tools and processes?
+Answer: Feedback is gathered through occasional surveys and manager channels. Response rates and follow-through vary, so it is difficult to prioritise and act on staff suggestions consistently.
 7. What training or knowledge-transfer activities exist to reduce single-person dependencies?
+Answer: We use buddy systems and occasionally record knowledge-transfer sessions, but we lack a formal curriculum or regular cross-training schedule. That means some critical knowledge remains concentrated in individuals.
 8. How would improved process automation change HR workload or training needs?
+Answer: Improved automation would reduce repetitive administrative tasks and free mentors for coaching and skill development. However, it would require upfront training and change management to ensure consistent adoption and to update onboarding materials.
 9. How is employee performance measured relative to process adherence?
+Answer: Performance is measured primarily through delivery KPIs and manager assessments. Process adherence is noted informally rather than captured in quantitative metrics, so it doesn't directly influence performance reviews.
 10. What concerns would you have about introducing new tools that change daily workflows?
+Answer: My main concerns are adoption friction and a short-term spike in support requests as people learn new workflows. I would also want clear assurances that client privacy is preserved when integrating new tools.
 
 ### Engineering Manager
 1. How is the current development and deployment workflow organised?
+Answer: Our development workflow uses GitHub feature branches and CI via GitHub Actions, with separate staging and production environments. For major releases we keep manual deployment gates so engineers can perform final checks before going live.
 2. What are the main pain points in integrating third-party tools (Sheets, WhatsApp, GitHub)?
+Answer: The main pain points are inconsistent or missing identifiers in Sheets, changing schemas, WhatsApp API template and rate constraints, and limited webhook support from some providers. These issues make reliable synchronization and error handling more difficult.
 3. How do you manage schema or API changes for external services?
+Answer: We handle schema and API changes with informal contract tests and close coordination between teams. We don't yet have a formal schema registry or automated change-management process, which can slow down responses to breaking changes.
 4. Describe the current approach to logging, monitoring and incident response.
+Answer: We collect application logs but our monitoring is fragmented and alerting is inconsistent. Incident response is typically coordinated over chat and tends to be largely informal, which works for smaller incidents but would not scale well for complex outages.
 5. What testing strategies are in place for integration points (unit, integration, contract tests)?
+Answer: Unit testing is well established, but integration and contract tests are limited and usually added on a per-connector basis when time permits. For higher-confidence integrations we'd like more systematic integration testing.
 6. How do you prioritise engineering work against operational support tasks?
+Answer: Production incidents and urgent support requests take precedence. Integration and platform improvements are prioritized into sprints according to business value and team capacity.
 7. What infrastructure or platform constraints (hosting, secret management) should we consider?
+Answer: We have limited staging capacity, secrets are stored in a simple vault or environment variables, and budget constraints affect our ability to adopt managed services. These constraints influence choices around testing and platform selection.
 8. How would you evaluate an integration platform (self-hosted vs managed)?
+Answer: I would prefer a managed integration platform if it reduces maintenance workload and provides robust retry and observability features. However, it must support strong provenance and data control; otherwise we would consider a self-hosted approach.
 9. What are typical SLAs you can support for synchronization and reconciliation jobs?
+Answer: For pilot projects we can comfortably support hourly bulk synchronizations. Near-real-time syncing is feasible for lower volumes, but it requires careful monitoring and handling of rate limits and backpressure.
 10. What data privacy and redaction controls are feasible within current tooling?
+Answer: We can implement redaction at the ingestion layer and enforce role-based access in a canonical store. Third-party platforms may limit how strictly we can enforce redaction, so the architecture should be designed to mitigate those limitations.
 
 ### Employees (Delivery / PM / Ops)
 1. Describe a typical day and the tools you use most frequently.
+Answer: A typical day involves frequent context switching between WhatsApp or Slack for quick messages, Google Sheets for trackers, GitHub for code-related tasks, and our task tracker. We also spend time in short meetings and impromptu clarifications to keep projects moving.
 2. How do you capture decisions, approvals and changes to scope?
+Answer: Most decisions and approvals are captured in chat, and formal notes are only added to Sheets or task comments later when it's convenient or if we expect the decision will need to be referenced.
 3. Which tasks require repeated manual work or copy-paste between tools?
+Answer: Repetitive tasks include copying client messages into Sheets, updating ticket statuses across multiple tools, and reconciling billing notes—activities that are time-consuming and error-prone.
 4. What problems do you face when tracking task ownership or deadlines?
+Answer: Ownership becomes unclear when multiple people contribute to a thread, and fragmented context can lead to missed deadlines because not everyone has the same understanding of the task.
 5. How often do you need to ask colleagues to clarify prior messages or decisions?
+Answer: I typically need to ask colleagues for clarification several times per week, especially when approvals were informal or lacked important details.
 6. What would make your daily work noticeably easier?
+Answer: A lightweight confirmation flow for approvals, clearer request templates, and reducing overlapping tools would make daily work noticeably easier and reduce rework.
 7. Are there tools or features you currently avoid because they are too slow or unreliable?
+Answer: We tend to avoid heavy CRMs and any tools that force duplicate entry or manual syncing because they slow us down and add friction.
 8. Do you keep copies of client messages or important approvals outside of work tools? Why?
+Answer: Yes, sometimes I keep screenshots or local notes for quick reference or as billing evidence when I don't trust that the primary tools will preserve context in a retrievable way.
 9. How comfortable are you with small automation that reduces repetitive tasks?
+Answer: I'm generally positive about small automations that reduce repetitive tasks, provided they preserve context and include an easy manual override when needed.
 10. What would you want to see in training or documentation for new workflows?
+Answer: Short, practical how-to guides with examples and in-app tips would help adoption far more than long formal training modules.
 
 ### Customers
 1. How do you prefer to communicate with our team (chat, email, calls)?
+Answer: I prefer WhatsApp or chat for quick exchanges and email for formal confirmations. It's helpful when we agree on a single preferred channel for each engagement to avoid confusion.
 2. Do you feel confident that your approvals and confirmations are recorded accurately?
+Answer: Not always — I often assume approvals are tracked, but I would feel more confident with explicit confirmation steps that clearly record approvals for both parties.
 3. Have you experienced delays or repeated questions from the team due to unclear instructions?
+Answer: Occasionally — follow-up questions sometimes arise from unclear instructions, which can cause small delays in delivery.
 4. How important is it for you that approvals are traceable for billing or contract reasons?
+Answer: Very important — traceable approvals are essential for billing clarity and for resolving any contract disputes that may occur.
 5. What is the simplest way we could make communication easier for you?
+Answer: A short confirmation message or an in-app button that explicitly records approvals would be the simplest and most useful improvement to communication.
 
 ---
 
@@ -114,7 +159,7 @@ This section contains closed-question surveys for each stakeholder group. Open-e
 - Q11: I can access historical project notes easily.
 - Q12: I know who to contact when a data inconsistency is found.
 - Q13: I feel the current workflows support timely delivery.
-- Q14: I have adequate time for ad-hoc clarifications that arise during a project.
+- Q14: I have adequate time for impromptu clarifications that arise during a project.
 - Q15: I am willing to try small workflow changes if they reduce manual work.
 
 Frequency items (Never / Rarely / Sometimes / Often / Always)
