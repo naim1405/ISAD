@@ -180,6 +180,9 @@ This section contains closed-question surveys for each stakeholder group. Open-e
 - Q5: Data provenance and auditability are high priorities for the company.
 - Q6: Improvements in integrations would significantly reduce operational overhead.
 - Q7: I am willing to allocate budget to a validated pilot that reduces manual reconciliation.
+- Q8: Leadership has enough visibility into project risk and bottlenecks to intervene early.
+- Q9: The company can support a small pilot without disrupting core delivery commitments.
+- Q10: Standardising approvals and data capture is worth the effort even if it changes informal habits.
 
 ### HR Questionnaire (Likert 1–5)
 - Q1: New hires reach baseline productivity within two months.
@@ -192,6 +195,9 @@ This section contains closed-question surveys for each stakeholder group. Open-e
 - Q8: Access to client communications is managed appropriately for privacy.
 - Q9: We have an effective mentor program for junior staff.
 - Q10: Staff are generally open to small process changes that reduce repetitive work.
+- Q11: We have a documented cross-training plan for critical roles.
+- Q12: Staff can easily find up-to-date onboarding and process documents.
+- Q13: HR receives enough feedback to improve workflows before problems become serious.
 
 ### Engineering Manager Questionnaire (Likert 1–5)
 - Q1: Our engineering team can support a small integration pilot within existing capacity.
@@ -204,6 +210,9 @@ This section contains closed-question surveys for each stakeholder group. Open-e
 - Q8: Rate limits on external APIs are a significant constraint for planned integrations.
 - Q9: We have an established process for maintaining connector code and tests.
 - Q10: Observability tools are available to track end-to-end integration health.
+- Q11: Our team can add secure redaction and audit logging without major architectural changes.
+- Q12: We have a reliable process for validating external schema or API changes before release.
+- Q13: Managed connectors or iPaaS tools would reduce long-term maintenance risk for integrations.
 
 ### Employees Questionnaire (Likert 1–5)
 - Q1: I can find the latest version of a client instruction without asking a colleague.
