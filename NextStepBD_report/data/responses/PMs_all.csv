@@ -16,20 +16,3 @@ PM_1,PM,Q14,"I have adequate time for impromptu clarifications that arise during
 PM_1,PM,Q15,"I am willing to try small workflow changes if they reduce manual work.",4.0
 PM_1,PM,F1,"How often do you copy data between tools?",4.0
 PM_1,PM,F2,"How often do you need to escalate a clarification to a manager?",3.0
-PM_2,PM,Q1,"I can find the latest version of a client instruction without asking a colleague.",2.0
-PM_2,PM,Q2,"I often spend time reconciling information between tools.",4.0
-PM_2,PM,Q3,"Approvals given in chat are usually sufficient for me to proceed.",2.0
-PM_2,PM,Q4,"I regularly need to redact or remove sensitive client information before saving it.",3.0
-PM_2,PM,Q5,"Automated assignment would reduce my time on routine tasks.",4.0
-PM_2,PM,Q6,"I have clear guidance on which channel to use for formal approvals.",2.0
-PM_2,PM,Q7,"I am confident that the tools we use maintain accurate records for billing.",2.0
-PM_2,PM,Q8,"I sometimes save client messages locally for my reference.",3.0
-PM_2,PM,Q9,"I would use a one-click confirmation flow if it were available.",4.0
-PM_2,PM,Q10,"I receive too many notifications from tools.",4.0
-PM_2,PM,Q11,"I can access historical project notes easily.",2.0
-PM_2,PM,Q12,"I know who to contact when a data inconsistency is found.",3.0
-PM_2,PM,Q13,"I feel the current workflows support timely delivery.",3.0
-PM_2,PM,Q14,"I have adequate time for impromptu clarifications that arise during a project.",4.0
-PM_2,PM,Q15,"I am willing to try small workflow changes if they reduce manual work.",4.0
-PM_2,PM,F1,"How often do you copy data between tools?",4.0
-PM_2,PM,F2,"How often do you need to escalate a clarification to a manager?",3.0
