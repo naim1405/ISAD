@@ -174,78 +174,141 @@ This section contains closed-question surveys for each stakeholder group. Open-e
 
 ### CEO Questionnaire (Likert 1–5)
 - Q1: The company has clear, consistently-applied processes for capturing client approvals.
+	Aggregate response: 4.0/5
 - Q2: Current tools give leadership a reliable view of project status.
+	Aggregate response: 3.0/5
 - Q3: Operational errors (billing, scope drift) are primarily caused by process gaps rather than resourcing.
+	Aggregate response: 4.0/5
 - Q4: The company can afford short-term SaaS subscriptions to solve urgent problems.
+	Aggregate response: 3.0/5
 - Q5: Data provenance and auditability are high priorities for the company.
+	Aggregate response: 5.0/5
 - Q6: Improvements in integrations would significantly reduce operational overhead.
+	Aggregate response: 4.0/5
 - Q7: I am willing to allocate budget to a validated pilot that reduces manual reconciliation.
+	Aggregate response: 4.0/5
 - Q8: Leadership has enough visibility into project risk and bottlenecks to intervene early.
+	Aggregate response: 3.0/5
 - Q9: The company can support a small pilot without disrupting core delivery commitments.
+	Aggregate response: 3.0/5
 - Q10: Standardising approvals and data capture is worth the effort even if it changes informal habits.
+	Aggregate response: 5.0/5
 
 ### HR Questionnaire (Likert 1–5)
 - Q1: New hires reach baseline productivity within two months.
+	Aggregate response: 3.0/5
 - Q2: Role responsibilities are clearly documented and accessible.
+	Aggregate response: 3.0/5
 - Q3: We have reliable data on individual and team capacity.
+	Aggregate response: 2.0/5
 - Q4: There is sufficient internal training to support new tools.
+	Aggregate response: 2.0/5
 - Q5: Skills and competencies are regularly updated in a central place.
+	Aggregate response: 2.0/5
 - Q6: HR receives frequent requests to clarify task ownership.
+	Aggregate response: 4.0/5
 - Q7: Automation would free enough staff time to justify its cost.
+	Aggregate response: 4.0/5
 - Q8: Access to client communications is managed appropriately for privacy.
+	Aggregate response: 3.0/5
 - Q9: We have an effective mentor program for junior staff.
+	Aggregate response: 3.0/5
 - Q10: Staff are generally open to small process changes that reduce repetitive work.
+	Aggregate response: 4.0/5
 - Q11: We have a documented cross-training plan for critical roles.
+	Aggregate response: 2.0/5
 - Q12: Staff can easily find up-to-date onboarding and process documents.
+	Aggregate response: 2.0/5
 - Q13: HR receives enough feedback to improve workflows before problems become serious.
+	Aggregate response: 3.0/5
 
 ### Engineering Manager Questionnaire (Likert 1–5)
 - Q1: Our engineering team can support a small integration pilot within existing capacity.
+	Aggregate response: 3.0/5
 - Q2: We have sufficient testing environments for integration validation.
+	Aggregate response: 2.0/5
 - Q3: The current logging and monitoring practices are adequate for production use.
+	Aggregate response: 2.0/5
 - Q4: We can implement redaction and access controls without major platform changes.
+	Aggregate response: 4.0/5
 - Q5: Managed iPaaS solutions would reduce engineering effort compared to building connectors in-house.
+	Aggregate response: 3.0/5
 - Q6: We have clear procedures for rolling back migrations or syncs.
+	Aggregate response: 3.0/5
 - Q7: Integration work is easier when canonical IDs are available across systems.
+	Aggregate response: 4.0/5
 - Q8: Rate limits on external APIs are a significant constraint for planned integrations.
+	Aggregate response: 4.0/5
 - Q9: We have an established process for maintaining connector code and tests.
+	Aggregate response: 3.0/5
 - Q10: Observability tools are available to track end-to-end integration health.
+	Aggregate response: 3.0/5
 - Q11: Our team can add secure redaction and audit logging without major architectural changes.
+	Aggregate response: 4.0/5
 - Q12: We have a reliable process for validating external schema or API changes before release.
+	Aggregate response: 2.0/5
 - Q13: Managed connectors or iPaaS tools would reduce long-term maintenance risk for integrations.
+	Aggregate response: 3.0/5
 
 ### Employees Questionnaire (Likert 1–5)
 - Q1: I can find the latest version of a client instruction without asking a colleague.
+	Aggregate response: 2.0/5
 - Q2: I often spend time reconciling information between tools.
+	Aggregate response: 4.0/5
 - Q3: Approvals given in chat are usually sufficient for me to proceed.
+	Aggregate response: 2.0/5
 - Q4: I regularly need to redact or remove sensitive client information before saving it.
+	Aggregate response: 3.0/5
 - Q5: Automated assignment would reduce my time on routine tasks.
+	Aggregate response: 4.0/5
 - Q6: I have clear guidance on which channel to use for formal approvals.
+	Aggregate response: 2.0/5
 - Q7: I am confident that the tools we use maintain accurate records for billing.
+	Aggregate response: 2.0/5
 - Q8: I sometimes save client messages locally for my reference.
+	Aggregate response: 3.0/5
 - Q9: I would use a one-click confirmation flow if it were available.
+	Aggregate response: 4.0/5
 - Q10: I receive too many notifications from tools.
+	Aggregate response: 4.0/5
 - Q11: I can access historical project notes easily.
+	Aggregate response: 2.0/5
 - Q12: I know who to contact when a data inconsistency is found.
+	Aggregate response: 3.0/5
 - Q13: I feel the current workflows support timely delivery.
+	Aggregate response: 3.0/5
 - Q14: I have adequate time for impromptu clarifications that arise during a project.
+	Aggregate response: 4.0/5
 - Q15: I am willing to try small workflow changes if they reduce manual work.
+	Aggregate response: 4.0/5
 
 Frequency items (Never / Rarely / Sometimes / Often / Always)
 - F1: How often do you copy data between tools?
+	Aggregate response: 4.0/5
 - F2: How often do you need to escalate a clarification to a manager?
+	Aggregate response: 3.0/5
 
 ### Customer Questionnaire (Likert 1–5)
 - Q1: I am satisfied with the clarity of communication from Nextstepbd.
+	Aggregate response: 4.0/5
 - Q2: I can easily confirm scope changes when requested.
+	Aggregate response: 4.0/5
 - Q3: I have experienced billing issues caused by miscommunication.
+	Aggregate response: 2.0/5
 - Q4: I would prefer a formal confirmation button for approvals rather than informal messages.
+	Aggregate response: 4.0/5
 - Q5: I find it easy to retrieve past messages or confirmations when needed.
+	Aggregate response: 4.0/5
 - Q6: Response times to my queries are acceptable.
+	Aggregate response: 4.0/5
 - Q7: I trust the company to handle my data appropriately.
+	Aggregate response: 4.0/5
 - Q8: I would be willing to use a brief in-app confirmation step if it saves clarification time.
+	Aggregate response: 4.0/5
 - Q9: I have needed the company to produce evidence of approval for billing or audit purposes.
+	Aggregate response: 3.0/5
 - Q10: Overall, I am satisfied with project delivery.
+	Aggregate response: 4.0/5
 
 ---
 
