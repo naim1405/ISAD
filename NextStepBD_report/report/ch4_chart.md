@@ -1,3 +1,4 @@
+# Employees
 
 # Figure 4.1: Difficulty Finding and Accessing Project Information
 
@@ -227,3 +228,259 @@ It clearly shows:
 
 ---
 
+
+
+# CEO
+---
+
+# Figure 4.8: CEO Questionnaire Results
+
+### Chart Type
+
+Horizontal Bar Chart
+
+### Data
+
+| Question                      | Score |
+| ----------------------------- | ----- |
+| Clear approval processes      | 4     |
+| Reliable project visibility   | 3     |
+| Errors caused by process gaps | 4     |
+| SaaS affordability            | 3     |
+| Data provenance priority      | 5     |
+| Integration benefits          | 4     |
+| Budget for pilot              | 4     |
+| Visibility into risks         | 3     |
+| Support pilot project         | 3     |
+| Standardisation worth effort  | 5     |
+
+### Caption
+
+> CEO perceptions regarding organizational processes, governance, and improvement initiatives.
+
+### Key Findings
+
+* Strong support for standardization.
+* Data governance is considered critical.
+* Moderate confidence in current visibility.
+* Strong support for integration initiatives.
+
+---
+# HR
+
+# Figure 4.9: HR Questionnaire Results
+
+### Chart Type
+
+Horizontal Bar Chart
+
+### Data
+
+| Question                         | Score |
+| -------------------------------- | ----- |
+| New hire productivity            | 3     |
+| Documented responsibilities      | 3     |
+| Capacity visibility              | 2     |
+| Training support                 | 2     |
+| Skills tracking                  | 2     |
+| Ownership clarification requests | 4     |
+| Automation value                 | 4     |
+| Privacy management               | 3     |
+| Mentor program                   | 3     |
+| Staff openness to change         | 4     |
+| Cross-training plan              | 2     |
+| Access to onboarding docs        | 2     |
+| Workflow feedback availability   | 3     |
+
+### Caption
+
+> HR assessment of onboarding, workforce management, and organizational readiness.
+
+### Key Findings
+
+* Weak knowledge management.
+* Weak cross-training.
+* Staff generally receptive to change.
+* Frequent ownership confusion.
+
+---
+# PM
+# Figure 4.10: Project Manager Questionnaire Results
+
+### Chart Type
+
+Horizontal Bar Chart
+
+### Data
+
+| Question                        | Score |
+| ------------------------------- | ----- |
+| Find latest instructions        | 2     |
+| Reconcile between tools         | 4     |
+| Chat approvals sufficient       | 2     |
+| Sensitive information handling  | 3     |
+| Automated assignment usefulness | 4     |
+| Approval channel clarity        | 2     |
+| Billing confidence              | 2     |
+| Save messages locally           | 3     |
+| One-click confirmation          | 4     |
+| Too many notifications          | 4     |
+| Access historical notes         | 2     |
+| Data inconsistency contacts     | 3     |
+| Workflow supports delivery      | 3     |
+| Time for clarifications         | 4     |
+| Willingness to adopt changes    | 4     |
+| Copy data between tools         | 4     |
+| Escalation frequency            | 3     |
+
+### Caption
+
+> Project manager assessment of daily operational challenges.
+
+### Key Findings
+
+* Strong evidence of tool fragmentation.
+* Low confidence in documentation access.
+* Strong support for workflow automation.
+
+---
+
+# Figure 4.11: Stakeholder Comparison of Key Issues
+
+This is the chart I would definitely add.
+
+### Chart Type
+
+Grouped Bar Chart
+
+Use a few representative questions that map to your identified problems.
+
+### Data
+
+| Issue                                               | CEO | HR | PM |
+| --------------------------------------------------- | --- | -- | -- |
+| Need for Integration (CEO Q6 / PM Q2 / HR Q7)       | 4   | 4  | 4  |
+| Documentation & Knowledge Access (HR Q12 / PM Q1)   | -   | 2  | 2  |
+| Process Standardization (CEO Q10 / HR Q10 / PM Q15) | 5   | 4  | 4  |
+| Visibility & Governance (CEO Q5 / HR Q3 / PM Q7)    | 5   | 2  | 2  |
+
+### Caption
+
+> Comparison of stakeholder perspectives regarding key organizational issues.
+
+### Analysis
+
+This chart is valuable because it demonstrates:
+
+* Different stakeholders perceive the same problems.
+* Leadership prioritizes governance.
+* HR emphasizes workforce readiness.
+* PMs experience operational inefficiencies directly.
+* All stakeholders support process improvement.
+
+---
+
+# Recommended Figure Sequence
+
+For Chapter 4.3.1:
+
+| Figure      | Title                                                |
+| ----------- | ---------------------------------------------------- |
+| Figure 4.1  | Difficulty Finding and Accessing Project Information |
+| Figure 4.2  | Impact of System Fragmentation                       |
+| Figure 4.3  | Approval and Communication Challenges                |
+| Figure 4.4  | Data Governance and Record Accuracy                  |
+| Figure 4.5  | Security and Sensitive Information Handling          |
+| Figure 4.6  | Readiness for Process Automation                     |
+| Figure 4.7  | Average Score by Problem Area                        |
+| Figure 4.8  | CEO Questionnaire Results                            |
+| Figure 4.9  | HR Questionnaire Results                             |
+| Figure 4.10 | Project Manager Questionnaire Results                |
+| Figure 4.11 | Stakeholder Comparison of Key Issues                 |
+
+
+
+# Figure 4.12: Customer Questionnaire Results
+# Customer
+
+### Chart Type
+
+Horizontal Bar Chart
+
+(Use the same style as CEO, HR, and PM charts for consistency.)
+
+### Data
+
+| Question                                 | Score |
+| ---------------------------------------- | ----- |
+| Communication Clarity                    | 4     |
+| Scope Change Confirmation                | 4     |
+| Billing Issues from Miscommunication     | 2     |
+| Preference for Formal Approval Process   | 4     |
+| Access to Historical Confirmations       | 4     |
+| Response Time Satisfaction               | 4     |
+| Trust in Data Handling                   | 4     |
+| Willingness to Use Confirmation Workflow | 4     |
+| Need for Approval Evidence               | 3     |
+| Overall Delivery Satisfaction            | 4     |
+
+### Caption
+
+> Customer assessment of communication quality, approval processes, data handling, and project delivery.
+
+---
+
+# Analysis to Write Under Figure 4.12
+
+You can write something like:
+
+> The customer questionnaire indicates generally positive satisfaction with project delivery, communication quality, response times, and data handling practices. However, customers expressed a preference for more formal approval mechanisms and indicated occasional needs for documented approval evidence during billing and audit activities. These findings support the proposed introduction of structured approval workflows and centralized record management while suggesting that operational issues identified internally have not yet significantly affected overall customer satisfaction.
+
+---
+
+# Optional Final Figure (Recommended)
+
+Since you now have:
+
+* Employees
+* CEO
+* HR
+* PM
+* Customer
+
+I would add **one final summary figure**.
+
+## Figure 4.13: Stakeholder Support for Process Standardization and Automation
+
+### Chart Type
+
+Grouped Bar Chart
+
+### Data
+
+| Stakeholder          | Score |
+| -------------------- | ----- |
+| CEO                  | 5     |
+| HR                   | 4     |
+| PM                   | 4     |
+| Employees (Q15 Mean) | 4.73  |
+| Customer             | 4     |
+
+### Caption
+
+> Comparison of stakeholder support for process standardization and workflow improvements.
+
+### Why this chart is valuable
+
+This is the perfect transition into Chapter 5 because it demonstrates:
+
+* Leadership supports change.
+* Employees support change.
+* Management supports change.
+* Customers support change.
+
+In other words:
+
+> "The proposed information system improvements are supported by all major stakeholder groups."
+
+That is exactly the conclusion you want readers to reach before moving into system design.
