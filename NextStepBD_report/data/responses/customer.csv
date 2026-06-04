@@ -1,0 +1,11 @@
+respondent_id,role,question_id,question,answer
+CUST_01,Customer,Q1,"I am satisfied with the clarity of communication from Nextstepbd.",4
+CUST_01,Customer,Q2,"I can easily confirm scope changes when requested.",4
+CUST_01,Customer,Q3,"I have experienced billing issues caused by miscommunication.",2
+CUST_01,Customer,Q4,"I would prefer a formal confirmation button for approvals rather than informal messages.",4
+CUST_01,Customer,Q5,"I find it easy to retrieve past messages or confirmations when needed.",4
+CUST_01,Customer,Q6,"Response times to my queries are acceptable.",4
+CUST_01,Customer,Q7,"I trust the company to handle my data appropriately.",4
+CUST_01,Customer,Q8,"I would be willing to use a brief in-app confirmation step if it saves clarification time.",4
+CUST_01,Customer,Q9,"I have needed the company to produce evidence of approval for billing or audit purposes.",3
+CUST_01,Customer,Q10,"Overall, I am satisfied with project delivery.",4
