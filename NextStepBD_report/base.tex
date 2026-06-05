@@ -1,0 +1,391 @@
+\documentclass[12pt,a4paper]{report}
+
+% ------------------------------------------------
+% PACKAGES
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[table]{xcolor}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{microtype}
+\usepackage{pgf}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{main}
+\pgfsetlayers{background,main}
+
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, fit, backgrounds}
+\pgfplotsset{compat=1.18}
+
+% ------------------------------------------------
+% PAGE SETUP
+% ------------------------------------------------
+\geometry{margin=1in}
+\setlength{\headheight}{14.5pt} % Fixed fancyhdr warning
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% ------------------------------------------------
+% COLOR THEME
+% ------------------------------------------------
+\definecolor{primary}{HTML}{4B2E83}
+\definecolor{secondary}{HTML}{EDE7F6}
+\definecolor{accent}{HTML}{00897B}
+\definecolor{softteal}{HTML}{E0F2F1}
+\definecolor{softcream}{HTML}{FFF8E1}
+\definecolor{softrose}{HTML}{FCE4EC}
+\definecolor{softgray}{HTML}{F5F5F5}
+\definecolor{darkgray}{HTML}{333333}
+\definecolor{nextstepblue}{HTML}{005BB5} % Vibrant Corporate Blue for Cover
+
+% ------------------------------------------------
+% HYPERLINK SETUP
+% Contents, List of Figures, and List of Tables are black
+% ------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=black,
+    citecolor=black
+}
+
+% ------------------------------------------------
+% HEADER AND FOOTER
+% ------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Information System Analysis Report}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------------------------------
+% TITLE FORMATTING
+% ------------------------------------------------
+\titleformat{\chapter}
+  {\normalfont\huge\bfseries\color{primary}}
+  {Chapter \thechapter}
+  {20pt}
+  {}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primary}}
+  {\thesection}
+  {1em}
+  {}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{accent}}
+  {\thesubsection}
+  {1em}
+  {}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{primary}}
+  {}
+  {0pt}
+  {}
+
+% ------------------------------------------------
+% CUSTOM BOXES
+% ------------------------------------------------
+\newtcolorbox{highlightBox}{
+    enhanced,
+    colback=secondary,
+    colframe=primary,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    borderline west={4pt}{0pt}{primary}
+}
+
+\newtcolorbox{problemBox}{
+    enhanced,
+    colback=softrose,
+    colframe=primary!80!black,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    fonttitle=\bfseries,
+    title=\textbf{Problem Statement},
+    borderline west={4pt}{0pt}{primary!80!black}
+}
+
+\newtcolorbox{summaryBox}{
+    enhanced,
+    colback=softteal,
+    colframe=accent,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    fonttitle=\bfseries,
+    title=\textbf{Feasibility Summary},
+    borderline west={4pt}{0pt}{accent}
+}
+
+\newtcolorbox{recommendBox}{
+    enhanced,
+    colback=softcream,
+    colframe=orange!80!black,
+    boxrule=1.3pt,
+    arc=1mm,
+    left=11pt,
+    right=11pt,
+    top=12pt,
+    bottom=10pt,
+    fonttitle=\bfseries\large,
+    title=\textbf{\ding{72} Recommended Action},
+    attach boxed title to top left={xshift=5mm,yshift=-2mm},
+    boxed title style={
+        colback=orange!80!black,
+        colframe=orange!80!black,
+        coltext=white,
+        arc=1mm
+    },
+    borderline west={5pt}{0pt}{orange!80!black}
+}
+
+\newtcolorbox{noteBox}{
+    enhanced,
+    colback=softgray,
+    colframe=primary,
+    boxrule=1pt,
+    arc=1mm,
+    left=9pt,
+    right=9pt,
+    top=9pt,
+    bottom=9pt,
+    borderline west={4pt}{0pt}{primary}
+}
+
+% ------------------------------------------------
+% DOCUMENT START
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% TITLE PAGE
+% ------------------------------------------------
+\begin{titlepage}
+\newgeometry{top=0.45in,bottom=0.45in,left=0.75in,right=0.75in}
+\thispagestyle{empty}
+
+% Cover background accents
+\begin{tikzpicture}[remember picture, overlay]
+    \fill[white] (current page.south west) rectangle (current page.north east);
+
+    % Soft lower panel
+    \fill[nextstepblue!7]
+        (current page.south west) rectangle ([yshift=5.35cm]current page.south east);
+
+    % Decorative soft circles
+    \fill[primary!7]
+        ([xshift=-1.35cm,yshift=-0.75cm]current page.north east) circle (1.7cm);
+    \fill[accent!8]
+        ([xshift=1.25cm,yshift=0.85cm]current page.south west) circle (2.0cm);
+
+    % Bottom strip
+    \fill[nextstepblue!28]
+        (current page.south west) rectangle ([yshift=0.25cm]current page.south east);
+\end{tikzpicture}
+
+\centering
+\vspace*{0.05cm}
+
+% University Logo
+\includegraphics[width=0.105\textwidth]{ruet_logo.png}\\[0.18cm]
+
+% University Name
+{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{RAJSHAHI UNIVERSITY OF}}\\[-0.04cm]
+{\fontsize{18}{20}\selectfont\bfseries\textcolor{nextstepblue}{ENGINEERING \& TECHNOLOGY}}\\[0.12cm]
+
+{\normalsize\textcolor{darkgray!75}{Department of Computer Science \& Engineering}}\\[0.45cm]
+
+% Main Report Title
+{\fontsize{19}{22}\selectfont\bfseries\textcolor{darkgray}{Information System Analysis and Design}}\\[0.08cm]
+{\fontsize{14}{16}\selectfont\bfseries\textcolor{darkgray}{Report on}}\\[0.20cm]
+
+% Highlighted company name
+\begin{tcolorbox}[
+    enhanced,
+    width=0.70\textwidth,
+    colback=white,
+    colframe=nextstepblue,
+    boxrule=1.35pt,
+    arc=4mm,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt,
+    drop shadow=black!16,
+    borderline north={1.6pt}{0pt}{accent},
+    borderline south={1.6pt}{0pt}{primary},
+    borderline west={4pt}{0pt}{accent},
+    borderline east={4pt}{0pt}{primary}
+]
+\centering
+{\fontsize{30}{32}\selectfont\bfseries
+\textcolor{primary}{Next}
+\textcolor{accent}{Step}
+\textcolor{nextstepblue}{BD}
+}\\[-0.03cm]
+{\color{accent}\rule{0.38\textwidth}{1pt}}
+\end{tcolorbox}
+
+\vspace{0.22cm}
+
+% Course Info
+\begin{tcolorbox}[
+    enhanced,
+    width=0.76\textwidth,
+    colback=nextstepblue!5,
+    colframe=nextstepblue!60,
+    boxrule=0.8pt,
+    arc=3mm,
+    left=7pt,
+    right=7pt,
+    top=5pt,
+    bottom=5pt
+]
+\centering
+{\small \textbf{Course Title:} Information System Analysis and Design Sessional}\\[0.04cm]
+{\small \textbf{Course Code:} CSE 4110}
+\end{tcolorbox}
+
+\vspace{0.22cm}
+
+{\color{nextstepblue}\rule{0.54\textwidth}{1.6pt}}\\[0.25cm]
+
+% Submitted Information with center divider line
+\begin{tcolorbox}[
+    enhanced,
+    width=0.88\textwidth,
+    colback=white!94,
+    colframe=nextstepblue!60,
+    boxrule=1pt,
+    arc=5mm,
+    left=11pt,
+    right=11pt,
+    top=10pt,
+    bottom=10pt,
+    drop shadow=black!12
+]
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X !{\color{nextstepblue!70}\vrule width 1.1pt} >{\raggedright\arraybackslash}X@{}}
+
+{\large\bfseries\textcolor{nextstepblue}{Submitted By:}} 
+&
+{\large\bfseries\textcolor{nextstepblue}{Submitted To:}} 
+\\[0.14cm]
+
+Mst. Mim Afsana Mim \hfill \textit{2103043}
+&
+{\bfseries\textcolor{primary}{Dr. Md. Rabiul Islam}}
+\\
+
+Md. Naimuzzaman \hfill \textit{2103044}
+&
+Professor
+\\
+
+Arpita Karmokar \hfill \textit{2103045}
+&
+Department of Computer Science
+\\
+
+Md. Shehab Sarker \hfill \textit{2103046}
+&
+and Engineering
+\\
+
+&
+Rajshahi University of Engineering \& Technology
+\\
+
+\end{tabularx}
+\end{tcolorbox}
+
+\vfill
+
+{\small \textbf{Date of Submission:} \today}
+
+\end{titlepage}
+
+\restoregeometry
+\clearpage
+
+% ------------------------------------------------
+% TABLE OF CONTENTS / LISTS
+% ------------------------------------------------
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+% ================================================================
+% START OF CHAPTER 1 — Recognition of Need
+% ================================================================
+
+
+% ================================================================
+% END OF CHAPTER 1
+% ================================================================
+
+
+% ================================================================
+% START OF CHAPTER 2 — Initial Feasibility Study
+% ================================================================
+
+
+% ================================================================
+% END OF CHAPTER 2
+% ================================================================
+
+
+% ================================================================
+% START OF CHAPTER 3 — Project Planning
+% ================================================================
+
+
+% ================================================================
+% END OF CHAPTER 3
+% ================================================================
+
+
+% ================================================================
+% START OF CHAPTER 4 — Analysis
+% ================================================================
+
+
+% ================================================================
+% END OF CHAPTER 4
+% ================================================================
+
+\end{document}
