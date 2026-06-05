@@ -99,9 +99,13 @@
 
 \titleformat{\subsubsection}
   {\normalfont\normalsize\bfseries\color{primary}}
+  {\thesubsubsection}
+  {1em}
   {}
-  {0pt}
-  {}
+
+% Number subsubsections (4.2.1.1) and show them in the ToC
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 % ------------------------------------------------
 % CUSTOM BOXES
@@ -364,6 +368,19 @@ NextStepBD provides both product-based and service-based solutions. Its product 
 \end{highlightBox}
 
 The company currently relies on a combination of custom-built tools and commonly used platforms such as Microsoft Excel, Google Sheets, GitHub, WhatsApp, Slack, and Email. These tools are useful individually, but they are not connected through a single system. As a result, managers and employees often need to coordinate manually, transfer information between platforms, and search through different communication channels to find project-related information.
+
+\section{Scope and Objectives of the Study}
+This study is concerned with analysing NextStepBD's \emph{internal} operational information environment --- the way the company captures requirements, assigns and tracks work, manages data, communicates with clients, and reports on delivery. It deliberately excludes the company's externally sold products (such as its Voice AI and omnichannel platforms), which are mature and out of scope for this initiative.
+
+\textbf{Objectives.} The specific objectives of this analysis are to:
+\begin{enumerate}[leftmargin=2em]
+    \item document the current organisational context, tools, and workflows of NextStepBD;
+    \item identify and prioritise the core operational problems that constrain quality, traceability, and scalable growth;
+    \item establish a clear, evidence-based justification (the ``recognition of need'') for an improved information system; and
+    \item provide a stable analytical foundation on which the feasibility study, project plan, and system design of the subsequent chapters can build.
+\end{enumerate}
+
+\textbf{Scope boundaries.} The study covers requirement capture, task tracking, internal and client communication, data management, basic security/access control, and management reporting. It does not attempt to redesign the company's commercial product line, its financial accounting system, or its human-resources policies beyond where they intersect with operational workflow. The intended outcome is a proposal that improves internal operations while preserving the agility and familiar communication habits the team values.
 
 \section{Company Overview}
 NextStepBD is a Bangladesh-based technology firm specialising in bespoke software development, automation and IT consultancy. The organisation employs approximately fifty staff across development, design and project management roles and provides services to both domestic and international clients in sectors such as retail, healthcare, logistics and customer service.
@@ -723,60 +740,99 @@ A modern information system should not only store data but also connect people, 
 \section{Problem Identification}
 Through observation of the company's operations, informal interviews with team members, and an analysis of the current workflow, five priority problems have been identified that will be addressed in the remainder of this report. Each problem is presented with a concise description, an illustrative example and the principal stakeholders affected.
 
+Before detailing the problems, it is useful to identify the stakeholders whose work is shaped by the current system. The table below summarises each stakeholder group, their primary concern, and the way the existing environment falls short for them. These groups are revisited throughout the report --- in the feasibility analysis, the planning chapter, and the interviews and questionnaires of Chapter~4.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\small
+\begin{tabularx}{\textwidth}{|p{3cm}|X|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Stakeholder} & \textbf{Primary Concern} & \textbf{Current Pain Point} \\
+\hline
+Management (CEO) & Predictable delivery, profitability, and visibility into risk. & Limited real-time visibility; decisions rely on manually assembled, sometimes conflicting reports. \\
+\hline
+Project Managers & Coordinating clients and developers; protecting scope and billing. & Act as a single communication bridge and become a bottleneck; spend heavily on manual reconciliation. \\
+\hline
+Developers & Clear tasks, stable requirements, and minimal context switching. & Ambiguous, chat-based requirements and frequent tool switching reduce focus and cause rework. \\
+\hline
+QA / Team Leads & Releasing stable, reviewed code. & Ad-hoc testing and manual, chat-approved deployments increase the risk of defects reaching clients. \\
+\hline
+Finance / Operations & Accurate billing and reliable records. & Invoices depend on manual cross-referencing of disparate sheets, producing discrepancies. \\
+\hline
+HR & Smooth onboarding and reduced key-person dependency. & No skills inventory or documented handoffs; onboarding is slow and knowledge is concentrated in individuals. \\
+\hline
+Clients & Clear communication and traceable approvals. & Approvals are informal and hard to retrieve, creating uncertainty during billing or scope disputes. \\
+\hline
+\end{tabularx}
+\caption{Stakeholder Analysis --- Concerns and Current Pain Points}
+\end{table}
+
 \subsection{Problem 1 --- Fragmented Communication and Collaboration}
 \begin{problemBox}
 Project decisions, approvals and important clarifications are routinely exchanged via informal messaging channels (e.g., WhatsApp) and are not consistently captured in structured project artefacts.
 \end{problemBox}
 
-\textbf{Illustrative example:} A client posts a one-line approval in a WhatsApp group; developers proceed without the PM adding the approval to the tracked requirement, later resulting in scope disagreement.
+The root of this problem is that NextStepBD treats conversational tools as both the communication channel \emph{and} the system of record. A message in a WhatsApp thread may contain a binding approval, a scope change, or a clarification that materially affects delivery, yet it is never promoted into a tracked, attributable artefact. Because these channels are unstructured and ephemeral, the same decision is interpreted differently by different team members, and there is no reliable way to reconstruct \emph{who} agreed to \emph{what}, and \emph{when}. As project volume grows, the cognitive burden of monitoring multiple chat threads compounds, and important items are silently lost between conversations.
 
-\textbf{Impact:} Rework, client dissatisfaction and potential disputes.
+\textbf{Illustrative example:} A client posts a one-line approval in a WhatsApp group; developers proceed without the PM adding the approval to the tracked requirement, later resulting in scope disagreement when the client claims a different feature was agreed.
 
-\textbf{Stakeholders:} Project management, development teams, QA, clients.
+\textbf{Impact:} Rework, missed approvals, client dissatisfaction, weakened billing evidence, and potential contractual disputes.
+
+\textbf{Stakeholders:} Project management, development teams, QA, and clients.
 
 \subsection{Problem 2 --- System Fragmentation and Lack of Integration}
 \begin{problemBox}
 Multiple independent tools are used without an integration strategy, requiring manual cross-referencing and reconciliation.
 \end{problemBox}
 
-\textbf{Illustrative example:} Customer and billing status are recorded in separate Google Sheets maintained by different teams, leading to inconsistent invoicing.
+Each tool in the current environment was adopted to solve a single local need --- GitHub for code, Sheets for tracking, WhatsApp for talking, email for formal correspondence --- but none of them share data. The result is a set of disconnected ``islands of information'' that must be bridged manually by staff acting as human integrations. Every time a fact changes in one place (a task status, a client contact, a billing figure), someone must remember to update it everywhere else, and in practice this rarely happens consistently. This absence of an integration layer is the structural cause from which several of the other problems descend: without connected systems there can be no single source of truth, no automated traceability, and no reliable cross-tool reporting.
 
-\textbf{Impact:} Administrative overhead and impaired decision quality.
+\textbf{Illustrative example:} Customer and billing status are recorded in separate Google Sheets maintained by different teams, so an invoice is generated against an out-of-date feature list, leading to inconsistent invoicing and a reconciliation cycle.
 
-\textbf{Stakeholders:} Operations, finance, management.
+\textbf{Impact:} High administrative overhead, duplicated effort, data drift between tools, and impaired decision quality from conflicting records.
+
+\textbf{Stakeholders:} Operations, finance, project management, and executive management.
 
 \subsection{Problem 3 --- Data Management and Governance Deficiencies}
 \begin{problemBox}
 There is no single source of truth for core business entities; data duplication and unsystematic updates compromise reporting and analysis.
 \end{problemBox}
 
-\textbf{Illustrative example:} Conflicting invoice records for the same client appear in different trackers, producing accounting discrepancies.
+Core business entities --- customers, projects, requirements, and invoices --- have no canonical home and no defined owner. The same entity is re-created in several spreadsheets, each maintained by a different person with a different naming convention, and there is no validation, versioning, or audit trail to indicate which copy is authoritative. Without governance rules (mandatory fields, unique identifiers, retention policy, and clear stewardship), the organisation cannot trust its own data: reports must be assembled by hand from inconsistent sources, and every figure is open to dispute. This deficiency directly undermines billing accuracy and the leadership's ability to make data-driven decisions.
 
-\textbf{Impact:} Financial risk and reduced managerial visibility.
+\textbf{Illustrative example:} Conflicting invoice records for the same client appear in two different trackers, producing an accounting discrepancy that takes several staff-hours to investigate and resolve.
 
-\textbf{Stakeholders:} Finance, executive management.
+\textbf{Impact:} Financial risk, billing errors, audit difficulty, and reduced managerial visibility into the true state of the business.
+
+\textbf{Stakeholders:} Finance, executive management, and project management.
 
 \subsection{Problem 4 --- Security and Access Control Risks}
 \begin{problemBox}
 Sensitive information is exchanged through informal channels without consistent access controls or audit trails.
 \end{problemBox}
 
-\textbf{Illustrative example:} Credentials or personally identifiable information (PII) appear in chat transcripts with no record of access or retention.
+Because there is no central system, sensitive material --- client credentials, personally identifiable information (PII), and contractual details --- circulates through the same informal channels used for casual conversation. Access is governed by whoever happens to be in a chat group rather than by role, there is no logging of who viewed or changed sensitive data, and no defined retention or redaction policy. This creates exposure on two fronts: an external breach risk if a personal device or account is compromised, and an internal governance risk because the company cannot demonstrate, for audit or compliance purposes, who had access to what. As the client base spans multiple jurisdictions, this gap also carries contractual and regulatory weight.
 
-\textbf{Impact:} Risk of data breaches, regulatory non-compliance and reputational harm.
+\textbf{Illustrative example:} Credentials or PII are pasted into a WhatsApp transcript that persists indefinitely on multiple personal phones, with no record of access, no expiry, and no way to revoke it.
 
-\textbf{Stakeholders:} Clients, legal, IT/security.
+\textbf{Impact:} Risk of data breaches, regulatory non-compliance, loss of client trust, and reputational harm.
+
+\textbf{Stakeholders:} Clients, legal/compliance, IT/security, and management.
 
 \subsection{Problem 5 --- Scalability and Operational Bottlenecks}
 \begin{problemBox}
 Manual task assignment and single-point decision-making create performance constraints and dependency on individual staff.
 \end{problemBox}
 
-\textbf{Illustrative example:} When the PM is unavailable, routine approvals and task routing stall, delaying development activities.
+The current way of working scales linearly with headcount rather than with capability: every additional client or project adds proportional manual coordination, and that coordination is concentrated in a few key individuals --- chiefly the project managers --- who act as the routing layer for almost all work. This produces classic single-point-of-failure behaviour. When a key person is overloaded, on leave, or leaves the company, their undocumented knowledge and in-flight decisions leave with them, and the pipeline stalls. The lack of templates, role-based assignment, and onboarding structure means new hires take weeks to become productive, further limiting the organisation's ability to grow without a disproportionate rise in overhead.
 
-\textbf{Impact:} Reduced throughput, increased lead times and staff burnout.
+\textbf{Illustrative example:} When the PM is unavailable for a day, routine approvals and task routing stall across several projects because no one else has the context or authority to proceed.
 
-\textbf{Stakeholders:} Human resources, team leads, project management.
+\textbf{Impact:} Reduced throughput, longer lead times, key-person risk, slow onboarding, and staff burnout.
+
+\textbf{Stakeholders:} Human resources, team leads, project management, and developers.
 
 \section{Problem Severity Overview}
 The following graph shows the estimated severity level of the identified problems based on their impact on operations, stability, and scalability. The scores reflect both the frequency with which each problem disrupts delivery and the difficulty of recovering from its consequences.
@@ -1259,6 +1315,81 @@ Phase 4 & Add WhatsApp capture, refine reconciliation, reporting and optimisatio
 \end{tabularx}
 \caption{Detailed Implementation Roadmap}
 \end{table}
+
+\subsection{Roadmap Diagram}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, color=primary, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    bar/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.55cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.55cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.55cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.55cm},
+]
+
+% ---- Timeline geometry ----
+% X axis: 1 unit = 1 month. Project runs Jun 2026 (x=0) .. Mar 2027 (x=9 end).
+\def\labelx{-0.2}
+
+% ---- Grid + month axis ----
+\foreach \m/\lbl in {0/Jun,1/Jul,2/Aug,3/Sep,4/Oct,5/Nov,6/Dec,7/Jan,8/Feb,9/Mar} {
+    \draw[gray!25] (\m,0.6) -- (\m,-7.6);
+    \node[font=\sffamily\scriptsize\bfseries, color=darkgray, anchor=south] at (\m+0.5,0.65) {\lbl};
+}
+\draw[gray!25] (10,0.6) -- (10,-7.6);
+\node[font=\sffamily\scriptsize, color=darkgray, anchor=south west] at (0,1.15) {2026};
+\node[font=\sffamily\scriptsize, color=darkgray, anchor=south west] at (7,1.15) {2027};
+
+% Foundation
+\node[sectionlabel, color=primary] at (\labelx,-0.45) {Foundation};
+\node[bar, minimum width=2cm, anchor=west] at (0,-0.45) {};
+\node[tasklabel] at (0.1,-0.45) {Data model and RBAC};
+
+\node[bar, minimum width=2cm, anchor=west] at (2,-1.30) {};
+\node[tasklabel] at (2.1,-1.30) {Sheets and GitHub connectors};
+
+% Collaboration
+\node[sectionlabel, color=accent] at (\labelx,-2.15) {Collaboration};
+\node[barB, minimum width=2cm, anchor=west] at (2,-2.15) {};
+\node[tasklabel] at (2.1,-2.15) {Configure Jira / ClickUp / Notion};
+
+\node[barB, minimum width=2cm, anchor=west] at (4,-3.00) {};
+\node[tasklabel] at (4.1,-3.00) {Workflow templates and sync};
+
+% Delivery Reliability
+\node[sectionlabel, color=orange!80!black] at (\labelx,-3.85) {Delivery};
+\node[barC, minimum width=2cm, anchor=west] at (4,-3.85) {};
+\node[tasklabel] at (4.1,-3.85) {CI/CD and test automation};
+
+\node[barC, minimum width=2cm, anchor=west] at (6,-4.70) {};
+\node[tasklabel] at (6.1,-4.70) {Monitoring and incident flow};
+
+% Expansion
+\node[sectionlabel, color=primary!60!black] at (\labelx,-5.55) {Expansion};
+\node[barD, minimum width=2cm, anchor=west] at (7,-5.55) {};
+\node[tasklabel] at (7.1,-5.55) {WhatsApp capture and refinement};
+
+\node[barD, minimum width=2cm, anchor=west] at (9,-6.40) {};
+\node[tasklabel] at (9.1,-6.40) {Reporting and optimisation};
+
+% ---- Legend ----
+\node[bar, minimum width=0.5cm] at (0.25,-7.3) {};
+\node[anchor=west, font=\sffamily\scriptsize] at (0.55,-7.3) {Foundation};
+\node[barB, minimum width=0.5cm] at (2.6,-7.3) {};
+\node[anchor=west, font=\sffamily\scriptsize] at (2.9,-7.3) {Collaboration};
+\node[barC, minimum width=0.5cm] at (5.1,-7.3) {};
+\node[anchor=west, font=\sffamily\scriptsize] at (5.4,-7.3) {Delivery};
+\node[barD, minimum width=0.5cm] at (7.2,-7.3) {};
+\node[anchor=west, font=\sffamily\scriptsize] at (7.5,-7.3) {Expansion};
+
+\end{tikzpicture}
+}
+\caption{NextStepBD Phased Implementation Roadmap (Gantt View)}
+\end{figure}
 
 \section{Implementation Priority}
 While all five problems are feasible, they differ in urgency. The chart below ranks the proposed improvements by implementation priority, balancing the severity established in Chapter 1 against the dependency each item has on the shared foundation.
@@ -1900,6 +2031,7 @@ This chapter converts the findings from Chapters 1 and 2 into a practical planni
 % END OF CHAPTER 3
 % ================================================================
 
+
 % ================================================================
 % START OF CHAPTER 4 — Analysis
 % ================================================================
@@ -2212,6 +2344,10 @@ To supplement the qualitative interviews with broader metric-focused trends, str
 
 \subsubsection{Data Collection Strategy}
 The strategy involved sending targeted online surveys via Google Forms to distinct stakeholder groups: Executive Leadership, HR/Operations, Engineering Management, Staff Developers, and a subset of active Clients. The forms consisted primarily of Likert-scale questions, multiple-choice options, and short-form text fields to ensure high completion rates and to generate measurable data for the subsequent system design phases.
+
+\begin{noteBox}
+\textbf{Respondent groups and sample sizes:} the CEO, HR, and Engineering Manager questionnaires were each completed by the single role-holder in that position. The \textbf{Employee survey received 15 responses ($n = 15$)} from staff developers and delivery personnel, and the Customer survey was completed by a representative subset of active clients. For the single-respondent leadership and management questionnaires, the values reported are the individual scores; for the Employee survey, charts show the \emph{number of respondents} (out of 15) selecting each point on the scale, while aggregate figures use the mean of the 15 responses.
+\end{noteBox}
 
 \subsubsection{Questionnaire with CEO}
 \begin{enumerate}[leftmargin=2em]
