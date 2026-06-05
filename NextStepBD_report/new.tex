@@ -349,7 +349,6 @@ Rajshahi University of Engineering \& Technology
 \listoftables
 \newpage
 
-
 % ================================================================
 % START OF CHAPTER 1 — Recognition of Need
 % ================================================================
@@ -358,8 +357,18 @@ Rajshahi University of Engineering \& Technology
 \section{Introduction}
 This chapter establishes the rationale for proposing an improved information system for NextStepBD. It describes the organisational context, the company's principal activities, the tools and workflows currently in use, and the set of priority problems that motivate the study. The objective is to define the recognition of need clearly and to provide a basis for subsequent analysis and proposed solutions.
 
+NextStepBD provides both product-based and service-based solutions. Its product development activities include standalone software systems such as doctor management systems, AI-based customer support platforms, and sales automation tools. Alongside software development, the company also provides consultancy services for internal workflow automation. One notable example is an automation solution where sales data collected through SMS was entered into a centralised software system for analytics, inventory tracking, and supply chain reporting.
+
+\begin{highlightBox}
+\textbf{Recognition of Need:} NextStepBD has a functional working system, but the system is not fully centralised. The company uses several separate tools for communication, development, reporting, and coordination. This creates a need for a more integrated information system that can support future growth.
+\end{highlightBox}
+
+The company currently relies on a combination of custom-built tools and commonly used platforms such as Microsoft Excel, Google Sheets, GitHub, WhatsApp, Slack, and Email. These tools are useful individually, but they are not connected through a single system. As a result, managers and employees often need to coordinate manually, transfer information between platforms, and search through different communication channels to find project-related information.
+
 \section{Company Overview}
 NextStepBD is a Bangladesh-based technology firm specialising in bespoke software development, automation and IT consultancy. The organisation employs approximately fifty staff across development, design and project management roles and provides services to both domestic and international clients in sectors such as retail, healthcare, logistics and customer service.
+
+The organisational structure of NextStepBD is relatively flat. This helps the company make decisions quickly and respond to client requests faster. However, the same structure also creates dependency on a limited number of managers or coordinators. These individuals often act as the bridge between clients and developers. If proper documentation and task tracking systems are not maintained, the workflow can become unclear and difficult to scale.
 
 \textbf{Key organisational facts:}
 
@@ -370,10 +379,34 @@ NextStepBD is a Bangladesh-based technology firm specialising in bespoke softwar
     \item \textbf{Business model:} project-based engagements with options for long-term maintenance contracts.
 \end{itemize}
 
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Area} & \textbf{Description} \\
+\hline
+Company Name & NextStepBD \\
+\hline
+Business Type & IT-based software development, automation, and consultancy company \\
+\hline
+Core Activities & Customised software development, workflow automation, AI-based support tools, sales automation, and reporting solutions \\
+\hline
+Working Style & Client-driven, flexible, fast communication-based, and semi-structured \\
+\hline
+Current Operational Approach & Uses multiple separate tools for communication, development, reporting, and coordination \\
+\hline
+Major Need & A centralised and integrated information system to improve coordination, tracking, reporting, and scalability \\
+\hline
+\end{tabularx}
+\caption{NextStepBD --- Organisational Profile}
+\end{table}
+
 As NextStepBD has grown from a small delivery team into a multi-project organisation, a number of operational gaps have emerged that impede consistent, high-quality delivery and make scaling more difficult.
 
 \section{Business Activities and Service Context}
-NextStepBD's operations can be summarised in repeating phases common to software service organisations:
+NextStepBD serves clients by designing and developing software systems that solve practical business problems. The company's operations can be summarised in repeating phases common to software service organisations:
 
 \begin{enumerate}[leftmargin=2em]
     \item Client engagement and scoping.
@@ -383,12 +416,36 @@ NextStepBD's operations can be summarised in repeating phases common to software
     \item Post-deployment support and maintenance.
 \end{enumerate}
 
-The company operates in a delivery-centric context where accurate requirements capture, validated approvals, predictable delivery schedules, and reliable billing are essential for customer satisfaction and business viability.
+These activities require continuous communication between clients, managers, and developers. Requirements must be collected clearly, tasks must be assigned properly, progress must be tracked, and reports must be prepared accurately. The company therefore operates in a delivery-centric context where accurate requirements capture, validated approvals, predictable delivery schedules, and reliable billing are essential for customer satisfaction and business viability. Consequently, the quality of the company's internal information system directly affects project delivery and client satisfaction.
 
 \section{Existing System and Tools Used}
 Currently, NextStepBD relies on a heterogeneous mix of informal and formal tools to support business processes. These include messaging platforms (primarily WhatsApp), Google Sheets for lightweight records and trackers, GitHub for source control and issue tracking, email for formal correspondence, and local shared documents. Deployment is performed using project-specific scripts.
 
-There is no single authoritative system acting as the company's ``system of record'' for customers, projects, requirements and approvals; information exists in multiple places and often requires manual reconciliation.
+This tool-based system gives flexibility, but it also creates fragmentation. Information about the same project may exist in WhatsApp messages, Google Sheets, GitHub repositories, and email threads. A manager may need to check multiple platforms to understand the actual progress of a project. There is no single authoritative system acting as the company's ``system of record'' for customers, projects, requirements and approvals; information exists in multiple places and often requires manual reconciliation.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Tool / Platform} & \textbf{Operational Role} \\
+\hline
+WhatsApp & Used for quick client communication, internal coordination, informal discussions, and urgent updates. \\
+\hline
+Slack & Used for structured team communication and international collaboration in selected cases. \\
+\hline
+Email & Used for formal communication, official document sharing, and final report delivery. \\
+\hline
+GitHub & Used for source code management, version control, and developer collaboration. \\
+\hline
+Microsoft Excel and Google Sheets & Used for reporting, financial records, shared data handling, and client-side collaboration. \\
+\hline
+Custom Tools / Scripts & Used for automation, data processing, analytics, deployment and workflow support in specific projects. \\
+\hline
+\end{tabularx}
+\caption{Current Tools and Their Operational Role}
+\end{table}
 
 \subsection{Tools Map}
 The diagram below summarises the principal tools and the dominant information flows between them.
@@ -446,6 +503,57 @@ The diagram below summarises the principal tools and the dominant information fl
 \caption{Principal Tools and Dominant Information Flows in the Current System}
 \end{figure}
 
+\subsection{Tool-Based Operational Environment}
+Because no single platform coordinates the company's work, each tool feeds into day-to-day operations independently. The hub-and-spoke view below illustrates how operations sit at the centre of several disconnected tools, with no direct integration between the spokes themselves.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.85\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\scriptsize},
+    tool/.style={
+        rectangle,
+        rounded corners,
+        draw=accent,
+        fill=softteal,
+        thick,
+        text width=2.4cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    center/.style={
+        circle,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=2.3cm,
+        minimum size=2.4cm,
+        align=center
+    },
+    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
+]
+
+\node[center] (ops) at (0,0) {Current\\Operations};
+
+\node[tool] (wa) at (-5,2) {WhatsApp};
+\node[tool] (slack) at (0,3) {Slack};
+\node[tool] (email) at (5,2) {Email};
+\node[tool] (github) at (-5,-2) {GitHub};
+\node[tool] (excel) at (0,-3) {Excel};
+\node[tool] (sheets) at (5,-2) {Google Sheets};
+
+\draw[arrow] (wa) -- (ops);
+\draw[arrow] (slack) -- (ops);
+\draw[arrow] (email) -- (ops);
+\draw[arrow] (github) -- (ops);
+\draw[arrow] (excel) -- (ops);
+\draw[arrow] (sheets) -- (ops);
+
+\end{tikzpicture}
+}
+\caption{Current Tool-Based Operational Environment}
+\end{figure}
+
 \section{Current Workflow}
 The following sequence describes a typical workflow for handling a client request in the present environment:
 
@@ -457,6 +565,8 @@ The following sequence describes a typical workflow for handling a client reques
     \item Quality assurance or the PM approves the change (often communicated via chat); deployment is executed with project-specific scripts.
     \item Financial and status updates are recorded manually in Sheets for billing and reporting.
 \end{enumerate}
+
+This workflow is practical for a small team and allows quick communication. However, it becomes less effective as the number of projects, clients, and developers increases. Since the workflow depends on manual coordination, project information can become scattered. For example, the client's requirement may be in WhatsApp, task progress may be in GitHub, and final reporting may be in Google Sheets. Without a centralised system, it becomes difficult to maintain a single source of truth.
 
 \subsection{Current Workflow Diagram}
 
@@ -513,6 +623,83 @@ The following sequence describes a typical workflow for handling a client reques
 \caption{Current Workflow for Handling a Client Request}
 \end{figure}
 
+\subsection{Operational Swimlane View}
+To make the dependencies explicit, the swimlane diagram below maps the same workflow across three actors --- the client, the project manager, and the developer team. The shaded region highlights the high-dependency zone in which the project manager mediates almost every hand-off, and where information is exchanged through unstructured, informal channels.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    swimlane/.style={draw=gray!50, dashed, thick},
+    box/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=2.8cm,
+        align=center,
+        minimum height=1.2cm
+    },
+    riskbox/.style={
+        rectangle,
+        rounded corners,
+        draw=orange!80!black,
+        fill=softcream,
+        thick,
+        text width=2.8cm,
+        align=center,
+        minimum height=1.2cm
+    },
+    arrow/.style={->, >=stealth, thick, color=primary},
+    labelnode/.style={font=\sffamily\Large\bfseries, color=primary}
+]
+
+% SWIMLANES
+\draw[swimlane] (0,2.5) -- (21,2.5);
+\draw[swimlane] (0,-2.5) -- (21,-2.5);
+
+% LANE LABELS
+\node[labelnode, left] at (-0.5, 4.5) {Client};
+\node[labelnode, left] at (-0.5, 0) {Project Manager};
+\node[labelnode, left] at (-0.5, -4.5) {Developer (Team)};
+
+% NODES
+\node[riskbox] (req) at (1.5, 4.5) {Send Requirement\\(WhatsApp / Email)};
+\node[box] (log) at (5.0, 0) {Manual Sorting \&\\Logging (Sheets)};
+\node[riskbox] (assign) at (8.5, 0) {Assign Task\\(WhatsApp Group)};
+\node[box] (code) at (12.0, -4.5) {Write Code \&\\Commit (GitHub)};
+\node[riskbox] (notify) at (15.5, -4.5) {Notify Done\\(WhatsApp)};
+\node[box] (report) at (15.5, 0) {Compile Report\\(Excel / Sheets)};
+\node[riskbox] (delivery) at (19.0, 4.5) {Final Delivery\\(Email / Slack)};
+
+% ARROWS
+\draw[arrow] (req) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Unstructured Data} (log);
+\draw[arrow] (log) -- (assign);
+\draw[arrow] (assign) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Informal Comm.} (code);
+\draw[arrow] (code) -- (notify);
+\draw[arrow] (notify) edge[bend right=20] node[right, xshift=0.1cm] {\footnotesize Manual Ping} (report);
+\draw[arrow] (report) edge[bend left=20] node[right, xshift=0.1cm] {\footnotesize Shared Link} (delivery);
+
+% BACKGROUND HIGHLIGHT FOR RISK AREA
+\begin{pgfonlayer}{background}
+    \fill[orange!5, rounded corners] (3.0, 1.5) rectangle (17.5, -6);
+    \node[orange!80!black, font=\bfseries] at (10.25, -2.00) {High Dependency \& Fragmentation Zone};
+\end{pgfonlayer}
+
+\end{tikzpicture}
+}
+\caption{Current Operational Swimlane Diagram Showing the PM Bottleneck}
+\end{figure}
+
+\subsection{Process Interpretation}
+The diagrams show that the present workflow is heavily dependent on the project manager as an intermediary between the client, the development team and the administrative record-keeping process. Information begins in chat or email, is then copied manually into Sheets, passed verbally or informally to developers, and finally reconciled again for finance and reporting. This arrangement provides flexibility, but it also introduces delays, duplication and a high risk of inconsistency because the same request is represented in several disconnected places.
+
+\begin{highlightBox}
+\textbf{System Observation:} The existing workflow works, but it is heavily dependent on manual communication. The system lacks a centralised dashboard where requirements, tasks, development progress, reports, and decisions can be tracked together.
+\end{highlightBox}
+
 \subsection*{Observations}
 \begin{itemize}[leftmargin=2em]
     \item Decisions and approvals are frequently recorded only in informal chat channels and not attached to formal project artifacts.
@@ -520,11 +707,8 @@ The following sequence describes a typical workflow for handling a client reques
     \item Financial and management reporting depend on manual reconciliation across disparate artefacts.
 \end{itemize}
 
-\subsection{Process Interpretation}
-The diagram shows that the present workflow is heavily dependent on the project manager as an intermediary between the client, the development team and the administrative record-keeping process. Information begins in chat or email, is then copied manually into Sheets, passed verbally or informally to developers, and finally reconciled again for finance and reporting. This arrangement provides flexibility, but it also introduces delays, duplication and a high risk of inconsistency because the same request is represented in several disconnected places.
-
 \section{Need for System Improvement}
-The current configuration of tools and processes generates several operational risks:
+The main need for improvement comes from the gap between the company's growing operational requirements and its current semi-structured information system. As NextStepBD handles more clients and more development tasks, the existing tool-based workflow becomes difficult to manage. Manual coordination can slow down decision-making, increase dependency on managers, and create confusion among developers. The current configuration of tools and processes generates several operational risks:
 
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Loss of authoritative approvals:} informal confirmations in chat are not reliably recorded against tasks.
@@ -534,10 +718,10 @@ The current configuration of tools and processes generates several operational r
     \item \textbf{Scalability limitations:} reliance on manual processes and key individuals creates bottlenecks that constrain growth.
 \end{itemize}
 
-An appropriate improvement strategy must be pragmatic: it should preserve users' existing preferred communication channels while capturing and formalising the items that must be auditable and actionable.
+A modern information system should not only store data but also connect people, processes, and tools. For NextStepBD, this means the improved system should connect client requirements, task assignment, developer work, communication history, reporting data, and project status. An appropriate improvement strategy must be pragmatic: it should preserve users' existing preferred communication channels while capturing and formalising the items that must be auditable and actionable.
 
 \section{Problem Identification}
-The study identifies five priority problems that will be addressed in the remainder of this report. Each problem is presented with a concise description, an illustrative example and the principal stakeholders affected.
+Through observation of the company's operations, informal interviews with team members, and an analysis of the current workflow, five priority problems have been identified that will be addressed in the remainder of this report. Each problem is presented with a concise description, an illustrative example and the principal stakeholders affected.
 
 \subsection{Problem 1 --- Fragmented Communication and Collaboration}
 \begin{problemBox}
@@ -594,6 +778,47 @@ Manual task assignment and single-point decision-making create performance const
 
 \textbf{Stakeholders:} Human resources, team leads, project management.
 
+\section{Problem Severity Overview}
+The following graph shows the estimated severity level of the identified problems based on their impact on operations, stability, and scalability. The scores reflect both the frequency with which each problem disrupts delivery and the difficulty of recovering from its consequences.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=12cm,
+    height=6.5cm,
+    enlarge y limits=0.18,
+    xmin=0,
+    xmax=11,
+    xlabel={Severity Score (Out of 10)},
+    symbolic y coords={
+        {Security \& Access Control},
+        {Scalability \& Bottlenecks},
+        {Data Management \& Governance},
+        {System Fragmentation},
+        {Fragmented Communication}
+    },
+    ytick=data,
+    nodes near coords,
+    grid=major,
+    major grid style={draw=gray!25},
+    title={Problem Severity Assessment}
+]
+\addplot[fill=primary!75] coordinates {
+    (8,{Security \& Access Control})
+    (8,{Scalability \& Bottlenecks})
+    (9,{Data Management \& Governance})
+    (9,{System Fragmentation})
+    (10,{Fragmented Communication})
+};
+\end{axis}
+\end{tikzpicture}
+}
+\caption{Estimated Severity of Identified Problems}
+\end{figure}
+
 \section{Summary of Identified Needs}
 The analysis in this chapter suggests a set of core needs for the organisation:
 
@@ -606,16 +831,480 @@ The analysis in this chapter suggests a set of core needs for the organisation:
 \end{enumerate}
 
 \section{Conclusion}
-This chapter has established the organisational context and a set of well-defined problems that motivate the proposed system interventions. The subsequent chapters will analyse requirements, evaluate feasibility, and propose concrete, phased solutions designed to be both practical and technically feasible within the organisation's operational constraints.
+This chapter has established the organisational context and a set of well-defined problems that motivate the proposed system interventions. NextStepBD has successfully established a functional working system using available digital tools; however, the system lacks the structure, integration, and centralised control required for sustainable growth.
+
+These problems compound one another: weak communication and data governance create task confusion, the lack of an integrated system enforces the project-manager bottleneck, and informal handling of sensitive data introduces security exposure. Therefore, the company needs an integrated information system that connects requirement management, task tracking, development workflow, communication history, and reliable reporting. The subsequent chapters will analyse requirements, evaluate feasibility, and propose concrete, phased solutions designed to be both practical and technically feasible within the organisation's operational constraints.
 
 % ================================================================
 % END OF CHAPTER 1
 % ================================================================
 
+
 % ================================================================
 % START OF CHAPTER 2 — Initial Feasibility Study
 % ================================================================
+\chapter{Initial Feasibility Study}
 
+\section{Introduction}
+This chapter performs an initial feasibility study for the proposed improvement initiative at NextStepBD. The purpose of the study is to assess whether the recommended solution approach is technically possible, financially reasonable, operationally acceptable and realistic to implement within the organisation's time and resource constraints.
+
+The proposed direction is not to replace the company's existing communication habits, but to support them with a structured and integrated information environment. Accordingly, the analysis considers five identified problems and evaluates how each would be addressed by the three proposed systems: a Central Integration \& Data Platform, a Collaboration \& Workflow system built on existing software, and a DevOps, QA \& Observability platform. The feasibility framework used in this chapter follows the standard \textbf{Technical, Economic, and Operational (TEO)} model, extended with a schedule dimension.
+
+\begin{noteBox}
+\textbf{Feasibility Focus:} The objective of this chapter is not only to propose solutions, but also to determine which solutions are realistic, affordable, and suitable for NextStepBD's current operational environment.
+\end{noteBox}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Feasibility Dimension} & \textbf{Evaluation Question} \\
+\hline
+\textbf{Technical Feasibility} & Can the proposed solution be implemented using available technology, tools, infrastructure, and technical skills? \\
+\hline
+\textbf{Economic Feasibility} & Are the expected benefits greater than the cost of implementation, training, operation, and maintenance? \\
+\hline
+\textbf{Operational Feasibility} & Can the organisation realistically adopt and continue using the solution within its existing workflow and culture? \\
+\hline
+\textbf{Schedule Feasibility} & Can the solution be delivered incrementally within a realistic timeframe without disrupting billable work? \\
+\hline
+\end{tabularx}
+\caption{TEO Feasibility Evaluation Criteria}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.6cm,
+    every node/.style={font=\scriptsize},
+    process/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=2.7cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    decision/.style={
+        diamond,
+        draw=accent,
+        fill=softcream,
+        thick,
+        aspect=1.8,
+        text width=2.2cm,
+        align=center
+    },
+    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
+]
+
+\node[process] (need) {Need\\Recognition};
+\node[process, right=of need] (analysis) {TEO\\Analysis};
+\node[decision, right=of analysis] (decision) {Decision};
+\node[process, below=1.9cm of decision] (pilot) {Pilot\\Implementation};
+\node[process] (monitor) at (analysis |- pilot) {Monitoring\\and Feedback};
+\node[process] (scale) at (need |- pilot) {Full-Scale\\Adoption};
+
+\draw[arrow] (need) -- (analysis);
+\draw[arrow] (analysis) -- (decision);
+\draw[arrow] (decision) -- node[right, font=\scriptsize]{Feasible} (pilot);
+\draw[arrow] (pilot) -- (monitor);
+\draw[arrow] (monitor) -- (scale);
+\draw[arrow] (scale) -- (need);
+\draw[arrow, dashed] (decision.north) -- ++(0,0.9) -| node[above, font=\scriptsize]{Revise / Defer} (analysis.north);
+
+\end{tikzpicture}
+}
+\caption{Initial Feasibility Governance Cycle for NextStepBD}
+\end{figure}
+
+\section{Initial Feasibility Analysis}
+
+\textbf{Baseline Assumptions for Calculations:} NextStepBD is defined as an organisation of approximately 50 employees (developers, UI/UX, QA, PMs). Economic feasibility assumes an internal exchange mapping of \$1 USD $\approx$ 120 BDT. All software cost estimations are based on standardised enterprise monthly licensing fees. Employee training costs assume an average internal valuation of \$15/hour per developer.
+
+\subsection{Problem 01 --- Fragmented Communication and Collaboration}
+
+\begin{problemBox}
+Important decisions, approvals and clarifications are frequently communicated through informal channels such as WhatsApp and email. These exchanges are not consistently captured in a formal project record, which leads to misunderstandings, repeated clarification cycles and scope disputes.
+\end{problemBox}
+
+\textbf{Technical feasibility.} This problem is highly feasible to address because the company can keep using the communication tools it already uses while adding a capture layer to record important decisions. A central platform can receive message metadata, manual confirmations or webhook-triggered events and convert them into structured records. Since the initial solution does not require replacing WhatsApp or email, the technical effort is moderate and can be implemented incrementally.
+
+\textbf{Economic feasibility.} The economic cost is reasonable because the organisation can begin with a small pilot and use a limited number of integrations. The company will not need to build a complete messaging platform from scratch. Instead, it can invest in lightweight automation, integration services and a collaboration tool subscription or configuration. The expected return comes from fewer missed approvals, less rework and fewer delays.
+
+\textbf{Operational feasibility.} The proposed solution aligns well with current user behaviour because staff and clients can continue using familiar communication channels. Important items are simply captured into a formal system. This makes the solution operationally feasible and acceptable to users, provided that the capture process is simple and does not add unnecessary friction.
+
+\textbf{Schedule feasibility.} This problem can be addressed early in the project because it depends mostly on workflow design, integration, and configuration of existing tools. A basic pilot can be delivered within a short timeframe, especially if the organisation starts with a small number of project teams.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
+\hline
+Technical & High & A capture layer can be built on top of existing tools using native webhooks and APIs; no replacement required. \\
+\hline
+Economic & High & Lightweight automation and a single collaboration subscription are offset by reduced rework and missed approvals. \\
+\hline
+Operational & High & Users keep familiar channels; only the formalisation step is new. \\
+\hline
+Overall Viability & Very Feasible & Recommended as an early, high-impact win. \\
+\hline
+\end{tabularx}
+\caption{Communication Capture --- TEO Feasibility Summary}
+\end{table}
+
+\begin{summaryBox}
+This problem is highly feasible to address because it can be improved without replacing the company's existing communication channels. The technical effort is moderate, the cost is manageable, and the operational impact is positive because users keep working in familiar tools while approvals are captured more reliably.
+\end{summaryBox}
+
+\begin{recommendBox}
+\textbf{Priority Action:} Introduce a lightweight capture layer that records approvals and decisions from existing channels into a structured project record.
+
+\textbf{Business Value:} Eliminates lost approvals and creates an auditable trail without disrupting how staff and clients already communicate.
+\end{recommendBox}
+
+\subsection{Problem 02 --- System Fragmentation and Lack of Integration}
+
+\begin{problemBox}
+The company currently uses several disconnected tools such as Google Sheets, GitHub, email and chat applications. Because these systems are not integrated, data must be copied manually and frequently becomes inconsistent.
+\end{problemBox}
+
+\textbf{Technical feasibility.} This problem is technically feasible to solve using a central data layer, APIs and connectors. Existing tools provide standard APIs and webhooks, which makes integration practical. A canonical database can act as the source of truth while other tools exchange data through controlled interfaces.
+
+\textbf{Economic feasibility.} The cost of integration is moderate. It is cheaper to connect existing tools than to replace them. The main investment is in integration development, data mapping and maintenance. The long-term benefit is reduced duplication and lower administrative overhead.
+
+\textbf{Operational feasibility.} A central integration approach is operationally appropriate because it reduces the need for staff to cross-check multiple records manually. However, it must be introduced carefully to avoid disrupting existing work habits. The integration should therefore be gradual and focused on high-value processes first.
+
+\textbf{Schedule feasibility.} The problem can be solved in phases. The first phase can connect a small number of sources, such as Sheets and GitHub, before more complex sources are added. This phased approach is schedule-feasible and reduces implementation risk.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Area} & \textbf{Current State} & \textbf{Proposed State} \\
+\hline
+Data Location & Scattered across Sheets, GitHub, email & Canonical database as single source of truth \\
+\hline
+Synchronisation & Manual copy-paste between tools & Automated sync via APIs and webhooks \\
+\hline
+Consistency & Frequent duplication and conflicts & Controlled interfaces enforce one record \\
+\hline
+\end{tabularx}
+\caption{System Integration --- Current vs Proposed State}
+\end{table}
+
+\begin{summaryBox}
+This problem is highly feasible because it can be solved incrementally through standard integrations. The cost is reasonable, the implementation can be phased, and the operational benefit is strong because staff will no longer need to manually reconcile disconnected tools.
+\end{summaryBox}
+
+\begin{recommendBox}
+\textbf{Priority Action:} Establish a canonical data layer and connect existing tools through phased API/webhook integrations.
+
+\textbf{Business Value:} Removes isolated information silos and provides one reliable, automatically synchronised source for project data.
+\end{recommendBox}
+
+\subsection{Problem 03 --- Data Management and Governance Deficiencies}
+
+\begin{problemBox}
+No single authoritative data repository exists for customers, projects and requirements. As a result, duplicate records and conflicting updates occur, which weakens reporting and managerial control.
+\end{problemBox}
+
+\textbf{Technical feasibility.} A central database with carefully designed entities, validation rules and audit logging is technically straightforward for a software company to implement. Modern relational databases and integration frameworks are mature and reliable.
+
+\textbf{Economic feasibility.} The cost is justified because poor data management directly affects billing accuracy, reporting and decision-making. Improving data quality reduces hidden costs such as manual reconciliation and rework. Although there is some upfront design and migration effort, the long-term savings are substantial.
+
+\textbf{Operational feasibility.} This improvement is operationally feasible because it gives management a clearer view of business information. The main challenge is ensuring that users trust the central system and use it consistently. This can be addressed by making the system the preferred source for reporting and task linkage.
+
+\textbf{Schedule feasibility.} This problem should be addressed early, but it does not need to be solved all at once. Core data entities can be introduced first, and existing records can be migrated gradually. This makes the schedule manageable.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
+\hline
+Technical & High & Relational databases, validation rules and audit logging are mature, well-understood technologies. \\
+\hline
+Economic & High & Better data quality directly improves billing accuracy and reduces costly reconciliation. \\
+\hline
+Operational & Med-High & Value is clear, but consistent adoption and trust in the central record must be cultivated. \\
+\hline
+Overall Viability & Feasible (phased) & Strategically important; introduce core entities first and migrate gradually. \\
+\hline
+\end{tabularx}
+\caption{Data Governance --- TEO Feasibility Summary}
+\end{table}
+
+\begin{summaryBox}
+This problem is feasible and strategically important. A central database and governance model are technically straightforward, economically justified, and operationally valuable because they improve reporting accuracy and reduce duplication.
+\end{summaryBox}
+
+\begin{recommendBox}
+\textbf{Priority Action:} Define a canonical data model for customers, projects and requirements, with validation and audit logging, then migrate records in stages.
+
+\textbf{Business Value:} Produces trustworthy reporting, eliminates conflicting records, and strengthens managerial visibility and billing accuracy.
+\end{recommendBox}
+
+\subsection{Problem 04 --- Security and Access Control Risks}
+
+\begin{problemBox}
+Sensitive information is sometimes shared through informal channels and there is no consistent access control or audit trail for data changes. This creates risk for the organisation and its clients.
+\end{problemBox}
+
+\textbf{Technical feasibility.} The problem is feasible to address through role-based access control, central authentication, audit logging and improved handling of sensitive fields. These are standard features in modern systems and can be built using existing identity management tools and secure storage practices.
+
+\textbf{Economic feasibility.} The financial justification is strong because security incidents, data leaks and compliance failures can be costly. Implementing security controls is cheaper than dealing with the consequences of a breach. Much of the required capability can also be provided by open-source or managed services.
+
+\textbf{Operational feasibility.} Security controls are operationally feasible, but they must be introduced in a way that does not obstruct daily work. Access rules should match actual roles, and approval workflows should remain simple. If controls are too strict or difficult to use, staff may try to bypass them.
+
+\textbf{Schedule feasibility.} Basic security controls can be introduced alongside the early platform work. Authentication, role mapping and audit logging should be part of the first release rather than postponed, because security is a foundational requirement.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
+\hline
+Technical & High & RBAC, central authentication and audit logging are standard, available capabilities. \\
+\hline
+Economic & High & Controls are far cheaper than the cost of a breach or compliance failure. \\
+\hline
+Operational & Medium & Must be role-aware and lightweight, otherwise staff may bypass the controls. \\
+\hline
+Overall Viability & Necessary \& Feasible & Treat as a baseline requirement embedded in the first release. \\
+\hline
+\end{tabularx}
+\caption{Security \& Access Control --- TEO Feasibility Summary}
+\end{table}
+
+\begin{summaryBox}
+This problem is feasible and should be treated as a baseline requirement. The technical controls are standard and available, the cost is justified by risk reduction, and the operational fit is strong if the controls are designed to be lightweight and role-aware.
+\end{summaryBox}
+
+\begin{recommendBox}
+\textbf{Priority Action:} Embed role-based access control, central authentication and audit logging into the foundational release.
+
+\textbf{Business Value:} Protects client data and credentials, provides an audit trail, and reduces regulatory and reputational risk.
+\end{recommendBox}
+
+\subsection{Problem 05 --- Scalability and Operational Bottlenecks}
+
+\begin{problemBox}
+Manual processes, single-person dependencies and a lack of standardised workflow create bottlenecks as the team grows. The company becomes increasingly dependent on a few key individuals.
+\end{problemBox}
+
+\textbf{Technical feasibility.} This problem is technically feasible to solve through workflow automation, task templates, role-based assignment and monitoring. These are not highly experimental capabilities; they are common in process-oriented software environments.
+
+\textbf{Economic feasibility.} The problem has strong economic justification because it directly affects productivity, speed of delivery and staff utilisation. Reducing bottlenecks improves throughput and helps the company handle more projects without a proportional increase in overhead.
+
+\textbf{Operational feasibility.} The solution is operationally feasible if the company accepts more structured work assignment and task visibility. Existing staff can keep their familiar collaboration tools, while the structured system ensures that no work item depends on memory or personal follow-up alone.
+
+\textbf{Schedule feasibility.} Scalability improvements should be introduced in parallel with workflow and integration improvements. They can begin with templates, notifications and assignment rules, then expand into richer automation as the organisation matures.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2.5cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{Dimension} & \textbf{Rating} & \textbf{Justification} \\
+\hline
+Technical & High & Workflow automation, templates and role-based assignment are common, proven features. \\
+\hline
+Economic & High & Reducing bottlenecks raises throughput without a proportional rise in overhead. \\
+\hline
+Operational & High & Staff keep familiar tools; structure ensures no task depends on a single person's memory. \\
+\hline
+Overall Viability & Highly Feasible & Introduce in parallel with workflow and integration work. \\
+\hline
+\end{tabularx}
+\caption{Scalability \& Workflow --- TEO Feasibility Summary}
+\end{table}
+
+\begin{summaryBox}
+This problem is highly feasible because workflow automation and role-based assignment are common features in modern systems. The cost is moderate, the benefits are significant, and the changes fit the organisation's need to reduce dependence on a few key individuals.
+\end{summaryBox}
+
+\begin{recommendBox}
+\textbf{Priority Action:} Introduce task templates, role-based assignment rules and monitoring to standardise work and remove single-person dependencies.
+
+\textbf{Business Value:} Increases delivery throughput, improves staff utilisation, and lets the company scale without proportional management overhead.
+\end{recommendBox}
+
+\section{Comparative Feasibility Summary}
+The table below summarises the relative feasibility of each problem area.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|c|c|c|c|}
+\hline
+\rowcolor{secondary}
+\textbf{Problem} & \textbf{Tech.} & \textbf{Econ.} & \textbf{Ops.} & \textbf{Sched.} & \textbf{Overall Assessment} \\
+\hline
+Fragmented Communication \& Collaboration & High & High & High & High & Very feasible \\
+\hline
+System Fragmentation \& Lack of Integration & High & High & Med-High & Med-High & Very feasible \\
+\hline
+Data Management \& Governance Deficiencies & High & High & Med-High & Medium & Feasible (phased migration) \\
+\hline
+Security \& Access Control Risks & High & High & Medium & High & Necessary and feasible \\
+\hline
+Scalability \& Operational Bottlenecks & High & High & High & Med-High & Highly feasible \\
+\hline
+\end{tabularx}
+\caption{Comparative Feasibility Analysis of the Five Identified Problems}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.95\textwidth,
+    height=7cm,
+    bar width=15pt,
+    ymin=0,
+    ymax=10,
+    ylabel={Feasibility Score},
+    symbolic x coords={P01,P02,P03,P04,P05},
+    xtick=data,
+    nodes near coords,
+    nodes near coords align={vertical},
+    legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3},
+    grid=major,
+    major grid style={draw=gray!25},
+    title={TEO Feasibility Score by Problem}
+]
+\addplot[fill=primary!70] coordinates {(P01,9) (P02,9) (P03,9) (P04,9) (P05,9)};
+\addplot[fill=accent!70] coordinates {(P01,9) (P02,8) (P03,9) (P04,9) (P05,8)};
+\addplot[fill=orange!70] coordinates {(P01,9) (P02,8) (P03,8) (P04,7) (P05,9)};
+\legend{Technical, Economic, Operational}
+\end{axis}
+\end{tikzpicture}
+\caption{Technical, Economic, and Operational Feasibility Comparison}
+\end{figure}
+
+\textbf{Interpretation}
+\begin{itemize}[leftmargin=2em]
+    \item All five problems are feasible to address, but they should not be approached as separate, unrelated projects.
+    \item A shared foundation is required, namely the Central Integration \& Data Platform.
+    \item The Collaboration \& Workflow system and DevOps platform build on that foundation and address user adoption and operational reliability respectively.
+    \item Security and access control must be implemented across all systems rather than treated as an optional add-on.
+\end{itemize}
+
+\section{Recommended Implementation Roadmap}
+The recommended implementation strategy is phased so that the organisation can gain value early while reducing risk.
+
+\subsection*{Phase 1 --- Foundation and core data model}
+\begin{itemize}[leftmargin=2em]
+    \item Establish the canonical data model for customers, projects, requirements and tasks.
+    \item Implement authentication, role-based access control and audit logging.
+    \item Build the first connectors for Google Sheets and GitHub.
+    \item Start capturing formal records from informal requests.
+\end{itemize}
+
+\subsection*{Phase 2 --- Collaboration and workflow alignment}
+\begin{itemize}[leftmargin=2em]
+    \item Configure the existing collaboration tool (e.g., Jira, ClickUp or Notion) as the team's structured work environment.
+    \item Integrate task creation and status updates with the central platform.
+    \item Introduce templates for requirements, tasks, approvals and onboarding.
+    \item Pilot the workflow with a small project team.
+\end{itemize}
+
+\subsection*{Phase 3 --- Delivery automation and reliability}
+\begin{itemize}[leftmargin=2em]
+    \item Introduce CI/CD pipelines, test automation and staging deployment.
+    \item Add monitoring, logging, alerting and incident workflows.
+    \item Connect incidents and deployment metadata back to the central system.
+\end{itemize}
+
+\subsection*{Phase 4 --- Expansion and optimisation}
+\begin{itemize}[leftmargin=2em]
+    \item Add the WhatsApp capture workflow and other remaining integrations.
+    \item Improve reconciliation, reporting and governance.
+    \item Refine automation based on pilot feedback and measured usage.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|p{3cm}|X|p{3cm}|}
+\hline
+\rowcolor{secondary}
+\textbf{Phase} & \textbf{Major Activities} & \textbf{Duration} \\
+\hline
+Phase 1 & Establish canonical data model, authentication, RBAC, audit logging, and Sheets/GitHub connectors. & Month 1--2 \\
+\hline
+Phase 2 & Configure the collaboration tool, sync tasks with the platform, and pilot workflow templates. & Month 3--4 \\
+\hline
+Phase 3 & Introduce CI/CD, test automation, monitoring, and incident workflows. & Month 5--6 \\
+\hline
+Phase 4 & Add WhatsApp capture, refine reconciliation, reporting and optimisation. & Month 7--9 \\
+\hline
+\end{tabularx}
+\caption{Detailed Implementation Roadmap}
+\end{table}
+
+\section{Implementation Priority}
+While all five problems are feasible, they differ in urgency. The chart below ranks the proposed improvements by implementation priority, balancing the severity established in Chapter 1 against the dependency each item has on the shared foundation.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=12cm,
+    height=6.5cm,
+    enlarge y limits=0.18,
+    xmin=0,
+    xmax=11,
+    xlabel={Priority Score},
+    symbolic y coords={
+        {Scalability \& Bottlenecks},
+        {Security \& Access Control},
+        {Data Management \& Governance},
+        {System Integration},
+        {Communication Capture}
+    },
+    ytick=data,
+    nodes near coords,
+    grid=major,
+    major grid style={draw=gray!25},
+    title={Implementation Priority Score}
+]
+\addplot[fill=accent!75] coordinates {
+    (7,{Scalability \& Bottlenecks})
+    (8,{Security \& Access Control})
+    (9,{Data Management \& Governance})
+    (9,{System Integration})
+    (10,{Communication Capture})
+};
+\end{axis}
+\end{tikzpicture}
+}
+\caption{Priority Ranking of Proposed Improvements}
+\end{figure}
+
+\section{Conclusion}
+The initial feasibility study shows that the proposed solution is realistic, implementable and economically justified. None of the five identified problems requires a fully custom end-to-end platform to be built at once. Instead, the recommended approach is to combine a central integration layer, a configured collaboration tool, and a DevOps/observability platform in a phased implementation.
+
+The company does not need heavy capital injections; rather, it requires an overhaul of its organisational workflow and engineering principles. The most urgent changes are establishing reliable communication capture and a central integration layer, because every other improvement depends on that shared foundation. This approach balances technical feasibility, user acceptance and organisational capacity while addressing the core operational weaknesses identified in Chapter 1.
 
 % ================================================================
 % END OF CHAPTER 2
