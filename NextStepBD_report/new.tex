@@ -1314,7 +1314,587 @@ The company does not need heavy capital injections; rather, it requires an overh
 % ================================================================
 % START OF CHAPTER 3 — Project Planning
 % ================================================================
+\chapter{Project Planning}
 
+\section{Introduction}
+This chapter presents the project plan for NextStepBD's improvement initiative. It sets out the scope, schedule, stakeholder engagement approach, cost considerations and quality arrangements that will guide design and pilot activities. The chapter draws on the problem statements and feasibility analysis in Chapters 1 and 2 and translates those findings into a practical plan for review and approval.
+
+The chapter uses standard project-planning terms. It covers scope refinement, schedule development, stakeholder engagement, cost considerations and quality planning. Because the organisation will keep its current communication channels, the plan focuses on integrating informal inputs safely and with minimal disruption. The emphasis is on preparation: analysis, stakeholder validation, pilot design and monitoring setup.
+
+\begin{highlightBox}
+\textbf{Planning Focus:} This chapter explains how the project plan is developed for each priority problem. For every problem it presents a Work Breakdown Structure (WBS), a planning-focused Gantt chart, a record of stakeholder validation, and high-level cost and quality plans --- all scoped to preparation and pilot activities rather than full rollout.
+\end{highlightBox}
+
+\section{Planning in NextStepBD}
+Project governance for this initiative will be established as a lightweight, accountable structure appropriate for a small-to-medium software services company. The governance model comprises an executive sponsor (senior company partner), a project manager (internal PM/PO), a small steering committee (executive sponsor, head of delivery, head of operations, finance representative), and a cross-functional project team (backend developer, integration specialist, QA/DevOps engineer, business analyst). External consultants may be engaged for specialised integration tasks as required.
+
+Scope definition will be constrained to planning and pilot preparation activities during the initial project phase; the intention is to deliver planning artefacts, validated designs and pilots that demonstrate the expected operational improvements before full organisational rollout. Baseline planning deliverables include Work Breakdown Structures (WBS) for each identified problem area, detailed schedules (Gantt), stakeholder engagement records and a draft cost and quality management plan. Risk management and procurement strategies will be described in follow-up documentation but are considered in the schedule and stakeholder planning herein.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\scriptsize},
+    sponsor/.style={rectangle, rounded corners, draw=primary, fill=secondary, thick, text width=3.6cm, minimum height=0.95cm, align=center},
+    committee/.style={rectangle, rounded corners, draw=accent, fill=softteal, thick, text width=3.6cm, minimum height=0.95cm, align=center},
+    pm/.style={rectangle, rounded corners, draw=primary!80!black, fill=secondary, thick, text width=3.6cm, minimum height=0.95cm, align=center},
+    team/.style={rectangle, rounded corners, draw=darkgray!60, fill=white, thick, text width=2.6cm, minimum height=0.9cm, align=center},
+    ext/.style={rectangle, rounded corners, draw=orange!80!black, fill=softcream, dashed, thick, text width=2.6cm, minimum height=0.9cm, align=center},
+    arrow/.style={thick, -{Latex[length=2.3mm]}, color=primary},
+    line/.style={thick, color=primary}
+]
+
+\node[sponsor] (sponsor) at (0,0) {\textbf{Executive Sponsor}\\(Senior Partner)};
+\node[committee] (committee) at (5.5,0) {\textbf{Steering Committee}\\Delivery $\cdot$ Ops $\cdot$ Finance};
+\node[pm] (pm) at (0,-2) {\textbf{Project Manager}\\(PM / PO)};
+
+\draw[arrow] (sponsor) -- (pm);
+\draw[line, dashed] (sponsor) -- (committee);
+\draw[line, dashed] (committee) -- (pm);
+
+% Team members
+\node[team] (be)  at (-4.5,-4.2) {Backend\\Developer};
+\node[team] (int) at (-1.5,-4.2) {Integration\\Specialist};
+\node[team] (qa)  at (1.5,-4.2) {QA / DevOps\\Engineer};
+\node[team] (ba)  at (4.5,-4.2) {Business\\Analyst};
+\node[ext]  (ext) at (7.6,-4.2) {External\\Consultants};
+
+\draw[arrow] (pm) -- (be);
+\draw[arrow] (pm) -- (int);
+\draw[arrow] (pm) -- (qa);
+\draw[arrow] (pm) -- (ba);
+\draw[arrow, color=orange!80!black, dashed] (pm) -- (ext);
+
+\node[font=\scriptsize\itshape, color=darkgray] at (0,-5.4) {Cross-Functional Project Team};
+
+\end{tikzpicture}
+}
+\caption{Project Governance Structure for the Planning Initiative}
+\end{figure}
+
+\section{Planning to Resolve the Problems}
+This section presents planning activities tailored to each of the priority problems identified in Chapter 1. For each problem the chapter provides a Work Breakdown Structure (WBS); a Gantt chart derived from the WBS focusing on analysis and planning activities; a synthetic record of stakeholder validation and feedback; high-level cost management considerations; and a problem-specific quality management plan. The WBS and Gantt charts are deliberately planning-focused and do not assume implementation progress beyond preparation, pilot configuration and validation.
+
+% ----------------------------------------------------------------
+% PROBLEM 01
+% ----------------------------------------------------------------
+\subsection{Problem 01 --- Fragmented Communication \& Collaboration}
+
+\textbf{Problem context.} NextStepBD depends heavily on chat-based communication for approvals, clarification, and day-to-day coordination. In practice, important decisions can remain buried in long message threads, which makes it difficult to trace what was agreed, who approved it, and which work item it relates to. This creates delays, repeated clarification, and weak evidence for delivery decisions.
+
+\subsubsection{Schedule Management}
+The Work Breakdown Structure (WBS) below decomposes the planning effort into nine work packages, from problem analysis through to documentation.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabularx}{\textwidth}{|c|p{4.2cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{WBS} & \textbf{Work Package} & \textbf{Key Activities} \\
+\hline
+1.1 & Problem Analysis & Review chat message patterns and sample threads; identify decision/approval artefacts and their distribution. \\
+\hline
+1.2 & Root Cause Validation & Verify communication dependency on PMs; map failed handoffs and typical consequences. \\
+\hline
+1.3 & Stakeholder Review & Facilitate validation workshop (PMs, developers, account managers); document inputs and acceptance criteria. \\
+\hline
+1.4 & Requirement Refinement & Define capture requirements (what is an ``official'' approval); specify operator review UI requirements. \\
+\hline
+1.5 & Solution Design & Design capture flow and API contract to central platform; define UX for one-click confirmation. \\
+\hline
+1.6 & Implementation Planning & Define pilot scope and success metrics; identify pilot teams and access requirements. \\
+\hline
+1.7 & Testing \& Validation Planning & Define test cases for capture accuracy and latency; plan pilot acceptance tests and measurement method. \\
+\hline
+1.8 & Monitoring \& Evaluation Planning & Define monitoring KPIs (capture rate, error rate); establish dashboard and reporting cadence. \\
+\hline
+1.9 & Documentation & Prepare user guides and operator runbook; prepare stakeholder sign-off package. \\
+\hline
+\end{tabularx}
+\caption{WBS --- Problem 01: Fragmented Communication \& Collaboration}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    barA/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.5cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.5cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.5cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.5cm},
+]
+% Scale: 1 unit = 1 week. Start 2026-06-01. ~9 weeks.
+\foreach \w in {0,1,...,9} {
+    \draw[gray!25] (\w,0.5) -- (\w,-7.2);
+    \node[font=\sffamily\scriptsize, color=darkgray, anchor=south] at (\w,0.55) {W\w};
+}
+% Analysis (primary)
+\node[sectionlabel, color=primary] at (-0.2,-0.4) {Analysis};
+\node[barA, anchor=west, minimum width=1.4cm] at (0,-0.4) {}; \node[tasklabel] at (0.1,-0.4) {Problem Analysis};
+\node[barA, anchor=west, minimum width=1.0cm] at (1.4,-1.05) {}; \node[tasklabel] at (1.5,-1.05) {Root Cause Validation};
+% Validation (accent)
+\node[sectionlabel, color=accent] at (-0.2,-1.85) {Validation};
+\node[barB, anchor=west, minimum width=1.0cm] at (2.4,-1.85) {}; \node[tasklabel] at (2.5,-1.85) {Stakeholder Review};
+\node[barB, anchor=west, minimum width=1.15cm] at (3.4,-2.5) {}; \node[tasklabel] at (3.5,-2.5) {Requirement Refinement};
+% Design (orange)
+\node[sectionlabel, color=orange!80!black] at (-0.2,-3.3) {Design};
+\node[barC, anchor=west, minimum width=1.4cm] at (4.55,-3.3) {}; \node[tasklabel] at (4.65,-3.3) {Solution Design};
+\node[barC, anchor=west, minimum width=1.0cm] at (5.95,-3.95) {}; \node[tasklabel] at (6.05,-3.95) {Implementation Planning};
+% Test & Monitoring (secondary)
+\node[sectionlabel, color=primary!60!black] at (-0.2,-4.75) {Test \& Mon.};
+\node[barD, anchor=west, minimum width=1.0cm] at (6.95,-4.75) {}; \node[tasklabel] at (7.05,-4.75) {Testing \& Validation Plan};
+\node[barD, anchor=west, minimum width=0.7cm] at (7.95,-5.4) {}; \node[tasklabel] at (8.05,-5.4) {Monitoring \& Eval. Plan};
+\node[barD, anchor=west, minimum width=0.7cm] at (8.65,-6.05) {}; \node[tasklabel] at (8.75,-6.05) {Documentation};
+% Legend
+\node[barA, minimum width=0.4cm] at (0.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (0.45,-6.9) {Analysis};
+\node[barB, minimum width=0.4cm] at (2.0,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (2.25,-6.9) {Validation};
+\node[barC, minimum width=0.4cm] at (3.9,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (4.15,-6.9) {Design};
+\node[barD, minimum width=0.4cm] at (5.6,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (5.85,-6.9) {Test \& Monitoring};
+\end{tikzpicture}
+}
+\caption{Planning Gantt Chart --- Problem 01 (Weeks from 1 June 2026)}
+\end{figure}
+
+\subsubsection{Stakeholder Engagement}
+Following the problem presentation, a stakeholder validation workshop was facilitated with project managers, senior developers, and account leads.
+
+\textbf{Validation summary.} Project managers emphasised that approvals in chat are frequently informal and often lack context (for example, missing scope boundaries or acceptance criteria). Developers reported that chat-only approvals lead to divergent interpretations of requirements, especially for multi-iteration features. Account leads observed that client confirmations are sometimes fragmented across multiple messages, which complicates billing evidence.
+
+\textbf{Concerns raised.} Stakeholders were concerned about the administrative burden introduced by any capture mechanism that required extensive manual entry; they emphasised the need for a low-friction, one-click confirmation flow. Several team members flagged possible privacy concerns where client messages included PII, requiring controlled redaction and access restrictions. PMs, already time-constrained, requested automation to reduce manual reconciliation rather than additional tasks.
+
+\begin{noteBox}
+\textbf{Refinement to problem definition:} Based on feedback, the team refined the focus to capturing \emph{contextual approvals} (approval + scope fragment + timestamp + actor) rather than raw chat transcripts. The requirement set now includes a mandatory minimal metadata model (approval flag, requirement reference, approver identity) and an operator review queue for ambiguous items.
+\end{noteBox}
+
+\textbf{Constraints and incorporation.} Stakeholders identified WhatsApp API limitations (templates, rate limits) and occasional offline access for some clients. The planning team will include a lightweight human-in-the-loop operator flow, enforce strict PII redaction, and prioritise automation to minimise PM workload. The pilot scope will include two project teams with representative client types (local and international).
+
+\subsubsection{Cost Management}
+A high-level cost approach focuses on resource identification and control rather than detailed budgeting at this stage. Expected resources include one backend integration engineer (part-time), one frontend/UI resource for the operator confirmation UI (part-time), one QA/tester (part-time), and a 20\% allocation of a PM for stakeholder coordination. Contract costs for a WhatsApp gateway (e.g., Twilio or a managed provider) are anticipated if the managed API path is selected. Cost control strategies include using open-source integration tools where possible, limiting the pilot to two projects, and deferring expensive connectors until validated.
+
+\subsubsection{Quality Management}
+\begin{summaryBox}
+\textbf{Quality objectives:} (1) capture 95\% of formal approvals related to tracked requirements during the pilot; (2) reduce approval-related clarification cycles by 50\% in pilot projects; (3) ensure no unredacted PII is stored in the canonical database.
+\end{summaryBox}
+
+\textbf{Acceptance criteria.} The pilot is accepted if the operator queue demonstrates capture accuracy above 95\% on a test sample and stakeholders confirm that captured approvals can be unambiguously linked to work items. Security acceptance requires demonstration of redaction and controlled access.
+
+\textbf{Measurement and control.} Quality is measured through sampling and automated metrics: \texttt{capture\_rate}, \texttt{review\_resolution\_time}, and the number of PII exposures. Daily ingestion metrics and a weekly quality review are established. Mitigations for quality risks (false positives/negatives, operator backlog) include conservative confidence thresholds, a capped operator queue, and escalation rules for unresolved items.
+
+% ----------------------------------------------------------------
+% PROBLEM 02
+% ----------------------------------------------------------------
+\subsection{Problem 02 --- System Fragmentation \& Lack of Integration}
+
+\textbf{Problem context.} NextStepBD currently uses multiple tools and data stores that do not communicate consistently with one another. Information often has to be copied manually from one platform to another, which increases the chance of errors, duplicate records, and missed updates. The lack of integration also makes it harder for staff to get a single, reliable view of operational information.
+
+\subsubsection{Schedule Management}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabularx}{\textwidth}{|c|p{4.2cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{WBS} & \textbf{Work Package} & \textbf{Key Activities} \\
+\hline
+1.1 & Problem Analysis & Catalogue existing data stores and tools; map high-frequency cross-system workflows. \\
+\hline
+1.2 & Root Cause Validation & Identify barriers to integration (APIs, rate limits, workflows); prioritise integration targets by business value. \\
+\hline
+1.3 & Stakeholder Review & Conduct workshops with operations and finance; validate integration priorities and constraints. \\
+\hline
+1.4 & Requirement Refinement & Define canonical data model requirements; define connector contracts and event models. \\
+\hline
+1.5 & Solution Design & Design integration architecture and API contracts; define retry, queuing and error-handling strategies. \\
+\hline
+1.6 & Implementation Planning & Pilot connector selection and scheduling; provision queue and integration infrastructure. \\
+\hline
+1.7 & Testing \& Validation Planning & Integration test plan and environment design; reconciliation test cases and acceptance criteria. \\
+\hline
+1.8 & Monitoring \& Evaluation Planning & Define integration health KPIs; define reconciliation reporting cadence. \\
+\hline
+1.9 & Documentation & API contract documentation; integration runbooks and operator procedures. \\
+\hline
+\end{tabularx}
+\caption{WBS --- Problem 02: System Fragmentation \& Lack of Integration}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    barA/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.5cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.5cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.5cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.5cm},
+]
+% ~11 weeks
+\foreach \w in {0,1,...,11} {
+    \draw[gray!25] (\w,0.5) -- (\w,-7.2);
+    \node[font=\sffamily\scriptsize, color=darkgray, anchor=south] at (\w,0.55) {W\w};
+}
+\node[sectionlabel, color=primary] at (-0.2,-0.4) {Analysis};
+\node[barA, anchor=west, minimum width=1.7cm] at (0,-0.4) {}; \node[tasklabel] at (0.1,-0.4) {Catalogue Tools \& Workflows};
+\node[barA, anchor=west, minimum width=1.45cm] at (1.7,-1.05) {}; \node[tasklabel] at (1.8,-1.05) {Root Cause Validation};
+\node[sectionlabel, color=accent] at (-0.2,-1.85) {Validation};
+\node[barB, anchor=west, minimum width=1.0cm] at (3.15,-1.85) {}; \node[tasklabel] at (3.25,-1.85) {Stakeholder Review};
+\node[barB, anchor=west, minimum width=1.3cm] at (4.15,-2.5) {}; \node[tasklabel] at (4.25,-2.5) {Requirement Refinement};
+\node[sectionlabel, color=orange!80!black] at (-0.2,-3.3) {Design};
+\node[barC, anchor=west, minimum width=1.7cm] at (5.45,-3.3) {}; \node[tasklabel] at (5.55,-3.3) {Integration Architecture Design};
+\node[barC, anchor=west, minimum width=1.15cm] at (7.15,-3.95) {}; \node[tasklabel] at (7.25,-3.95) {Implementation Planning};
+\node[sectionlabel, color=primary!60!black] at (-0.2,-4.75) {Test \& Mon.};
+\node[barD, anchor=west, minimum width=1.15cm] at (8.3,-4.75) {}; \node[tasklabel] at (8.4,-4.75) {Integration Test Planning};
+\node[barD, anchor=west, minimum width=0.85cm] at (9.45,-5.4) {}; \node[tasklabel] at (9.55,-5.4) {Monitoring \& Recon. Plan};
+\node[barD, anchor=west, minimum width=0.7cm] at (10.3,-6.05) {}; \node[tasklabel] at (10.4,-6.05) {Documentation};
+\node[barA, minimum width=0.4cm] at (0.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (0.45,-6.9) {Analysis};
+\node[barB, minimum width=0.4cm] at (2.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (2.45,-6.9) {Validation};
+\node[barC, minimum width=0.4cm] at (4.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (4.45,-6.9) {Design};
+\node[barD, minimum width=0.4cm] at (6.0,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (6.25,-6.9) {Test \& Monitoring};
+\end{tikzpicture}
+}
+\caption{Planning Gantt Chart --- Problem 02 (Weeks from 1 June 2026)}
+\end{figure}
+
+\subsubsection{Stakeholder Engagement}
+Stakeholders engaged for this topic included operations leads, finance representatives, and senior engineers.
+
+\textbf{Validation and feedback.} Operations emphasised the prevalence of unsystematic, manual reconciliation tasks consuming several person-days each month. Finance described specific reconciliation errors that had previously led to misinvoicing. Engineers identified integration constraints, including the lack of stable external IDs in some Sheets, inconsistent schema versions, and API rate limits for certain provider integrations. All parties prioritised connectors that directly reduce reconciliation labour (Sheets-to-canonical customer mapping and GitHub issue status to project trackers).
+
+\textbf{Concerns raised.} Engineering stakeholders warned about the time required to implement robust deduplication and mapping logic, particularly for legacy Sheets with inconsistent headings. Finance requested that the canonical model preserve provenance for all data to enable auditability. Operations requested that integrations be resilient and observable to avoid silent failures.
+
+\begin{noteBox}
+\textbf{Refinement to problem definition:} The problem was refined to focus on high-value integration points and to emphasise the requirement for provenance metadata. The WBS was adjusted to include reconciliation test cases and provenance-preservation requirements.
+\end{noteBox}
+
+\textbf{Constraints and incorporation.} Constraints include unstructured spreadsheets, potential data cleansing, and API rate limits. The team will prioritise connectors that reduce manual reconciliation first, allocate a data-cleaning sprint in the pilot, and include comprehensive reconciliation reports in acceptance criteria.
+
+\subsubsection{Cost Management}
+Resource expectations focus on a small integration team: one integration engineer full-time for the pilot period, one data analyst (part-time) for mapping and cleaning, and one QA resource for integration testing. Infrastructure costs include queueing/messaging and modest compute; if a managed iPaaS is chosen, subscription fees must be budgeted. Cost control strategies include staging connectors (start with Sheets and GitHub), using open-source middleware where appropriate, and deferring expensive enterprise connectors until the central model is proven.
+
+\subsubsection{Quality Management}
+\begin{summaryBox}
+\textbf{Quality objectives:} (1) successful, auditable synchronisation of core data fields for 95\% of sample records; (2) reconciliation reports generated automatically and checked weekly; (3) maintenance of provenance for all synchronised records.
+\end{summaryBox}
+
+\textbf{Acceptance and measurement.} The integration pilot must demonstrate end-to-end synchronisation for the selected connectors with clear reconciliation outputs and error-handling behaviour. Quality is measured by data synchronisation success rate, reconciliation discrepancy counts, and mean time to detect synchronisation failures. Scheduled reconciliation jobs and dashboards surface anomalies, with alerting when error thresholds are exceeded. Quality assurance includes contract tests, mock endpoint tests, and sample-based reconciliation validation.
+
+% ----------------------------------------------------------------
+% PROBLEM 03
+% ----------------------------------------------------------------
+\subsection{Problem 03 --- Data Management \& Governance Deficiencies}
+
+\textbf{Problem context.} Several working records appear to be maintained in spreadsheets and informal files without a consistent data structure or ownership model. This makes it difficult to keep records accurate, track their origin, or decide which version should be treated as current. As the company grows, these weaknesses can affect reporting quality, billing accuracy, and general operational control.
+
+\subsubsection{Schedule Management}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabularx}{\textwidth}{|c|p{4.2cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{WBS} & \textbf{Work Package} & \textbf{Key Activities} \\
+\hline
+1.1 & Problem Analysis & Inventory data sources and owners; identify primary inconsistencies and duplication patterns. \\
+\hline
+1.2 & Root Cause Validation & Trace lineage for representative records; validate ownership and custodianship responsibilities. \\
+\hline
+1.3 & Stakeholder Review & Hold governance workshop (finance, operations, delivery); agree minimal canonical data model and retention rules. \\
+\hline
+1.4 & Requirement Refinement & Define schema and mandatory fields; define provenance and retention policy requirements. \\
+\hline
+1.5 & Solution Design & Design canonical store and data lifecycle; specify migration and reconciliation strategy. \\
+\hline
+1.6 & Implementation Planning & Plan migration sprints and validation checks; define roles for data stewardship. \\
+\hline
+1.7 & Testing \& Validation Planning & Define migration validation tests and acceptance criteria; plan governance audits and sampling. \\
+\hline
+1.8 & Monitoring \& Evaluation Planning & Establish data quality KPIs (completeness, consistency); schedule periodic data quality reports. \\
+\hline
+1.9 & Documentation & Data dictionary and stewardship guide; retention and redaction policies. \\
+\hline
+\end{tabularx}
+\caption{WBS --- Problem 03: Data Management \& Governance Deficiencies}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    barA/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.5cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.5cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.5cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.5cm},
+]
+% ~12 weeks
+\foreach \w in {0,1,...,12} {
+    \draw[gray!25] (\w,0.5) -- (\w,-7.2);
+    \node[font=\sffamily\scriptsize, color=darkgray, anchor=south] at (\w,0.55) {W\w};
+}
+\node[sectionlabel, color=primary] at (-0.2,-0.4) {Analysis};
+\node[barA, anchor=west, minimum width=1.7cm] at (0,-0.4) {}; \node[tasklabel] at (0.1,-0.4) {Inventory \& Source Mapping};
+\node[barA, anchor=west, minimum width=1.45cm] at (1.7,-1.05) {}; \node[tasklabel] at (1.8,-1.05) {Root Cause Validation};
+\node[sectionlabel, color=accent] at (-0.2,-1.85) {Validation};
+\node[barB, anchor=west, minimum width=1.0cm] at (3.15,-1.85) {}; \node[tasklabel] at (3.25,-1.85) {Governance Workshop};
+\node[barB, anchor=west, minimum width=1.45cm] at (4.15,-2.5) {}; \node[tasklabel] at (4.25,-2.5) {Requirement Refinement};
+\node[sectionlabel, color=orange!80!black] at (-0.2,-3.3) {Design};
+\node[barC, anchor=west, minimum width=1.7cm] at (5.6,-3.3) {}; \node[tasklabel] at (5.7,-3.3) {Canonical Store Design};
+\node[barC, anchor=west, minimum width=1.15cm] at (7.3,-3.95) {}; \node[tasklabel] at (7.4,-3.95) {Migration Strategy Planning};
+\node[sectionlabel, color=primary!60!black] at (-0.2,-4.75) {Test \& Mon.};
+\node[barD, anchor=west, minimum width=1.45cm] at (8.45,-4.75) {}; \node[tasklabel] at (8.55,-4.75) {Migration Test Planning};
+\node[barD, anchor=west, minimum width=0.85cm] at (9.9,-5.4) {}; \node[tasklabel] at (10.0,-5.4) {Data Quality Reporting Setup};
+\node[barD, anchor=west, minimum width=0.7cm] at (10.75,-6.05) {}; \node[tasklabel] at (10.85,-6.05) {Documentation};
+\node[barA, minimum width=0.4cm] at (0.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (0.45,-6.9) {Analysis};
+\node[barB, minimum width=0.4cm] at (2.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (2.45,-6.9) {Validation};
+\node[barC, minimum width=0.4cm] at (4.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (4.45,-6.9) {Design};
+\node[barD, minimum width=0.4cm] at (6.0,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (6.25,-6.9) {Test \& Monitoring};
+\end{tikzpicture}
+}
+\caption{Planning Gantt Chart --- Problem 03 (Weeks from 1 June 2026)}
+\end{figure}
+
+\subsubsection{Stakeholder Engagement}
+Governance workshops involved finance, delivery leads and an operations representative.
+
+\textbf{Validation and feedback.} Finance insisted on immutable provenance records and explicit retention policies for billing-related fields. Delivery leads highlighted that imposing strict mandatory fields prematurely would block engineering work; they recommended a phased approach where a minimal viable schema is enforced initially and additional fields are gradually required. Operations asked for clear data stewardship responsibilities and a lightweight process for resolving data conflicts.
+
+\textbf{Concerns raised.} Stakeholders were concerned about the cost and time required for large-scale data cleansing, and cautioned against governance policy that could slow legitimate work. Another concern was the potential disruption to reporting if canonicalisation changed identifiers used by external finance systems.
+
+\begin{noteBox}
+\textbf{Refinement to problem definition:} The definition was adjusted to prioritise a minimal viable canonical schema and to introduce a staged governance model (pilot $\rightarrow$ extend) to reduce initial disruption.
+\end{noteBox}
+
+\textbf{Constraints and incorporation.} Large legacy Sheets with inconsistent keys were identified as a principal constraint, with migration errors that could affect billing as a key risk. The team will allocate a data-cleaning sprint, provision a part-time data analyst, and design the migration plan with careful rollback and reconciliation checkpoints.
+
+\subsubsection{Cost Management}
+Resource needs include a data analyst (part-time), integration-engineer support for migration tooling, and a portion of the PM's time. Infrastructure may require temporary compute/storage for staging and reconciliation. Cost monitoring uses time-tracking and milestone-based controls; cost control prioritises high-impact data fields, automates cleaning where feasible, and defers low-value normalisation.
+
+\subsubsection{Quality Management}
+\begin{summaryBox}
+\textbf{Quality objectives:} (1) canonical-schema completeness of mandatory fields for 90\% of migrated records in the pilot; (2) reconciliation discrepancy rate below the defined threshold; (3) documented data lineage for billing-critical records.
+\end{summaryBox}
+
+\textbf{Acceptance and measurement.} The pilot migration must pass reconciliation tests, and stakeholders must confirm the canonical representation supports required reporting. Data completeness, duplication rates, and reconciliation discrepancy counts are measured via sampling and automated checks. Weekly data-quality reports and escalation handle unresolved discrepancies. Mitigations for quality risks (irreversible data loss, legacy identifier mismatches) include snapshot backups, staged migration, and migration dry-runs with pre-defined reconciliation scripts.
+
+% ----------------------------------------------------------------
+% PROBLEM 04
+% ----------------------------------------------------------------
+\subsection{Problem 04 --- Security \& Access Control Risks}
+
+\textbf{Problem context.} Some operational information appears to move across tools with limited access control and limited audit visibility. This can lead to inconsistent handling of sensitive data, unclear responsibility for access decisions, and greater exposure if an account is shared or compromised. A more controlled approach is needed so that sensitive records can be handled with clearer rules and better traceability.
+
+\subsubsection{Schedule Management}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabularx}{\textwidth}{|c|p{4.2cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{WBS} & \textbf{Work Package} & \textbf{Key Activities} \\
+\hline
+1.1 & Problem Analysis & Inventory channels and typical PII exposures; review current access-control practices and gaps. \\
+\hline
+1.2 & Root Cause Validation & Identify processes that allow credential sharing; map regulatory/compliance obligations. \\
+\hline
+1.3 & Stakeholder Review & Consult legal, operations and client-facing roles; validate risk appetite and policy priorities. \\
+\hline
+1.4 & Requirement Refinement & Define RBAC model requirements and SSO needs; define PII handling and redaction rules. \\
+\hline
+1.5 & Solution Design & Design authentication and authorisation architecture; define audit logging and retention specifications. \\
+\hline
+1.6 & Implementation Planning & Plan SSO/RBAC integration and secret management; prepare access-control test plan. \\
+\hline
+1.7 & Testing \& Validation Planning & Define security acceptance tests and penetration checks; define audit review schedules. \\
+\hline
+1.8 & Monitoring \& Evaluation Planning & Define audit-log monitoring KPIs; define incident detection and response plan. \\
+\hline
+1.9 & Documentation & Security policy and role matrix; incident response and redaction guides. \\
+\hline
+\end{tabularx}
+\caption{WBS --- Problem 04: Security \& Access Control Risks}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    barA/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.5cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.5cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.5cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.5cm},
+]
+% ~9.5 weeks
+\foreach \w in {0,1,...,10} {
+    \draw[gray!25] (\w,0.5) -- (\w,-7.2);
+    \node[font=\sffamily\scriptsize, color=darkgray, anchor=south] at (\w,0.55) {W\w};
+}
+\node[sectionlabel, color=primary] at (-0.2,-0.4) {Analysis};
+\node[barA, anchor=west, minimum width=1.15cm] at (0,-0.4) {}; \node[tasklabel] at (0.1,-0.4) {Inventory \& Exposure Review};
+\node[barA, anchor=west, minimum width=1.0cm] at (1.15,-1.05) {}; \node[tasklabel] at (1.25,-1.05) {Root Cause Validation};
+\node[sectionlabel, color=accent] at (-0.2,-1.85) {Validation};
+\node[barB, anchor=west, minimum width=1.0cm] at (2.15,-1.85) {}; \node[tasklabel] at (2.25,-1.85) {Stakeholder Review};
+\node[barB, anchor=west, minimum width=1.15cm] at (3.15,-2.5) {}; \node[tasklabel] at (3.25,-2.5) {Requirement Refinement};
+\node[sectionlabel, color=orange!80!black] at (-0.2,-3.3) {Design};
+\node[barC, anchor=west, minimum width=1.7cm] at (4.3,-3.3) {}; \node[tasklabel] at (4.4,-3.3) {AuthN / AuthZ Design};
+\node[barC, anchor=west, minimum width=1.15cm] at (6.0,-3.95) {}; \node[tasklabel] at (6.1,-3.95) {Audit \& Logging Design};
+\node[sectionlabel, color=primary!60!black] at (-0.2,-4.75) {Test \& Mon.};
+\node[barD, anchor=west, minimum width=1.15cm] at (7.15,-4.75) {}; \node[tasklabel] at (7.25,-4.75) {Security Test Planning};
+\node[barD, anchor=west, minimum width=0.85cm] at (8.3,-5.4) {}; \node[tasklabel] at (8.4,-5.4) {Monitoring \& IR Planning};
+\node[barD, anchor=west, minimum width=0.7cm] at (9.15,-6.05) {}; \node[tasklabel] at (9.25,-6.05) {Documentation};
+\node[barA, minimum width=0.4cm] at (0.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (0.45,-6.9) {Analysis};
+\node[barB, minimum width=0.4cm] at (2.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (2.45,-6.9) {Validation};
+\node[barC, minimum width=0.4cm] at (4.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (4.45,-6.9) {Design};
+\node[barD, minimum width=0.4cm] at (6.0,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (6.25,-6.9) {Test \& Monitoring};
+\end{tikzpicture}
+}
+\caption{Planning Gantt Chart --- Problem 04 (Weeks from 1 June 2026)}
+\end{figure}
+
+\subsubsection{Stakeholder Engagement}
+Security planning workshops were held with legal counsel (internal or external), operations, and client-facing leads.
+
+\textbf{Validation and feedback.} Legal counsel recommended conservative retention and explicit conditions for unredaction, noting potential client contractual obligations. Operations requested pragmatic retention intervals and fast, auditable redaction procedures. Delivery leads noted the need to avoid over-restrictive access that would interfere with urgent support activities.
+
+\textbf{Concerns raised.} Stakeholders were concerned about the complexity of retrofitting SSO and RBAC into disparate legacy tools (for example, Google Sheets and WhatsApp), emphasising the need for a phased approach and documented exceptions. Another concern was the potential increase in support tickets resulting from new access controls.
+
+\begin{noteBox}
+\textbf{Refinement to problem definition:} The team prioritised audit logging, SSO for internal systems, and production secrets management as first-order items; full SSO for external client communications was deferred pending provider support.
+\end{noteBox}
+
+\textbf{Constraints and incorporation.} Constraints include limitations of third-party messaging platforms for access control and the need to manage exceptions where SSO is not possible. The plan integrates lightweight SSO for internal systems and vault-based secrets management; redaction workflows and audit reviews are built into pilot acceptance criteria.
+
+\subsubsection{Cost Management}
+Resource expectations include security-architect advisory time (part-time), an identity-provider subscription (if a managed SSO is used), and engineering time to integrate SSO and secrets management. Cost monitoring captures licence and integration effort; control is exercised by phasing upgrades and evaluating trade-offs between managed and self-hosted solutions.
+
+\subsubsection{Quality Management}
+\begin{summaryBox}
+\textbf{Quality objectives:} (1) audit logging for critical operations with 100\% coverage of canonical record changes in the pilot; (2) a demonstrated controlled redaction/unredaction process; (3) RBAC for internal systems with role definitions and logging.
+\end{summaryBox}
+
+\textbf{Acceptance and measurement.} Audit logs must be available for review and role-based policies validated through test cases; redaction and unredaction require appropriate approvals and are recorded. Audit completeness, the number of redaction incidents, and role-assignment accuracy are measured, and security testing includes basic penetration checks and role-misconfiguration tests. Continuous monitoring of audit logs and scheduled audits provide ongoing control; quality control validates log integrity and role enforcement during pilot exercises.
+
+% ----------------------------------------------------------------
+% PROBLEM 05
+% ----------------------------------------------------------------
+\subsection{Problem 05 --- Scalability \& Operational Bottlenecks}
+
+\textbf{Problem context.} As the company takes on more projects, a number of routine tasks still depend on a few key individuals and manual follow-up. This can slow onboarding, make task assignment inconsistent, and create bottlenecks when staff are unavailable. Without better process support, these issues can limit the organisation's ability to grow smoothly.
+
+\subsubsection{Schedule Management}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabularx}{\textwidth}{|c|p{4.2cm}|X|}
+\hline
+\rowcolor{secondary}
+\textbf{WBS} & \textbf{Work Package} & \textbf{Key Activities} \\
+\hline
+1.1 & Problem Analysis & Map recurring bottlenecks and single-person dependencies; measure onboarding time and common failure modes. \\
+\hline
+1.2 & Root Cause Validation & Trace process steps that require manual PM intervention; validate capacity constraints and staff time allocation. \\
+\hline
+1.3 & Stakeholder Review & Workshop with HR, PMs and team leads; validate training and capacity-planning needs. \\
+\hline
+1.4 & Requirement Refinement & Define templates and automation requirements; define onboarding checklist and competency criteria. \\
+\hline
+1.5 & Solution Design & Design automation flows (auto-assignment, escalation); design onboarding materials and micro-training modules. \\
+\hline
+1.6 & Implementation Planning & Prepare pilot automation rules and metrics; define training schedule and mentors. \\
+\hline
+1.7 & Testing \& Validation Planning & Define pilot evaluation metrics (throughput, cycle time); plan user acceptance tests and training feedback sessions. \\
+\hline
+1.8 & Monitoring \& Evaluation Planning & Establish throughput and cycle-time KPIs; define retention and workload monitoring. \\
+\hline
+1.9 & Documentation & Onboarding guides and templates; process playbooks and escalation paths. \\
+\hline
+\end{tabularx}
+\caption{WBS --- Problem 05: Scalability \& Operational Bottlenecks}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    sectionlabel/.style={font=\sffamily\bfseries\small, anchor=east},
+    tasklabel/.style={font=\sffamily\footnotesize, anchor=west},
+    barA/.style={rectangle, rounded corners=2pt, draw=primary, fill=primary!65, minimum height=0.5cm},
+    barB/.style={rectangle, rounded corners=2pt, draw=accent, fill=accent!60, minimum height=0.5cm},
+    barC/.style={rectangle, rounded corners=2pt, draw=orange!80!black, fill=orange!60, minimum height=0.5cm},
+    barD/.style={rectangle, rounded corners=2pt, draw=primary!60!black, fill=secondary, minimum height=0.5cm},
+]
+% ~10 weeks
+\foreach \w in {0,1,...,10} {
+    \draw[gray!25] (\w,0.5) -- (\w,-7.2);
+    \node[font=\sffamily\scriptsize, color=darkgray, anchor=south] at (\w,0.55) {W\w};
+}
+\node[sectionlabel, color=primary] at (-0.2,-0.4) {Analysis};
+\node[barA, anchor=west, minimum width=1.4cm] at (0,-0.4) {}; \node[tasklabel] at (0.1,-0.4) {Bottleneck Mapping};
+\node[barA, anchor=west, minimum width=1.15cm] at (1.4,-1.05) {}; \node[tasklabel] at (1.5,-1.05) {Root Cause Validation};
+\node[sectionlabel, color=accent] at (-0.2,-1.85) {Validation};
+\node[barB, anchor=west, minimum width=1.0cm] at (2.55,-1.85) {}; \node[tasklabel] at (2.65,-1.85) {Stakeholder Review};
+\node[barB, anchor=west, minimum width=1.15cm] at (3.55,-2.5) {}; \node[tasklabel] at (3.65,-2.5) {Requirement Refinement};
+\node[sectionlabel, color=orange!80!black] at (-0.2,-3.3) {Design};
+\node[barC, anchor=west, minimum width=1.7cm] at (4.7,-3.3) {}; \node[tasklabel] at (4.8,-3.3) {Automation \& Onboarding Design};
+\node[barC, anchor=west, minimum width=1.15cm] at (6.4,-3.95) {}; \node[tasklabel] at (6.5,-3.95) {Implementation Planning};
+\node[sectionlabel, color=primary!60!black] at (-0.2,-4.75) {Test \& Mon.};
+\node[barD, anchor=west, minimum width=1.15cm] at (7.55,-4.75) {}; \node[tasklabel] at (7.65,-4.75) {Pilot Metrics \& UAT Planning};
+\node[barD, anchor=west, minimum width=0.85cm] at (8.7,-5.4) {}; \node[tasklabel] at (8.8,-5.4) {Monitoring \& Reporting Plan};
+\node[barD, anchor=west, minimum width=0.7cm] at (9.55,-6.05) {}; \node[tasklabel] at (9.65,-6.05) {Documentation};
+\node[barA, minimum width=0.4cm] at (0.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (0.45,-6.9) {Analysis};
+\node[barB, minimum width=0.4cm] at (2.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (2.45,-6.9) {Validation};
+\node[barC, minimum width=0.4cm] at (4.2,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (4.45,-6.9) {Design};
+\node[barD, minimum width=0.4cm] at (6.0,-6.9) {}; \node[anchor=west, font=\sffamily\scriptsize] at (6.25,-6.9) {Test \& Monitoring};
+\end{tikzpicture}
+}
+\caption{Planning Gantt Chart --- Problem 05 (Weeks from 1 June 2026)}
+\end{figure}
+
+\subsubsection{Stakeholder Engagement}
+Stakeholder discussions involved HR, PMs and delivery leads.
+
+\textbf{Validation and feedback.} HR indicated that current onboarding typically requires 4--6 weeks to reach productive contribution and that a structured checklist and mentor program could reduce this by at least two weeks. Project managers advised that many routine assignments are decided by habit and that an explicit skills inventory with capacity tagging would enable automated assignment without excessive friction. Delivery leads requested careful control of automated escalation to avoid noisy notifications.
+
+\textbf{Concerns raised.} Stakeholders were concerned about the burden of maintaining a skills inventory and hesitated about overly prescriptive automation that might misassign complex tasks. There were also concerns about training bandwidth for mentors.
+
+\begin{noteBox}
+\textbf{Refinement to problem definition:} The solution was refined to emphasise automated support for routine assignment only, with manual override for complex cases. Onboarding improvements were specified as checklist-driven micro-training modules that complement mentoring rather than replace it.
+\end{noteBox}
+
+\textbf{Constraints and incorporation.} Constraints include limited HR capacity for mentoring and potential resistance from senior staff to automated assignment. The plan incorporates a lightweight skills-tagging template, a mentoring roster, and a limited-scope pilot; metrics collected during the pilot will drive further automation.
+
+\subsubsection{Cost Management}
+Anticipated resources include training-content development (one instructional designer or contractor), part-time mentor allocations from senior staff, and engineering time to implement automation templates and reporting. Cost control measures include reusing existing documentation where possible and prioritising micro-training over full course development.
+
+\subsubsection{Quality Management}
+\begin{summaryBox}
+\textbf{Quality objectives:} (1) reduce average onboarding time by a measurable amount in the pilot; (2) ensure automated-assignment accuracy for routine tasks meets an acceptable threshold (e.g., 90\%); (3) maintain staff satisfaction as measured by post-pilot surveys.
+\end{summaryBox}
+
+\textbf{Acceptance and measurement.} The pilot must demonstrate improved onboarding metrics and acceptable assignment accuracy without degrading staff satisfaction. Onboarding time, cycle-time for routine tasks, assignment-correction rate, and staff-satisfaction survey results are captured. Weekly pilot reviews drive corrective actions for misassignment patterns and refinement of skills tags. Mitigations for quality risks (misassignment, staff pushback) include manual override, a visible audit trail for assignment decisions, and an opt-in period for affected teams.
+
+\section{Conclusion}
+This chapter converts the findings from Chapters 1 and 2 into a practical planning framework. For each problem the project team has produced a Work Breakdown Structure (WBS), a planning-focused Gantt chart, a record of stakeholder feedback, and high-level cost and quality approaches. The focus is on preparing pilots and validation activities that reduce risk and keep disruption to a minimum. Successful system development depends not only on technical feasibility but also on careful planning, stakeholder involvement, and a realistic, staged implementation strategy --- principles that carry forward into the system modelling and design work of the following chapters.
 
 % ================================================================
 % END OF CHAPTER 3
