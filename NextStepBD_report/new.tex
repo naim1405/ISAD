@@ -2297,6 +2297,7 @@ The strategy involved sending targeted online surveys via Google Forms to distin
 \end{enumerate}
 
 \subsubsection{Questionnaires Rubrics and Scoring Guidance}
+\label{ssub:rubrics}
 To interpret the structured responses objectively without disclosing sensitive aggregate data prematurely, the following scoring rubrics and aggregate thresholds were defined.
 
 \begin{noteBox}
@@ -2318,6 +2319,538 @@ To interpret the structured responses objectively without disclosing sensitive a
     \item \textbf{Average $\geq$ 3.5 (Low Priority):} Maintain and monitor; consider pilot for incremental improvement.
 \end{itemize}
 \end{summaryBox}
+
+\section{Information Representation / Analysis}
+The qualitative interviews and structured questionnaires described in the previous section produced a substantial body of evidence about NextStepBD's current operations. To make this evidence actionable, the raw responses are represented here as charts and graphs. Visualising the data exposes patterns that are difficult to detect in narrative form: where stakeholders agree, where perceptions diverge by role, and which problem areas attract the strongest negative or positive signals. This section therefore consolidates the questionnaire results into per-stakeholder summaries and cross-stakeholder comparisons that directly inform the requirements and design decisions in the chapters that follow.
+
+The charts are organised by stakeholder group --- CEO, HR, Engineering Manager, Employees, and Customers --- followed by two comparison charts that contrast perspectives across groups. Unless otherwise noted, questionnaire items use a Likert scale from 1 (strongly disagree / never) to 5 (strongly agree / always), interpreted using the rubric defined in Section~\ref{ssub:rubrics} above; for employee items that record a distribution, the charts show the number of respondents who selected each point on the scale.
+
+\subsection{Charts and Graphs of the Information Gathering Tools}
+
+% ----------------------------------------------------------------
+% CEO
+% ----------------------------------------------------------------
+\subsubsection{CEO Questionnaire Results}
+The CEO's responses (Figure~\ref{fig:ceo_q}) show strong support for standardisation and data governance, with more moderate confidence in current project visibility.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.7\textwidth,
+    height=9cm,
+    xmin=0, xmax=5.6,
+    xtick={0,1,2,3,4,5},
+    xlabel={Score (1--5)},
+    bar width=10pt,
+    enlarge y limits=0.06,
+    nodes near coords, nodes near coords align={horizontal},
+    every node near coord/.append style={font=\scriptsize},
+    symbolic y coords={
+        {Standardisation worth effort},
+        {Support pilot project},
+        {Visibility into risks},
+        {Budget for pilot},
+        {Integration benefits},
+        {Data provenance priority},
+        {SaaS affordability},
+        {Errors caused by process gaps},
+        {Reliable project visibility},
+        {Clear approval processes}
+    },
+    ytick=data,
+    y tick label style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {
+    (4,{Clear approval processes})
+    (3,{Reliable project visibility})
+    (4,{Errors caused by process gaps})
+    (3,{SaaS affordability})
+    (5,{Data provenance priority})
+    (4,{Integration benefits})
+    (4,{Budget for pilot})
+    (3,{Visibility into risks})
+    (3,{Support pilot project})
+    (5,{Standardisation worth effort})
+};
+\end{axis}
+\end{tikzpicture}
+\caption{CEO Questionnaire Results}
+\label{fig:ceo_q}
+\end{figure}
+
+\textbf{Key findings:} strong support for standardisation; data governance considered critical; moderate confidence in current visibility; and strong support for integration initiatives.
+
+% ----------------------------------------------------------------
+% HR
+% ----------------------------------------------------------------
+\subsubsection{HR Questionnaire Results}
+HR responses (Figure~\ref{fig:hr_q}) highlight weak knowledge management and cross-training, while indicating that staff are generally receptive to change.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.72\textwidth,
+    height=11cm,
+    xmin=0, xmax=5.6,
+    xtick={0,1,2,3,4,5},
+    xlabel={Score (1--5)},
+    bar width=8pt,
+    enlarge y limits=0.05,
+    nodes near coords, nodes near coords align={horizontal},
+    every node near coord/.append style={font=\scriptsize},
+    symbolic y coords={
+        {Workflow feedback availability},
+        {Access to onboarding docs},
+        {Cross-training plan},
+        {Staff openness to change},
+        {Mentor program},
+        {Privacy management},
+        {Automation value},
+        {Ownership clarification requests},
+        {Skills tracking},
+        {Training support},
+        {Capacity visibility},
+        {Documented responsibilities},
+        {New hire productivity}
+    },
+    ytick=data,
+    y tick label style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=accent!70] coordinates {
+    (3,{New hire productivity})
+    (3,{Documented responsibilities})
+    (2,{Capacity visibility})
+    (2,{Training support})
+    (2,{Skills tracking})
+    (4,{Ownership clarification requests})
+    (4,{Automation value})
+    (3,{Privacy management})
+    (3,{Mentor program})
+    (4,{Staff openness to change})
+    (2,{Cross-training plan})
+    (2,{Access to onboarding docs})
+    (3,{Workflow feedback availability})
+};
+\end{axis}
+\end{tikzpicture}
+\caption{HR Questionnaire Results}
+\label{fig:hr_q}
+\end{figure}
+
+\textbf{Key findings:} weak knowledge management; weak cross-training; staff generally receptive to change; and frequent ownership confusion.
+
+% ----------------------------------------------------------------
+% Engineering Manager
+% ----------------------------------------------------------------
+\subsubsection{Engineering Manager Questionnaire Results}
+The Engineering Manager's day-to-day operational view (Figure~\ref{fig:em_q}) provides strong evidence of tool fragmentation and low confidence in documentation access, alongside strong support for workflow automation.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.72\textwidth,
+    height=13cm,
+    xmin=0, xmax=5.6,
+    xtick={0,1,2,3,4,5},
+    xlabel={Score (1--5)},
+    bar width=7pt,
+    enlarge y limits=0.04,
+    nodes near coords, nodes near coords align={horizontal},
+    every node near coord/.append style={font=\scriptsize},
+    symbolic y coords={
+        {Escalation frequency},
+        {Copy data between tools},
+        {Willingness to adopt changes},
+        {Time for clarifications},
+        {Workflow supports delivery},
+        {Data inconsistency contacts},
+        {Access historical notes},
+        {Too many notifications},
+        {One-click confirmation},
+        {Save messages locally},
+        {Billing confidence},
+        {Approval channel clarity},
+        {Automated assignment usefulness},
+        {Sensitive information handling},
+        {Chat approvals sufficient},
+        {Reconcile between tools},
+        {Find latest instructions}
+    },
+    ytick=data,
+    y tick label style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {
+    (2,{Find latest instructions})
+    (4,{Reconcile between tools})
+    (2,{Chat approvals sufficient})
+    (3,{Sensitive information handling})
+    (4,{Automated assignment usefulness})
+    (2,{Approval channel clarity})
+    (2,{Billing confidence})
+    (3,{Save messages locally})
+    (4,{One-click confirmation})
+    (4,{Too many notifications})
+    (2,{Access historical notes})
+    (3,{Data inconsistency contacts})
+    (3,{Workflow supports delivery})
+    (4,{Time for clarifications})
+    (4,{Willingness to adopt changes})
+    (4,{Copy data between tools})
+    (3,{Escalation frequency})
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Engineering Manager Questionnaire Results}
+\label{fig:em_q}
+\end{figure}
+
+\textbf{Key findings:} strong evidence of tool fragmentation; low confidence in documentation access; and strong support for workflow automation.
+
+% ----------------------------------------------------------------
+% EMPLOYEES (7 charts)
+% ----------------------------------------------------------------
+\subsubsection{Employee Survey Results}
+The employee survey captured response distributions across fifteen Likert items and two frequency items. The following charts group related items to expose specific operational pain points, ending with a summary of average scores by problem area.
+
+% --- Fig: Info access ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth, height=6cm,
+    bar width=8pt,
+    ymin=0, ymax=8,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    legend style={at={(0.5,-0.34)}, anchor=north, legend columns=2, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,4)(2,6)(3,4)(4,1)(5,0)};
+\addplot[fill=accent!70]  coordinates {(1,4)(2,6)(3,4)(4,1)(5,0)};
+\legend{Q1: Find latest client instructions, Q11: Access historical project notes}
+\end{axis}
+\end{tikzpicture}
+\caption{Employee Difficulty Finding and Accessing Project Information}
+\label{fig:emp_info}
+\end{figure}
+\textbf{Supports:} fragmented communication and lack of knowledge management. Most employees disagree that they can readily locate current instructions or historical notes.
+
+% --- Fig: Fragmentation ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth, height=6cm,
+    bar width=8pt,
+    ymin=0, ymax=14,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    legend style={at={(0.5,-0.34)}, anchor=north, legend columns=2, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,0)(2,0)(3,0)(4,3)(5,12)};
+\addplot[fill=accent!70]  coordinates {(1,0)(2,0)(3,3)(4,7)(5,5)};
+\legend{Q2: Reconciling information between tools, F1: Copying data between tools}
+\end{axis}
+\end{tikzpicture}
+\caption{Employee-Reported Impact of System Fragmentation}
+\label{fig:emp_frag}
+\end{figure}
+\textbf{Supports:} system fragmentation and manual processes. This is among the strongest signals in the survey --- the overwhelming majority of employees frequently reconcile and copy data between tools.
+
+% --- Fig: Approvals ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth, height=6cm,
+    bar width=8pt,
+    ymin=0, ymax=11,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    legend style={at={(0.5,-0.34)}, anchor=north, legend columns=2, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,1)(2,9)(3,4)(4,1)(5,0)};
+\addplot[fill=accent!70]  coordinates {(1,0)(2,8)(3,5)(4,2)(5,0)};
+\legend{Q3: Chat approvals sufficient, Q6: Clear approval channels}
+\end{axis}
+\end{tikzpicture}
+\caption{Employee Approval and Communication Challenges}
+\label{fig:emp_appr}
+\end{figure}
+\textbf{Supports:} WhatsApp dependency and an informal approval process. Few employees consider chat approvals sufficient or feel they have clear approval channels.
+
+% --- Fig: Governance ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.7\textwidth, height=6cm,
+    bar width=14pt,
+    ymin=0, ymax=12,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,0)(2,10)(3,4)(4,1)(5,0)};
+\end{axis}
+\end{tikzpicture}
+\caption{Employee Confidence in Billing Record Accuracy (Q7)}
+\label{fig:emp_gov}
+\end{figure}
+\textbf{Supports:} data governance issues and multiple sources of truth. Confidence in billing-record accuracy is low, concentrated at the disagree end of the scale.
+
+% --- Fig: Security ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth, height=6cm,
+    bar width=8pt,
+    ymin=0, ymax=8,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    legend style={at={(0.5,-0.34)}, anchor=north, legend columns=2, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,0)(2,7)(3,4)(4,2)(5,2)};
+\addplot[fill=accent!70]  coordinates {(1,0)(2,7)(3,6)(4,2)(5,0)};
+\legend{Q4: Need to redact client information, Q8: Save client messages locally}
+\end{axis}
+\end{tikzpicture}
+\caption{Employee Security and Sensitive Information Handling}
+\label{fig:emp_sec}
+\end{figure}
+\textbf{Supports:} security risks and informal data handling. A notable share of employees report needing to redact client information and saving client messages locally.
+
+% --- Fig: Automation readiness ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth, height=6cm,
+    bar width=7pt,
+    ymin=0, ymax=12,
+    ylabel={Number of Respondents},
+    xlabel={Likert Response (1--5)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    legend style={at={(0.5,-0.38)}, anchor=north, legend columns=3, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {(1,0)(2,0)(3,0)(4,7)(5,8)};
+\addplot[fill=accent!70]  coordinates {(1,0)(2,0)(3,0)(4,5)(5,10)};
+\addplot[fill=orange!70]  coordinates {(1,0)(2,0)(3,0)(4,4)(5,11)};
+\legend{Q5: Automated assignment, Q9: One-click confirmation, Q15: Willingness to adopt changes}
+\end{axis}
+\end{tikzpicture}
+\caption{Employee Readiness for Process Automation}
+\label{fig:emp_auto}
+\end{figure}
+\textbf{Supports:} scalability issues and the feasibility of the proposed system. Every employee response falls at ``agree'' or ``strongly agree'', justifying the proposed automation later in the report.
+
+% --- Fig: Average by problem area ---
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.72\textwidth, height=7cm,
+    xmin=0, xmax=5.4,
+    xtick={0,1,2,3,4,5},
+    xlabel={Average Score (1--5)},
+    bar width=12pt,
+    enlarge y limits=0.12,
+    nodes near coords, nodes near coords align={horizontal},
+    every node near coord/.append style={font=\scriptsize},
+    symbolic y coords={
+        {Automation Readiness},
+        {System Fragmentation},
+        {Security},
+        {Data Governance},
+        {Communication \& Approval},
+        {Information Access}
+    },
+    ytick=data,
+    y tick label style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=accent!75] coordinates {
+    (2.30,{Information Access})
+    (2.40,{Communication \& Approval})
+    (2.53,{Data Governance})
+    (3.07,{Security})
+    (4.20,{System Fragmentation})
+    (4.61,{Automation Readiness})
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Average Employee Score by Problem Area}
+\label{fig:emp_avg}
+\end{figure}
+\textbf{Summary chart.} This view clearly shows that (1) system fragmentation is the biggest pain point, (2) employees strongly support automation, (3) information access and communication are weak, and (4) security is moderate but still concerning.
+
+% ----------------------------------------------------------------
+% CUSTOMERS
+% ----------------------------------------------------------------
+\subsubsection{Customer Questionnaire Results}
+Customer responses (Figure~\ref{fig:cust_q}) indicate generally positive satisfaction, with a clear preference for more formal approval mechanisms.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.72\textwidth, height=9.5cm,
+    xmin=0, xmax=5.6,
+    xtick={0,1,2,3,4,5},
+    xlabel={Score (1--5)},
+    bar width=9pt,
+    enlarge y limits=0.06,
+    nodes near coords, nodes near coords align={horizontal},
+    every node near coord/.append style={font=\scriptsize},
+    symbolic y coords={
+        {Overall Delivery Satisfaction},
+        {Need for Approval Evidence},
+        {Willingness to Use Confirmation Workflow},
+        {Trust in Data Handling},
+        {Response Time Satisfaction},
+        {Access to Historical Confirmations},
+        {Preference for Formal Approval Process},
+        {Billing Issues from Miscommunication},
+        {Scope Change Confirmation},
+        {Communication Clarity}
+    },
+    ytick=data,
+    y tick label style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {
+    (4,{Communication Clarity})
+    (4,{Scope Change Confirmation})
+    (2,{Billing Issues from Miscommunication})
+    (4,{Preference for Formal Approval Process})
+    (4,{Access to Historical Confirmations})
+    (4,{Response Time Satisfaction})
+    (4,{Trust in Data Handling})
+    (4,{Willingness to Use Confirmation Workflow})
+    (3,{Need for Approval Evidence})
+    (4,{Overall Delivery Satisfaction})
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Customer Questionnaire Results}
+\label{fig:cust_q}
+\end{figure}
+
+The customer questionnaire indicates generally positive satisfaction with project delivery, communication quality, response times, and data handling practices. However, customers expressed a preference for more formal approval mechanisms and indicated occasional needs for documented approval evidence during billing and audit activities. These findings support the proposed introduction of structured approval workflows and centralised record management, while suggesting that the operational issues identified internally have not yet significantly affected overall customer satisfaction.
+
+% ----------------------------------------------------------------
+% COMPARISON CHARTS
+% ----------------------------------------------------------------
+\subsubsection{Stakeholder Comparison of Key Issues}
+Mapping a few representative questions to the identified problems shows that different stakeholder groups perceive the same underlying issues (Figure~\ref{fig:stake_cmp}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.92\textwidth, height=7cm,
+    bar width=10pt,
+    ymin=0, ymax=5.8,
+    ytick={0,1,2,3,4,5},
+    ylabel={Score (1--5)},
+    symbolic x coords={
+        {Need for Integration},
+        {Documentation \& Knowledge Access},
+        {Process Standardisation},
+        {Visibility \& Governance}
+    },
+    xtick=data,
+    x tick label style={font=\scriptsize, text width=2.6cm, align=center},
+    nodes near coords, every node near coord/.append style={font=\tiny},
+    legend style={at={(0.5,-0.30)}, anchor=north, legend columns=3, font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!70] coordinates {
+    ({Need for Integration},4) ({Documentation \& Knowledge Access},0)
+    ({Process Standardisation},5) ({Visibility \& Governance},5)};
+\addplot[fill=accent!70] coordinates {
+    ({Need for Integration},4) ({Documentation \& Knowledge Access},2)
+    ({Process Standardisation},4) ({Visibility \& Governance},2)};
+\addplot[fill=orange!70] coordinates {
+    ({Need for Integration},4) ({Documentation \& Knowledge Access},2)
+    ({Process Standardisation},4) ({Visibility \& Governance},2)};
+\legend{CEO, HR, Engineering Manager}
+\end{axis}
+\end{tikzpicture}
+\caption{Stakeholder Comparison of Key Issues}
+\label{fig:stake_cmp}
+\end{figure}
+
+\textbf{Note:} the CEO did not respond to the documentation/knowledge-access item, shown here as zero. This comparison demonstrates that leadership prioritises governance, HR emphasises workforce readiness, and the Engineering Manager experiences operational inefficiencies directly --- yet all groups support process improvement.
+
+\subsubsection{Stakeholder Support for Process Standardisation and Automation}
+Finally, aggregating each group's support for standardisation and workflow improvement (Figure~\ref{fig:stake_support}) shows broad, cross-cutting endorsement of change.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.8\textwidth, height=7cm,
+    bar width=18pt,
+    ymin=0, ymax=5.6,
+    ytick={0,1,2,3,4,5},
+    ylabel={Support Score (1--5)},
+    symbolic x coords={CEO, HR, {Engineering Manager}, Employees, Customer},
+    xtick=data,
+    x tick label style={font=\scriptsize, text width=2cm, align=center},
+    nodes near coords, every node near coord/.append style={font=\scriptsize},
+    grid=major, major grid style={draw=gray!20},
+]
+\addplot[fill=primary!75] coordinates {
+    (CEO,5) (HR,4) ({Engineering Manager},4) (Employees,4.73) (Customer,4)};
+\end{axis}
+\end{tikzpicture}
+\caption{Stakeholder Support for Process Standardisation and Workflow Improvements}
+\label{fig:stake_support}
+\end{figure}
+
+This final chart captures the central conclusion of the analysis: the proposed information-system improvements are supported by all major stakeholder groups --- leadership, management, employees, and customers alike. That consensus provides a strong mandate for the system design work that follows in the next chapter.
 
 % ================================================================
 % END OF CHAPTER 4
