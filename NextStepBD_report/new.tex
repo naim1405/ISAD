@@ -349,15 +349,268 @@ Rajshahi University of Engineering \& Technology
 \listoftables
 \newpage
 
+
 % ================================================================
 % START OF CHAPTER 1 — Recognition of Need
 % ================================================================
+\chapter{Recognition of Need}
 
+\section{Introduction}
+This chapter establishes the rationale for proposing an improved information system for NextStepBD. It describes the organisational context, the company's principal activities, the tools and workflows currently in use, and the set of priority problems that motivate the study. The objective is to define the recognition of need clearly and to provide a basis for subsequent analysis and proposed solutions.
+
+\section{Company Overview}
+NextStepBD is a Bangladesh-based technology firm specialising in bespoke software development, automation and IT consultancy. The organisation employs approximately fifty staff across development, design and project management roles and provides services to both domestic and international clients in sectors such as retail, healthcare, logistics and customer service.
+
+\textbf{Key organisational facts:}
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Location:} Bangladesh (serving local and international clients).
+    \item \textbf{Approximate team size:} 50 (developers, designers, project managers).
+    \item \textbf{Primary services:} custom software systems, AI-enabled automation, consultancy, and social media support solutions.
+    \item \textbf{Business model:} project-based engagements with options for long-term maintenance contracts.
+\end{itemize}
+
+As NextStepBD has grown from a small delivery team into a multi-project organisation, a number of operational gaps have emerged that impede consistent, high-quality delivery and make scaling more difficult.
+
+\section{Business Activities and Service Context}
+NextStepBD's operations can be summarised in repeating phases common to software service organisations:
+
+\begin{enumerate}[leftmargin=2em]
+    \item Client engagement and scoping.
+    \item Requirement elicitation and proposal drafting.
+    \item Project planning and resource allocation.
+    \item Development, testing and deployment.
+    \item Post-deployment support and maintenance.
+\end{enumerate}
+
+The company operates in a delivery-centric context where accurate requirements capture, validated approvals, predictable delivery schedules, and reliable billing are essential for customer satisfaction and business viability.
+
+\section{Existing System and Tools Used}
+Currently, NextStepBD relies on a heterogeneous mix of informal and formal tools to support business processes. These include messaging platforms (primarily WhatsApp), Google Sheets for lightweight records and trackers, GitHub for source control and issue tracking, email for formal correspondence, and local shared documents. Deployment is performed using project-specific scripts.
+
+There is no single authoritative system acting as the company's ``system of record'' for customers, projects, requirements and approvals; information exists in multiple places and often requires manual reconciliation.
+
+\subsection{Tools Map}
+The diagram below summarises the principal tools and the dominant information flows between them.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    grouplabel/.style={font=\sffamily\bfseries\small, color=primary},
+    box/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=2.4cm,
+        align=center,
+        minimum height=1.0cm
+    },
+    grpbox/.style={draw=primary!40, dashed, thick, rounded corners, fill=primary!4, inner sep=10pt},
+    arrow/.style={->, >=stealth, thick, color=primary}
+]
+
+% NODES
+\node[box] (wa)    at (0, 1.6)  {WhatsApp};
+\node[box] (email) at (0, -0.2) {Email};
+
+\node[box] (sheets) at (5, 1.6)  {Google Sheets};
+\node[box] (docs)   at (5, -0.2) {Shared Docs};
+
+\node[box] (gh) at (10, 1.6)  {GitHub};
+\node[box] (ci) at (10, -0.2) {CI/CD Scripts};
+
+% GROUP BOXES
+\begin{pgfonlayer}{background}
+    \node[grpbox, fit=(wa)(email)] (msg) {};
+    \node[grpbox, fit=(sheets)(docs)] (rec) {};
+    \node[grpbox, fit=(gh)(ci)] (eng) {};
+\end{pgfonlayer}
+
+\node[grouplabel] at (msg.north) [yshift=0.35cm] {Messaging};
+\node[grouplabel] at (rec.north) [yshift=0.35cm] {Records};
+\node[grouplabel] at (eng.north) [yshift=0.35cm] {Engineering};
+
+% ARROWS
+\draw[arrow] (wa)    -- node[above, font=\footnotesize] {conversations \& approvals} (sheets);
+\draw[arrow] (wa)    edge[bend right=20] node[below, font=\footnotesize, pos=0.55] {approvals \& files} (docs);
+\draw[arrow] (gh)    -- node[right, font=\footnotesize] {code \& PRs} (ci);
+\draw[arrow] (sheets) -- node[right, font=\footnotesize] {billing \& trackers} (docs);
+\draw[arrow] (email) -- node[above, font=\footnotesize, pos=0.5] {formal comms} (sheets);
+
+\end{tikzpicture}
+}
+\caption{Principal Tools and Dominant Information Flows in the Current System}
+\end{figure}
+
+\section{Current Workflow}
+The following sequence describes a typical workflow for handling a client request in the present environment:
+
+\begin{enumerate}[leftmargin=2em]
+    \item The client submits a request or approval via WhatsApp or email.
+    \item The project manager (PM) or account lead records the request informally in chat and sometimes copies the details into a Google Sheet for tracking.
+    \item The PM clarifies scope in chat and allocates work by creating tasks in GitHub or assigning developers directly.
+    \item Developers implement the change and create pull requests; notifications are sent through chat channels.
+    \item Quality assurance or the PM approves the change (often communicated via chat); deployment is executed with project-specific scripts.
+    \item Financial and status updates are recorded manually in Sheets for billing and reporting.
+\end{enumerate}
+
+\subsection{Current Workflow Diagram}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.85\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    node distance=1.1cm and 1.6cm,
+    box/.style={
+        rectangle,
+        rounded corners,
+        draw=primary,
+        fill=secondary,
+        thick,
+        text width=3.2cm,
+        align=center,
+        minimum height=1.1cm
+    },
+    extbox/.style={
+        rectangle,
+        rounded corners,
+        draw=accent,
+        fill=softteal,
+        thick,
+        text width=3.2cm,
+        align=center,
+        minimum height=1.1cm
+    },
+    arrow/.style={->, >=stealth, thick, color=primary}
+]
+
+\node[box] (client) {Client message\\(WhatsApp / Email)};
+\node[box, below=of client] (pm) {Project Manager};
+\node[box, below left=of pm] (sheets) {Google Sheets};
+\node[box, below right=of pm] (dev) {Developer};
+\node[box, below=of dev] (gh) {GitHub};
+\node[extbox, below=of gh] (prod) {Production};
+\node[extbox, below=2.2cm of sheets] (finance) {Finance / Reporting};
+
+% ARROWS
+\draw[arrow] (client) -- (pm);
+\draw[arrow] (pm) -- node[above left, font=\footnotesize] {copy request} (sheets);
+\draw[arrow] (pm) -- node[above right, font=\footnotesize, pos=0.4] {assign work} (dev);
+\draw[arrow] (dev) -- node[right, font=\footnotesize] {push code} (gh);
+\draw[arrow] (gh.west) to[bend left=30] node[left, font=\footnotesize, pos=0.55] {pull request} (pm.east);
+\draw[arrow] (pm.east) to[bend left=40] node[below, font=\footnotesize, pos=0.65] {approve in chat} (dev.west);
+\draw[arrow] (gh) -- node[right, font=\footnotesize] {deploy via scripts} (prod);
+\draw[arrow] (sheets) -- node[left, font=\footnotesize, align=center] {status \&\\billing updates} (finance);
+\draw[arrow] (prod.west) to[bend left=20] node[below, font=\footnotesize] {release notes} (sheets.south);
+
+\end{tikzpicture}
+}
+\caption{Current Workflow for Handling a Client Request}
+\end{figure}
+
+\subsection*{Observations}
+\begin{itemize}[leftmargin=2em]
+    \item Decisions and approvals are frequently recorded only in informal chat channels and not attached to formal project artifacts.
+    \item Multiple manual hand-offs and unstructured transfers of information increase the probability of errors and omissions.
+    \item Financial and management reporting depend on manual reconciliation across disparate artefacts.
+\end{itemize}
+
+\subsection{Process Interpretation}
+The diagram shows that the present workflow is heavily dependent on the project manager as an intermediary between the client, the development team and the administrative record-keeping process. Information begins in chat or email, is then copied manually into Sheets, passed verbally or informally to developers, and finally reconciled again for finance and reporting. This arrangement provides flexibility, but it also introduces delays, duplication and a high risk of inconsistency because the same request is represented in several disconnected places.
+
+\section{Need for System Improvement}
+The current configuration of tools and processes generates several operational risks:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Loss of authoritative approvals:} informal confirmations in chat are not reliably recorded against tasks.
+    \item \textbf{Data inconsistency:} the absence of a canonical data store leads to duplication and conflicting records.
+    \item \textbf{Manual process burden:} project managers and administrators devote substantial time to reconciliation and coordination rather than value-adding work.
+    \item \textbf{Security and compliance exposure:} sensitive data is sometimes shared through insecure channels without audit trails.
+    \item \textbf{Scalability limitations:} reliance on manual processes and key individuals creates bottlenecks that constrain growth.
+\end{itemize}
+
+An appropriate improvement strategy must be pragmatic: it should preserve users' existing preferred communication channels while capturing and formalising the items that must be auditable and actionable.
+
+\section{Problem Identification}
+The study identifies five priority problems that will be addressed in the remainder of this report. Each problem is presented with a concise description, an illustrative example and the principal stakeholders affected.
+
+\subsection{Problem 1 --- Fragmented Communication and Collaboration}
+\begin{problemBox}
+Project decisions, approvals and important clarifications are routinely exchanged via informal messaging channels (e.g., WhatsApp) and are not consistently captured in structured project artefacts.
+\end{problemBox}
+
+\textbf{Illustrative example:} A client posts a one-line approval in a WhatsApp group; developers proceed without the PM adding the approval to the tracked requirement, later resulting in scope disagreement.
+
+\textbf{Impact:} Rework, client dissatisfaction and potential disputes.
+
+\textbf{Stakeholders:} Project management, development teams, QA, clients.
+
+\subsection{Problem 2 --- System Fragmentation and Lack of Integration}
+\begin{problemBox}
+Multiple independent tools are used without an integration strategy, requiring manual cross-referencing and reconciliation.
+\end{problemBox}
+
+\textbf{Illustrative example:} Customer and billing status are recorded in separate Google Sheets maintained by different teams, leading to inconsistent invoicing.
+
+\textbf{Impact:} Administrative overhead and impaired decision quality.
+
+\textbf{Stakeholders:} Operations, finance, management.
+
+\subsection{Problem 3 --- Data Management and Governance Deficiencies}
+\begin{problemBox}
+There is no single source of truth for core business entities; data duplication and unsystematic updates compromise reporting and analysis.
+\end{problemBox}
+
+\textbf{Illustrative example:} Conflicting invoice records for the same client appear in different trackers, producing accounting discrepancies.
+
+\textbf{Impact:} Financial risk and reduced managerial visibility.
+
+\textbf{Stakeholders:} Finance, executive management.
+
+\subsection{Problem 4 --- Security and Access Control Risks}
+\begin{problemBox}
+Sensitive information is exchanged through informal channels without consistent access controls or audit trails.
+\end{problemBox}
+
+\textbf{Illustrative example:} Credentials or personally identifiable information (PII) appear in chat transcripts with no record of access or retention.
+
+\textbf{Impact:} Risk of data breaches, regulatory non-compliance and reputational harm.
+
+\textbf{Stakeholders:} Clients, legal, IT/security.
+
+\subsection{Problem 5 --- Scalability and Operational Bottlenecks}
+\begin{problemBox}
+Manual task assignment and single-point decision-making create performance constraints and dependency on individual staff.
+\end{problemBox}
+
+\textbf{Illustrative example:} When the PM is unavailable, routine approvals and task routing stall, delaying development activities.
+
+\textbf{Impact:} Reduced throughput, increased lead times and staff burnout.
+
+\textbf{Stakeholders:} Human resources, team leads, project management.
+
+\section{Summary of Identified Needs}
+The analysis in this chapter suggests a set of core needs for the organisation:
+
+\begin{enumerate}[leftmargin=2em]
+    \item Mechanisms to capture and record authoritative approvals and decisions from informal channels.
+    \item A canonical data store for customers, projects and requirements to reduce duplication and enable reliable reporting.
+    \item Integration between collaboration tools and the canonical store to maintain familiar user interfaces while ensuring data integrity.
+    \item Basic governance controls (RBAC, audit logs, PII handling) to reduce exposure.
+    \item Automation of routine workflow tasks to reduce manual coordination and improve scalability.
+\end{enumerate}
+
+\section{Conclusion}
+This chapter has established the organisational context and a set of well-defined problems that motivate the proposed system interventions. The subsequent chapters will analyse requirements, evaluate feasibility, and propose concrete, phased solutions designed to be both practical and technically feasible within the organisation's operational constraints.
 
 % ================================================================
 % END OF CHAPTER 1
 % ================================================================
-
 
 % ================================================================
 % START OF CHAPTER 2 — Initial Feasibility Study
