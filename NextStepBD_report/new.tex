@@ -3106,50 +3106,7 @@ This subsystem (Figure~\ref{fig:dfd_data}) illustrates how operational and proje
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.95cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.3cm},
-    flow/.style={-{Latex[length=2.2mm]}, thick, color=primary!80!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% External entities (left column)
-\node[entity] (pm)  at (0,4.2)  {Project Manager};
-\node[entity] (dev) at (0,1.4)  {Developer};
-\node[entity] (fin) at (0,-1.4) {Finance Officer};
-\node[entity] (mgmt) at (13.5,1.4) {Management};
-
-% Processes
-\node[proc] (p21) at (4.3,4.2)  {\textbf{P2.1}\\Record Project Information};
-\node[proc] (p22) at (4.3,1.4)  {\textbf{P2.2}\\Update Task Status};
-\node[proc] (p23) at (4.3,-1.4) {\textbf{P2.3}\\Maintain Financial Records};
-\node[proc] (p24) at (9.5,1.4)  {\textbf{P2.4}\\Generate Management Reports};
-
-% Data stores
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.8cm, align=center, font=\scriptsize] (d4) at (4.3,-4.2) {\textbf{D4} \textbar{} Google Sheets};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.8cm, align=center, font=\scriptsize] (d5) at (8.0,-4.2) {\textbf{D5} \textbar{} GitHub};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.8cm, align=center, font=\scriptsize] (d6) at (11.5,-4.2) {\textbf{D6} \textbar{} Manual Documents};
-
-% Entity -> process flows
-\draw[flow] (pm)  -- (p21) node[flab,midway,above]{Project Data};
-\draw[flow] (dev) -- (p22) node[flab,midway,above]{Code Updates};
-\draw[flow] (fin) -- (p23) node[flab,midway,above]{Billing Info};
-
-% Process -> store flows
-\draw[flow] (p21) -- (d4) node[flab,midway,right]{Store Data};
-\draw[flow] (p22) -- (d5) node[flab,midway,right]{Development\\Records};
-\draw[flow] (p23) to[bend right=10] (d4) node[flab,midway,left]{Financial\\Records};
-
-% Stores -> P2.4 (reports pull)
-\draw[flow] (d4) -- (p24);
-\draw[flow] (d5) -- (p24);
-\draw[flow] (d6) -- (p24) node[flab,pos=0.3,right]{Aggregated Data};
-
-% P2.4 -> Management
-\draw[flow] (p24) -- (mgmt) node[flab,midway,above]{Management\\Reports};
-\end{tikzpicture}
-}
+\includegraphics[width=\textwidth]{diag-4.18.png}
 \caption{Level~1 DFD --- Data Management \& Project Tracking Subsystem}
 \label{fig:dfd_data}
 \end{figure}
