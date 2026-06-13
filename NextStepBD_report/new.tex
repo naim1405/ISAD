@@ -2975,7 +2975,14 @@ Finally, aggregating each group's support for standardisation and workflow impro
 
 This final chart captures the central conclusion of the analysis: the proposed information-system improvements are supported by all major stakeholder groups --- leadership, management, employees, and customers alike. That consensus provides a strong mandate for the system design work that follows in the next chapter.
 
+% ================================================================
+% REPLACEMENT SECTION: Data Flow Diagrams (5 Level-1 DFDs, one per problem)
+% This replaces the old "4.3.2.2 Subsystem DFDs" part.
+% Keep the Context Diagram (Level 0) as-is, then add five focused Level-1 DFDs.
+% ================================================================
+
 \subsection{Data Flow Diagram (DFD) of Existing System}
+
 Data Flow Diagrams (DFDs) were developed to represent the flow of information within NextStepBD's current operational environment. The diagrams illustrate how information is created, transferred, stored, and utilised across different stakeholders and systems. The purpose of these DFDs is to identify inefficiencies, duplication of effort, communication gaps, and operational bottlenecks within the existing environment.
 
 The analysis revealed that information frequently moves through multiple disconnected platforms including WhatsApp, Email, Google Sheets, GitHub, and manual records. As a result, critical business information is often duplicated, inconsistently maintained, and difficult to trace. The DFDs presented below visualise these issues and provide the foundation for the improved system proposed in later chapters.
@@ -2983,9 +2990,10 @@ The analysis revealed that information frequently moves through multiple disconn
 The diagrams use standard DFD notation: \emph{external entities} are shown as solid rectangles, \emph{processes} as circles, \emph{data stores} as open-ended (Gane--Sarson style) bars, and \emph{data flows} as labelled directed arrows.
 
 % ----------------------------------------------------------------
-% 4.3.2.1 Context Diagram
+% 4.3.2.1 Context Diagram (Level 0) — kept unchanged
 % ----------------------------------------------------------------
 \subsubsection{DFD of Whole Existing System (Context Diagram)}
+
 The Context DFD (Figure~\ref{fig:dfd_context}) provides a high-level view of the entire organisation as a single system (\textbf{P0}) and illustrates its interactions with four external entities: Customers (E1), Management/CEO (E2), Employees (E3), and the HR Department (E4). Process P0 represents all operational activities currently performed by the company using a combination of manual procedures and disconnected software tools.
 
 \begin{figure}[H]
@@ -3039,86 +3047,334 @@ The Context DFD (Figure~\ref{fig:dfd_context}) provides a high-level view of the
 \noindent The context diagram makes clear that every external entity transacts through a single, undifferentiated information ``system'' that is in reality a patchwork of manual procedures and disconnected tools. This single point of mediation is where most of the company's traceability and reconciliation problems originate.
 
 % ----------------------------------------------------------------
-% 4.3.2.2 Subsystem DFDs
+% NEW: Five separate Level-1 DFDs — one for each identified problem
 % ----------------------------------------------------------------
-\subsubsection{DFD of Key Subsystems Addressing Organizational Issues}
-Based on the problem analysis conducted in Chapters 1 and 4, two subsystems were identified as the most critical contributors to organisational inefficiency: the \textbf{Communication \& Collaboration Subsystem} and the \textbf{Data Management \& Project Tracking Subsystem}. Each is expanded below as a Level~1 DFD.
+\subsubsection{Level 1 DFDs — One per Identified Problem Area}
 
-\paragraph{A. Communication \& Collaboration Subsystem.}
-This subsystem (Figure~\ref{fig:dfd_comm}) demonstrates how project-related communication currently flows through informal channels, highlighting the communication-fragmentation problem. Requirements arrive through WhatsApp, Email and meetings (P1.1), are interpreted and distributed by the project manager (P1.2), executed by developers (P1.3), validated by QA (P1.4), and finally communicated back to the customer (P1.5). Approvals and clarifications are scattered across three informal data stores --- WhatsApp messages (D1), email records (D2), and project notes (D3).
+The following five Level~1 DFDs provide focused views of the current system, each centred on one of the five priority problems identified in Chapter~1. Each diagram highlights the specific processes, data stores, and flows that contribute to that problem.
+
+% ========================================================
+% PROBLEM 1: Fragmented Communication & Collaboration
+% ========================================================
+\paragraph{A. Level 1 DFD — Problem 1: Fragmented Communication \& Collaboration}
+
+This diagram (Figure~\ref{fig:dfd_prob1}) focuses on how requirements, approvals, and decisions flow through informal channels. It shows the heavy reliance on WhatsApp and email as both communication medium and de-facto record, with almost no structured capture into project artefacts.
 
 \begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tikzpicture}[
     every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.95cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.3cm},
-    flow/.style={-{Latex[length=2.2mm]}, thick, color=primary!80!black},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.1cm, align=center, minimum height=0.9cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=2.0cm, align=center, minimum size=2.4cm},
+    flow/.style={-{Latex[length=2.0mm]}, thick, color=primary!80!black},
     store/.style={thick, color=primary!70!black},
     flab/.style={font=\scriptsize\sffamily, align=center}
 ]
 % External entities
-\node[entity] (cust) at (-1.0,6.2) {Customer};
-\node[entity] (pm)   at (-1.0,1.5) {Project Manager};
-\node[entity] (dev)  at (8.7,1.5)  {Developer};
-\node[entity] (qa)   at (14.6,3.0) {QA Engineer};
+\node[entity] (cust) at (-2.5,5.5) {Customer};
+\node[entity] (pm)   at (-2.5,1.2) {Project Manager};
+\node[entity] (dev)  at (7.5,1.2)  {Developer};
+\node[entity] (qa)   at (12.5,3.0) {QA Engineer};
 
-% Processes
-\node[proc] (p11) at (4.0,6.2)  {\textbf{P1.1}\\Receive Client Requirements};
-\node[proc] (p12) at (4.0,1.5)  {\textbf{P1.2}\\Communicate Requirements};
-\node[proc] (p13) at (8.7,6.2)  {\textbf{P1.3}\\Execute Development Tasks};
-\node[proc] (p14) at (13.6,6.2) {\textbf{P1.4}\\Validate Deliverables};
-\node[proc] (p15) at (8.7,9.6)  {\textbf{P1.5}\\Deliver Updates to Customer};
+% Processes (Problem 1 focus)
+\node[proc] (p11) at (3.5,5.5)  {\textbf{P1.1}\\Receive via\\Informal Channels};
+\node[proc] (p12) at (3.5,1.2)  {\textbf{P1.2}\\Interpret \&\\Forward (PM)};
+\node[proc] (p13) at (7.5,5.5)  {\textbf{P1.3}\\Develop from\\Chat Notes};
+\node[proc] (p14) at (11.5,5.5) {\textbf{P1.4}\\Verify \&\\Approve in Chat};
+\node[proc] (p15) at (7.5,8.5)  {\textbf{P1.5}\\Send Updates\\via Chat};
 
-% Data stores (open-ended bars)
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.8cm, align=center, font=\scriptsize] (d1) at (0.5,-1.8) {\textbf{D1} \textbar{} WhatsApp Messages};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.8cm, align=center, font=\scriptsize] (d2) at (4.0,-1.8) {\textbf{D2} \textbar{} Email Records};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.8cm, align=center, font=\scriptsize] (d3) at (7.6,-1.8) {\textbf{D3} \textbar{} Project Notes};
+% Problematic data stores
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.2cm, minimum height=0.75cm, align=center, font=\scriptsize] (d1) at (-0.5,-1.5) {\textbf{D1} \textbar{} WhatsApp Messages};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.75cm, align=center, font=\scriptsize] (d2) at (3.5,-1.5) {\textbf{D2} \textbar{} Email Threads};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.75cm, align=center, font=\scriptsize] (d3) at (7.5,-1.5) {\textbf{D3} \textbar{} Ad-hoc Notes};
 
 % Flows
-\draw[flow] (cust) -- (p11) node[flab,midway,above]{Requirements};
+\draw[flow] (cust) -- (p11) node[flab,midway,above]{Requirements / Approvals};
 \draw[flow] (pm) -- (p12) node[flab,midway,above]{Interprets};
-\draw[flow] (p11) -- (p12) node[flab,midway,right]{Requirement\\Details};
-\draw[flow] (p12) -- (dev) node[flab,midway,above]{Tasks};
-\draw[flow] (dev) -- (p13) node[flab,midway,right]{Progress\\Updates};
-\draw[flow] (p13) -- (p14) node[flab,midway,above]{Completed\\Features};
-\draw[flow] (qa) -- (p14) node[flab,pos=0.45,right]{Verifies};
-\draw[flow] (p14) to[bend right=18] (p15) node[flab,pos=0.5,above right,yshift=1pt]{Approved\\Deliverables};
-\draw[flow] (p15) to[bend right=25] (cust) node[flab,midway,above]{Updates};
+\draw[flow] (p11) -- (p12) node[flab,midway,right]{Raw messages};
+\draw[flow] (p12) -- (dev) node[flab,midway,above]{Verbal / chat tasks};
+\draw[flow] (dev) -- (p13) node[flab,midway,right]{Progress};
+\draw[flow] (p13) -- (p14) node[flab,midway,above]{Completed work};
+\draw[flow] (qa) -- (p14) node[flab,pos=0.4,right]{Verifies};
+\draw[flow] (p14) to[bend right=15] (p15) node[flab,pos=0.5,above right]{Approved};
+\draw[flow] (p15) to[bend right=20] (cust) node[flab,midway,above]{Status via chat};
 
-% Store links (bidirectional)
-\draw[flow,{Latex[length=2mm]}-{Latex[length=2mm]}] (p11) -- (d1);
-\draw[flow,{Latex[length=2mm]}-{Latex[length=2mm]}] (p11.south) to[bend left=10] (d2.north);
-\draw[flow,{Latex[length=2mm]}-{Latex[length=2mm]}] (p12) -- (d3);
+% Bidirectional store links (the core problem)
+\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p11) -- (d1);
+\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p11.south) to[bend left=8] (d2.north);
+\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p12) -- (d3);
+\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p13) -- (d1);
+\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p14) -- (d1);
 \end{tikzpicture}
 }
-\caption{Level~1 DFD --- Communication \& Collaboration Subsystem}
-\label{fig:dfd_comm}
+\caption{Level~1 DFD — Problem 1: Fragmented Communication \& Collaboration}
+\label{fig:dfd_prob1}
 \end{figure}
 
 \begin{problemBox}
-\textbf{Key problems visible:} requirements stored in multiple locations; approvals buried in chats; the project manager becomes a communication bottleneck; and decisions have poor traceability.
+\textbf{Key problems visible:} All approvals and decisions live only in transient chat/email stores (D1–D3). There is no structured hand-off to a canonical project record. The Project Manager is the sole interpreter and gatekeeper, creating a severe bottleneck and zero traceability.
 \end{problemBox}
 
-\paragraph{B. Data Management \& Project Tracking Subsystem.}
-This subsystem (Figure~\ref{fig:dfd_data}) illustrates how operational and project information is maintained across disconnected systems. The project manager records project information (P2.1), developers update task status (P2.2), the finance officer maintains financial records (P2.3), and management reports are compiled (P2.4) by pulling from three separate data stores --- Google Sheets (D4), GitHub (D5), and manual documents (D6).
+% ========================================================
+% PROBLEM 2: System Fragmentation & Lack of Integration
+% ========================================================
+\paragraph{B. Level 1 DFD — Problem 2: System Fragmentation \& Lack of Integration}
+
+This diagram (Figure~\ref{fig:dfd_prob2}) shows how the same business information is scattered across five completely separate tools with no automated synchronisation. Every cross-tool action requires manual copy-paste or re-entry.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{diag-4.18.png}
-\caption{Level~1 DFD --- Data Management \& Project Tracking Subsystem}
-\label{fig:dfd_data}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=1.9cm, align=center, minimum height=0.85cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.85cm, align=center, minimum size=2.1cm},
+    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
+    store/.style={thick, color=primary!70!black},
+    flab/.style={font=\scriptsize\sffamily, align=center}
+]
+% Entities
+\node[entity] (cust) at (-3.2,4.8) {Customer};
+\node[entity] (pm)   at (-3.2,0.8) {PM};
+\node[entity] (dev)  at (4.5,4.8)  {Developer};
+\node[entity] (fin)  at (4.5,0.8)  {Finance};
+\node[entity] (mgt)  at (10.5,2.8){Management};
+
+% Processes
+\node[proc] (p21) at (0.5,4.8)  {\textbf{P2.1}\\Log in\\Sheets};
+\node[proc] (p22) at (0.5,0.8)  {\textbf{P2.2}\\Create\\GitHub Issue};
+\node[proc] (p23) at (7.5,4.8)  {\textbf{P2.3}\\Update\\Status};
+\node[proc] (p24) at (7.5,0.8)  {\textbf{P2.4}\\Record\\Billing};
+\node[proc] (p25) at (11.5,4.8) {\textbf{P2.5}\\Compile\\Reports};
+
+% Five disconnected stores (the fragmentation problem)
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d4) at (-1.5,-1.3) {\textbf{D4} \textbar{} Google Sheets};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.4cm, minimum height=0.7cm, align=center, font=\scriptsize] (d5) at (2.0,-1.3) {\textbf{D5} \textbar{} GitHub};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d6) at (5.5,-1.3) {\textbf{D6} \textbar{} WhatsApp};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.4cm, minimum height=0.7cm, align=center, font=\scriptsize] (d7) at (8.8,-1.3) {\textbf{D7} \textbar{} Email};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d8) at (12.2,-1.3) {\textbf{D8} \textbar{} Manual Docs};
+
+% Flows showing manual hand-offs
+\draw[flow] (cust) -- (p21) node[flab,midway,above]{Request};
+\draw[flow] (pm) -- (p21) node[flab,midway,above]{Copy to};
+\draw[flow] (p21) -- (p22) node[flab,midway,right,yshift=3pt]{Manual copy};
+\draw[flow] (dev) -- (p23) node[flab,midway,above]{Progress};
+\draw[flow] (p23) -- (p24) node[flab,midway,right]{Re-enter};
+\draw[flow] (fin) -- (p24) node[flab,midway,above]{Billing data};
+\draw[flow] (p24) -- (p25) node[flab,midway,right]{Export};
+\draw[flow] (p25) -- (mgt) node[flab,midway,above]{Reports};
+
+% All stores are isolated (no arrows between them)
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p21) -- (d4);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p22) -- (d5);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p23) -- (d6);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p23) -- (d7);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p25) -- (d8);
+\end{tikzpicture}
+}
+\caption{Level~1 DFD — Problem 2: System Fragmentation \& Lack of Integration}
+\label{fig:dfd_prob2}
 \end{figure}
 
 \begin{problemBox}
-\textbf{Key problems visible:} no single source of truth; data duplication across spreadsheets; manual reconciliation required; reporting requires data collection from multiple systems; and a high risk of inconsistent information.
+\textbf{Key problems visible:} Five completely independent data stores with no integration. Every status change or approval requires manual re-entry. There is no automated propagation of information between tools.
 \end{problemBox}
 
-\noindent Together, these three diagrams expose the structural roots of all five organisational problems identified earlier: fragmented communication, the project-manager bottleneck, data-governance deficiencies, weak record traceability, and the scalability limits of manual reconciliation. They establish the analytical baseline against which the proposed system is designed in the following chapter.
+% ========================================================
+% PROBLEM 3: Data Management & Governance Deficiencies
+% ========================================================
+\paragraph{C. Level 1 DFD — Problem 3: Data Management \& Governance Deficiencies}
+
+This diagram (Figure~\ref{fig:dfd_prob3}) illustrates the absence of a single authoritative source for core business entities. The same customer or project data exists in multiple places and is updated independently.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
+    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
+    store/.style={thick, color=primary!70!black},
+    flab/.style={font=\scriptsize\sffamily, align=center}
+]
+% Entities
+\node[entity] (pm)   at (-2.8,4.5) {Project Manager};
+\node[entity] (dev)  at (3.5,4.5)  {Developer};
+\node[entity] (fin)  at (9.5,4.5)  {Finance};
+\node[entity] (mgt)  at (9.5,1.0)  {Management};
+
+% Processes
+\node[proc] (p31) at (0.2,4.5)  {\textbf{P3.1}\\Maintain\\Customer List};
+\node[proc] (p32) at (6.0,4.5)  {\textbf{P3.2}\\Track\\Project Data};
+\node[proc] (p33) at (12.0,4.5) {\textbf{P3.3}\\Update\\Billing};
+\node[proc] (p34) at (6.0,1.0)  {\textbf{P3.4}\\Reconcile\\\& Report};
+
+% Multiple conflicting stores for the same data
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d9)  at (-1.0,-1.2) {\textbf{D9} \textbar{} Sheets - Customers};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d10) at (2.8,-1.2) {\textbf{D10} \textbar{} Sheets - Projects};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d11) at (6.5,-1.2) {\textbf{D11} \textbar{} GitHub Projects};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d12) at (10.0,-1.2) {\textbf{D12} \textbar{} Billing Sheet};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d13) at (13.5,-1.2) {\textbf{D13} \textbar{} Master Report (manual)};
+
+% Flows showing duplication
+\draw[flow] (pm) -- (p31) node[flab,midway,above]{Update customer};
+\draw[flow] (dev) -- (p32) node[flab,midway,above]{Project status};
+\draw[flow] (fin) -- (p33) node[flab,midway,above]{Invoice data};
+\draw[flow] (p31) -- (p34) node[flab,midway,right]{Copy};
+\draw[flow] (p32) -- (p34) node[flab,midway,right]{Copy};
+\draw[flow] (p33) -- (p34) node[flab,midway,right]{Copy};
+\draw[flow] (p34) -- (mgt) node[flab,midway,above]{Inconsistent report};
+
+% All stores are written independently
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p31) -- (d9);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p31) -- (d10);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p32) -- (d10);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p32) -- (d11);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p33) -- (d12);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p34) -- (d13);
+\end{tikzpicture}
+}
+\caption{Level~1 DFD — Problem 3: Data Management \& Governance Deficiencies}
+\label{fig:dfd_prob3}
+\end{figure}
+
+\begin{problemBox}
+\textbf{Key problems visible:} The same core entities (customers, projects, billing) are maintained independently in at least five different stores. No canonical record exists. Reconciliation is entirely manual and error-prone.
+\end{problemBox}
+
+% ========================================================
+% PROBLEM 4: Security & Access Control Risks
+% ========================================================
+\paragraph{D. Level 1 DFD — Problem 4: Security \& Access Control Risks}
+
+This diagram (Figure~\ref{fig:dfd_prob4}) highlights how sensitive information travels through the same insecure, unaudited channels used for everyday conversation, with no role-based controls or logging.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
+    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
+    store/.style={thick, color=primary!70!black},
+    flab/.style={font=\scriptsize\sffamily, align=center}
+]
+% Entities
+\node[entity] (cust) at (-2.5,5.0) {Customer};
+\node[entity] (pm)   at (-2.5,1.0) {Project Manager};
+\node[entity] (dev)  at (5.5,5.0)  {Developer};
+\node[entity] (fin)  at (5.5,1.0)  {Finance};
+\node[entity] (ceo)  at (11.0,3.0) {CEO / Legal};
+
+% Processes
+\node[proc] (p41) at (1.0,5.0)  {\textbf{P4.1}\\Share via\\Chat};
+\node[proc] (p42) at (1.0,1.0)  {\textbf{P4.2}\\Forward\\Credentials};
+\node[proc] (p43) at (8.0,5.0)  {\textbf{P4.3}\\Store in\\Personal Docs};
+\node[proc] (p44) at (8.0,1.0)  {\textbf{P4.4}\\Access\\Ad-hoc};
+
+% Uncontrolled stores
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d14) at (0.5,-1.4) {\textbf{D14} \textbar{} WhatsApp Groups};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d15) at (4.0,-1.4) {\textbf{D15} \textbar{} Email Attachments};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d16) at (7.5,-1.4) {\textbf{D16} \textbar{} Local Drives};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d17) at (11.0,-1.4) {\textbf{D17} \textbar{} Shared Folders (no ACL)};
+
+% Sensitive flows
+\draw[flow] (cust) -- (p41) node[flab,midway,above]{PII / Contract};
+\draw[flow] (pm) -- (p42) node[flab,midway,above]{Credentials};
+\draw[flow] (p41) -- (p42) node[flab,midway,right]{Forward};
+\draw[flow] (dev) -- (p43) node[flab,midway,above]{Client data};
+\draw[flow] (fin) -- (p44) node[flab,midway,above]{Financials};
+\draw[flow] (p43) -- (p44) node[flab,midway,right]{Access};
+
+% No controls on stores
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p41) -- (d14);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p42) -- (d15);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p43) -- (d16);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p44) -- (d17);
+\end{tikzpicture}
+}
+\caption{Level~1 DFD — Problem 4: Security \& Access Control Risks}
+\label{fig:dfd_prob4}
+\end{figure}
+
+\begin{problemBox}
+\textbf{Key problems visible:} Sensitive data (PII, credentials, contracts) flows through the same unaudited channels as casual chat. There are no access controls, no audit logs, and no distinction between public and confidential information.
+\end{problemBox}
+
+% ========================================================
+% PROBLEM 5: Scalability & Operational Bottlenecks
+% ========================================================
+\paragraph{E. Level 1 DFD — Problem 5: Scalability \& Operational Bottlenecks}
+
+This diagram (Figure~\ref{fig:dfd_prob5}) shows the extreme centralisation of coordination and decision-making around a very small number of individuals (primarily the Project Manager), making the entire operation dependent on their availability.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
+    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
+    store/.style={thick, color=primary!70!black},
+    flab/.style={font=\scriptsize\sffamily, align=center}
+]
+% Entities
+\node[entity] (cust) at (-3.5,5.2) {Customer};
+\node[entity] (pm)   at (-3.5,1.0) {Project Manager};
+\node[entity] (dev1) at (3.0,5.2)  {Developer A};
+\node[entity] (dev2) at (7.0,5.2)  {Developer B};
+\node[entity] (qa)   at (11.0,5.2) {QA};
+\node[entity] (hr)   at (11.0,1.0) {HR / Onboarding};
+
+% Processes (all funnelling through PM)
+\node[proc] (p51) at (0.0,5.2)  {\textbf{P5.1}\\Route All\\Requests};
+\node[proc] (p52) at (0.0,1.0)  {\textbf{P5.2}\\Manual Task\\Assignment};
+\node[proc] (p53) at (5.0,1.0)  {\textbf{P5.3}\\Chase\\Updates};
+\node[proc] (p54) at (9.5,3.0)  {\textbf{P5.4}\\Approve \&\\Onboard};
+
+% Bottleneck stores
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d18) at (1.5,-1.5) {\textbf{D18} \textbar{} PM's Personal Notes};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d19) at (5.5,-1.5) {\textbf{D19} \textbar{} Chat History (PM only)};
+\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d20) at (9.5,-1.5) {\textbf{D20} \textbar{} Email (PM inbox)};
+
+% All coordination arrows go through PM processes
+\draw[flow] (cust) -- (p51) node[flab,midway,above]{Any request};
+\draw[flow] (p51) -- (pm) node[flab,midway,right]{Only via PM};
+\draw[flow] (pm) -- (p52) node[flab,midway,above]{Assign};
+\draw[flow] (p52) -- (dev1) node[flab,midway,above]{Task};
+\draw[flow] (p52) -- (dev2) node[flab,midway,above]{Task};
+\draw[flow] (dev1) -- (p53) node[flab,midway,right]{Status?};
+\draw[flow] (dev2) -- (p53) node[flab,midway,right]{Status?};
+\draw[flow] (qa) -- (p53) node[flab,midway,above]{Ready?};
+\draw[flow] (p53) -- (pm) node[flab,midway,below]{Report back};
+\draw[flow] (pm) -- (p54) node[flab,midway,above]{Final approval};
+\draw[flow] (p54) -- (hr) node[flab,midway,above]{New staff};
+
+% PM's personal stores
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p51) -- (d18);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p52) -- (d19);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p53) -- (d20);
+\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p54) -- (d18);
+\end{tikzpicture}
+}
+\caption{Level~1 DFD — Problem 5: Scalability \& Operational Bottlenecks}
+\label{fig:dfd_prob5}
+\end{figure}
+
+\begin{problemBox}
+\textbf{Key problems visible:} Virtually every significant flow (task assignment, status chasing, approvals, onboarding) passes through the Project Manager. When the PM is unavailable or overloaded, the entire delivery pipeline stalls. Knowledge and authority are not distributed.
+\end{problemBox}
+
+\noindent Together, these five focused Level~1 diagrams, along with the Context Diagram, expose the structural roots of all five organisational problems identified in Chapter~1. They establish a clear analytical baseline against which the proposed centralised information system will be designed in subsequent chapters.
 
 % ================================================================
-% END OF CHAPTER 4
+% END OF REPLACEMENT DFD SECTION
+% ================================================================
+
 % ================================================================
 
 \end{document}
