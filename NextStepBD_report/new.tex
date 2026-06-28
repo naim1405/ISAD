@@ -3377,4 +3377,1440 @@ This diagram (Figure~\ref{fig:dfd_prob5}) shows the extreme centralisation of co
 
 % ================================================================
 
+% ================================================================
+% START OF SECTION 4.4 — Detailed Feasibility Analysis and Recommendation
+% ================================================================
+\section{Detailed Feasibility Analysis and Recommendation}
+\label{sec:detailed-feasibility-and-recommendation}
+
+\subsection{Introduction}
+
+The preceding information-gathering activities, stakeholder interviews, questionnaires,
+charts, and Data Flow Diagrams established that NextStepBD's current operating model is
+functional but structurally fragmented. The organisation relies on several disconnected
+platforms, informal approval channels, manually reconciled records, and a small number of
+key individuals who coordinate a large proportion of operational work. The purpose of this
+section is to move from problem description to a detailed feasibility judgement and determine
+whether the proposed improvements can be implemented successfully within NextStepBD's
+technical, economic, and operational constraints.
+
+The analysis focuses on the five priority problems identified in Chapter~1:
+
+\begin{enumerate}[label=\arabic*., leftmargin=1.8em]
+    \item Fragmented Communication and Collaboration;
+    \item System Fragmentation and Lack of Integration;
+    \item Data Management and Governance Deficiencies;
+    \item Security and Access Control Risks; and
+    \item Scalability and Operational Bottlenecks.
+\end{enumerate}
+
+For each problem, the analysis identifies the root cause, supporting evidence, performance
+impact, and economic or organisational consequences. It then evaluates three candidate
+systems that were introduced in the initial feasibility and planning chapters: a Central
+Integration \& Data Platform, a Collaboration \& Workflow Management System, and a
+DevOps, QA \& Observability Platform. The final part of the section evaluates performance,
+risks, technical feasibility, economic feasibility, and operational impact as an integrated
+programme rather than as five isolated projects.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    problem/.style={draw=purple!70!black, rounded corners=3pt, fill=purple!8,
+        minimum width=3.0cm, minimum height=1.1cm, align=center},
+    system/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!9,
+        minimum width=4.6cm, minimum height=1.2cm, align=center, font=\small\bfseries},
+    eval/.style={draw=black!65, rounded corners=3pt, fill=black!4,
+        minimum width=2.7cm, minimum height=0.95cm, align=center},
+    arrow/.style={-{Latex[length=2.5mm]}, thick, draw=black!60}
+]
+
+\node[problem] (p1) at (0,0) {Fragmented\\Communication};
+\node[problem] (p2) at (3.5,0) {System\\Fragmentation};
+\node[problem] (p3) at (7.0,0) {Data Governance\\Deficiencies};
+\node[problem] (p4) at (10.5,0) {Security \& Access\\Control Risks};
+\node[problem] (p5) at (14.0,0) {Scalability\\Bottlenecks};
+
+\node[system] (s1) at (2.5,-2.4) {Candidate System 1\\Central Integration \& Data Platform};
+\node[system] (s2) at (7.0,-2.4) {Candidate System 2\\Collaboration \& Workflow System};
+\node[system] (s3) at (11.5,-2.4) {Candidate System 3\\DevOps, QA \& Observability};
+
+\foreach \p in {p1,p2,p3,p4,p5}{
+    \draw[arrow] (\p.south) -- ++(0,-0.45) -| (s2.north);
+}
+\draw[arrow] (p2.south) -- ++(0,-0.65) -| (s1.north);
+\draw[arrow] (p3.south) -- ++(0,-0.85) -| (s1.north);
+\draw[arrow] (p4.south) -- ++(0,-1.05) -| (s1.north);
+\draw[arrow] (p5.south) -- ++(0,-0.65) -| (s3.north);
+\draw[arrow] (p4.south) -- ++(0,-1.25) -| (s3.north);
+
+\node[eval] (e1) at (1.0,-5.1) {Performance};
+\node[eval] (e2) at (4.0,-5.1) {Potential Risks};
+\node[eval] (e3) at (7.0,-5.1) {Technical};
+\node[eval] (e4) at (10.0,-5.1) {Economic};
+\node[eval] (e5) at (13.0,-5.1) {Operational};
+
+\foreach \s in {s1,s2,s3}{
+    \foreach \e in {e1,e2,e3,e4,e5}{
+        \draw[arrow, opacity=.35] (\s.south) -- (\e.north);
+    }
+}
+\end{tikzpicture}%
+}
+\caption{Detailed Feasibility Analysis Framework for NextStepBD}
+\label{fig:feasibility-framework}
+\end{figure}
+
+\subsection{Root Cause Analysis of Identified Problems}
+\label{subsec:root-cause-analysis}
+
+\subsubsection{Problem 01: Fragmented Communication and Collaboration}\label{sec:rc-communication}
+
+\textbf{Root cause.}
+The primary cause is that informal communication tools are used both for conversation and as
+a de facto system of record. Client requirements, approvals, clarifications, and delivery
+confirmations may remain inside WhatsApp threads, email messages, or personal notes instead
+of being linked to formal project artefacts. The project manager frequently becomes the human
+routing layer between clients, developers, QA personnel, finance, and management.
+
+\textbf{Evidence from information gathering.}
+The employee analysis produced a low average score of 2.4 for communication and approval
+clarity. The Engineering Manager also rated approval-channel clarity and the sufficiency of chat
+approvals at 2 out of 5. Customers remained broadly satisfied, but they expressed a preference
+for formal approval mechanisms and access to historical confirmations. The DFD in
+Figure~4.17 shows approvals distributed across WhatsApp, email, and project notes without a
+single traceable record.
+
+\textbf{Performance impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Repeated clarification cycles and delayed task initiation;
+    \item Misinterpretation of scope, acceptance criteria, and delivery expectations;
+    \item High dependency on project managers for routine information transfer;
+    \item Weak traceability during scope disputes, billing verification, or audit review; and
+    \item Increased context switching for developers and account leads.
+\end{itemize}
+
+\textbf{Economic and organisational impact.}
+The organisation incurs hidden labour cost through repeated meetings, message searching,
+manual confirmation, and rework. Delayed approvals also postpone delivery and billing. When
+an approval cannot be proven, NextStepBD faces the risk of unrecovered scope expansion,
+client disputes, and reduced confidence in project governance.
+
+\subsubsection{Problem 02: System Fragmentation and Lack of Integration}\label{sec:rc-fragmentation}
+
+\textbf{Root cause.}
+NextStepBD uses WhatsApp, Slack, email, GitHub, Excel, Google Sheets, shared documents, and
+project-specific scripts as separate operational tools. These platforms are useful individually,
+but the current environment has no common integration layer or canonical record that keeps
+project, task, approval, billing, and delivery information synchronised.
+
+\textbf{Evidence from information gathering.}
+System fragmentation produced one of the strongest negative signals in the employee survey.
+The average problem score was 4.2, indicating that employees frequently reconcile or copy
+information between tools. The Engineering Manager also reported high levels of cross-tool
+reconciliation and data copying. Figure~4.18 demonstrates that management reporting requires
+aggregation from Google Sheets, GitHub, and manual documents.
+
+\textbf{Performance impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Duplicate data entry and inconsistent updates across platforms;
+    \item Slow reporting because information must be collected and reconciled manually;
+    \item Synchronisation failures and uncertainty about which version is current;
+    \item Higher probability of missing tasks, status changes, or billing information; and
+    \item Reduced management visibility into delivery progress and risk.
+\end{itemize}
+
+\textbf{Economic and organisational impact.}
+Manual reconciliation consumes staff time that could be used for delivery, quality assurance,
+or customer support. Inaccurate or delayed records can also affect invoicing, resource planning,
+and profitability analysis. As the number of clients grows, the cost of maintaining disconnected
+systems rises almost linearly.
+
+\subsubsection{Problem 03: Data Management and Governance Deficiencies}\label{sec:rc-data}
+
+\textbf{Root cause.}
+The organisation lacks a formally governed data model for customers, projects, requirements,
+approvals, tasks, invoices, and support incidents. The same information may appear in multiple
+spreadsheets or documents with different identifiers, formats, and levels of completeness. Data
+ownership, validation rules, retention periods, and change history are not consistently defined.
+
+\textbf{Evidence from information gathering.}
+The employee survey produced an average score of 2.53 for data governance, and confidence in
+billing-record accuracy was concentrated at the lower end of the scale. Management reported
+only moderate visibility into project risk, while HR identified weak knowledge and capacity
+tracking. The absence of a single source of truth is also visible in the current-state DFDs.
+
+\textbf{Performance impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Conflicting customer, project, and billing records;
+    \item Weak reporting accuracy and delayed managerial decision-making;
+    \item Difficulty linking requirements, approvals, tasks, deliverables, and invoices;
+    \item Increased migration and reconciliation effort; and
+    \item Limited ability to measure delivery performance consistently.
+\end{itemize}
+
+\textbf{Economic and organisational impact.}
+Poor data quality creates direct risk for billing accuracy and indirect cost through additional
+administrative work. It also weakens forecasting, profitability analysis, and audit readiness.
+Without a governed data model, future integrations will reproduce existing inconsistencies
+instead of solving them.
+
+\subsubsection{Problem 04: Security and Access Control Risks}\label{sec:rc-security}
+
+\textbf{Root cause.}
+Sensitive client information, credentials, screenshots, and personal data may be shared through
+informal channels or stored on personal devices. Access control differs by tool, and the company
+cannot consistently demonstrate who accessed, changed, exported, or deleted a record. Secrets
+management, redaction, retention, and audit logging are not uniformly enforced.
+
+\textbf{Evidence from information gathering.}
+The employee security score was 3.07, indicating moderate but material concern. Survey results
+showed that some employees save client messages locally or need to redact client information.
+Stakeholder interviews also raised concerns about PII, credential handling, role-based access,
+and the difficulty of retrofitting SSO across legacy tools.
+
+\textbf{Performance impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Slower response to incidents because access and change history are incomplete;
+    \item Risk of unauthorised access, accidental disclosure, or credential leakage;
+    \item Inconsistent security practices between teams and projects;
+    \item Difficulty revoking access when staff roles change; and
+    \item Reduced confidence in the integrity of client and operational records.
+\end{itemize}
+
+\textbf{Economic and organisational impact.}
+A security incident can produce legal cost, service disruption, contractual penalties, client loss,
+and reputational damage. Even without a breach, weak auditability can reduce eligibility for
+enterprise work and increase the effort required to respond to client security reviews.
+
+\subsubsection{Problem 05: Scalability and Operational Bottlenecks}\label{sec:rc-scale}
+
+\textbf{Root cause.}
+Routine task assignment, approval routing, onboarding, escalation, reporting, and coordination
+are concentrated in a small number of managers and senior staff. Processes are not consistently
+supported by templates, role-based assignment, skills data, automated reminders, or measurable
+service levels. Organisational knowledge therefore remains person-dependent.
+
+\textbf{Evidence from information gathering.}
+HR reported weak capacity visibility, skills tracking, cross-training, and access to onboarding
+documents. Stakeholders indicated that onboarding may require four to six weeks before a new
+employee becomes productive. At the same time, employee automation readiness was very high,
+with an average score of 4.61, and all responses to automation-related questions were at
+``agree'' or ``strongly agree''.
+
+\textbf{Performance impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Delayed decisions when key staff are unavailable;
+    \item Inconsistent task assignment and workload imbalance;
+    \item Long onboarding time and repeated transfer of basic knowledge;
+    \item Increased notification noise and unstructured escalation; and
+    \item Limited ability to increase project volume without proportional management effort.
+\end{itemize}
+
+\textbf{Economic and organisational impact.}
+The organisation cannot scale efficiently when every additional project requires more manual
+coordination. Key-person dependency also raises continuity risk and contributes to staff overload.
+Slow onboarding delays the productive use of new hires and increases the cost of growth.
+
+\begin{table}[H]
+\centering
+\caption{Root Cause Analysis Summary for NextStepBD}
+\label{tab:root-cause-summary}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.7cm}
+                                >{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{3.0cm}}
+\toprule
+\textbf{Problem} & \textbf{Primary Root Cause} & \textbf{Key Evidence} & \textbf{Main Consequence} \\
+\midrule
+Fragmented communication & Informal channels act as the system of record & Communication and approval score 2.4; approval clarity rated 2/5; PM-mediated DFD & Rework, delay, and weak approval traceability \\
+System fragmentation & No integration layer between operational tools & Fragmentation score 4.2; frequent reconciliation and copy-paste & High administrative effort and inconsistent status \\
+Data governance deficiencies & No canonical model, ownership, or validation rules & Governance score 2.53; low billing confidence; multiple data stores & Unreliable reporting and billing risk \\
+Security and access risks & Sensitive data handled across tools without consistent RBAC and audit & Security score 3.07; local storage and redaction concerns & Breach, compliance, and client-trust exposure \\
+Scalability bottlenecks & Manual routing and key-person dependency & Onboarding takes 4--6 weeks; automation readiness 4.61 & Limited throughput and slow growth \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+
+\subsubsection{Cross-Problem Dependency and Prioritisation Analysis}
+\label{sec:cross-problem-analysis}
+
+The five identified problems do not operate independently. Communication gaps create incomplete
+records; incomplete records increase fragmentation; fragmented data weakens access control and
+reporting; and all four conditions increase dependence on project managers and senior engineers.
+Therefore, selecting one visible problem and treating it in isolation would produce only temporary
+improvement. The dependency chain indicates that the highest-leverage intervention is to establish
+a governed information foundation and then formalise the workflows that create and update that
+information.
+
+A cause-and-effect review shows three structural layers. The \textbf{foundation layer} contains
+identity, access, the canonical data model, audit history, backup, and integration rules. The
+\textbf{process layer} contains requirement capture, approvals, task routing, escalation, billing
+readiness, and onboarding. The \textbf{delivery layer} contains build, testing, deployment,
+monitoring, incident response, and performance measurement. Improvement at the delivery layer
+will remain fragile if the foundation and process layers are not addressed first.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    layer/.style={draw=purple!70!black, rounded corners=4pt, minimum width=13.4cm,
+        minimum height=1.25cm, align=center, fill=purple!7, text width=12.8cm},
+    arrow/.style={-{Latex[length=2.6mm]}, thick, draw=black!60}
+]
+\node[layer] (foundation) at (0,0) {\textbf{Foundation Layer:} Canonical data, identifiers, identity, RBAC, audit, backup, integration standards};
+\node[layer, fill=teal!8, draw=teal!70!black] (process) at (0,-1.9) {\textbf{Process Layer:} Requirements, approvals, assignment, escalation, reporting, billing evidence, onboarding};
+\node[layer, fill=orange!9, draw=orange!75!black] (delivery) at (0,-3.8) {\textbf{Delivery Layer:} Source control, QA, CI/CD, release approval, monitoring, incident management, learning};
+\draw[arrow] (foundation) -- node[right]{enables reliable workflows} (process);
+\draw[arrow] (process) -- node[right]{provides controlled inputs} (delivery);
+\draw[arrow, dashed] (delivery.west) .. controls +(-2.0,-.8) and +(-2.0,.8) .. node[left, align=center]{performance and incident feedback} (foundation.west);
+\end{tikzpicture}%
+}
+\caption{Dependency Layers Connecting the Five Identified Problems}
+\label{fig:dependency-layers}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Cross-Problem Dependency and Intervention Priority}
+\label{tab:dependency-priority}
+\small
+\renewcommand{\arraystretch}{1.20}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.7cm}
+                                >{\raggedright\arraybackslash}p{3.0cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\centering\arraybackslash}p{1.8cm}}
+\toprule
+\textbf{Problem Area} & \textbf{Depends Most On} & \textbf{Reason for Sequencing} & \textbf{Priority} \\
+\midrule
+Communication and approvals & Workflow rules and canonical records & Formal approval is useful only when it is linked to a stable project and requirement identifier & High \\
+System fragmentation & Integration standards and common data model & Connecting tools without common definitions would synchronise inconsistent data & Critical \\
+Data governance & Ownership, validation, identifiers, and audit & Governance is the foundation for reporting, billing, and later automation & Critical \\
+Security and access control & Central identity and data classification & Access rules cannot be enforced consistently while records remain distributed and unclassified & High \\
+Scalability and bottlenecks & Standard workflows, automation, and visibility & Scaling should follow process simplification; automating a weak process increases error volume & Medium--High \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The priority judgement is therefore not based only on severity. It combines severity, dependency,
+and reversibility. Data and integration decisions are difficult to reverse after many workflows are
+built, so they require early design discipline. Workflow configuration can then proceed through
+small pilots and can be adjusted more easily. Delivery automation should be introduced alongside
+the pilot so that the selected projects demonstrate an end-to-end operating model rather than a
+partial administrative improvement.
+
+
+\subsection{Candidate Systems for Resolving Identified Issues}
+\label{subsec:candidate-systems}
+
+The five problems are interdependent and should not be addressed through five disconnected
+solutions. The recommended architecture therefore uses three complementary candidate systems.
+The first establishes a governed data and integration foundation, the second formalises
+collaboration and workflow, and the third improves software delivery reliability and operational
+visibility. Security controls apply across all three systems.
+
+\subsubsection{Candidate System 01: Central Integration \& Data Platform}\label{sec:candidate-central}
+
+\textbf{System purpose.}
+The Central Integration \& Data Platform provides the canonical source of truth for customers,
+projects, requirements, approvals, tasks, invoices, deployments, support incidents, and key
+employee-capacity information. It connects existing tools through APIs, webhooks, scheduled
+imports, and controlled human review instead of attempting to replace all tools immediately.
+
+\textbf{Proposed architecture.}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    ext/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
+        minimum width=2.5cm, minimum height=.85cm, align=center},
+    layer/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=5.6cm, minimum height=1.05cm, text width=5.2cm, align=center, font=\scriptsize\bfseries},
+    store/.style={draw=blue!65!black, cylinder, shape border rotate=90,
+        aspect=.28, fill=blue!7, minimum width=3.8cm, minimum height=1.25cm,
+        align=center, font=\small\bfseries},
+    service/.style={draw=black!60, rounded corners=2pt, fill=black!3,
+        minimum width=3.0cm, minimum height=.85cm, align=center},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!60}
+]
+
+\node[ext] (wa) at (0,3.2) {WhatsApp / Slack};
+\node[ext] (mail) at (3.1,3.2) {Email};
+\node[ext] (sheet) at (6.2,3.2) {Excel / Google Sheets};
+\node[ext] (git) at (9.3,3.2) {GitHub};
+\node[ext] (custom) at (12.4,3.2) {Custom Tools};
+
+\node[layer] (gateway) at (6.2,1.6) {Integration Layer\\APIs, Webhooks, Jobs, Review Queue};
+\node[store] (db) at (6.2,-0.1) {Canonical Data Store\\with Provenance and Version History};
+
+\node[service] (iam) at (1.5,-2.2) {Identity, RBAC\\and SSO};
+\node[service] (audit) at (4.7,-2.2) {Audit Log and\\Data Lineage};
+\node[service] (report) at (7.9,-2.2) {Reporting and\\Dashboards};
+\node[service] (quality) at (11.1,-2.2) {Validation and\\Reconciliation};
+
+\foreach \n in {wa,mail,sheet,git,custom}{\draw[arrow] (\n.south) -- (gateway.north);}
+\draw[arrow] (gateway.south) -- (db.north);
+\foreach \n in {iam,audit,report,quality}{\draw[arrow] (db.south) -- (\n.north);}
+\end{tikzpicture}%
+}
+\caption{Proposed Central Integration and Data Platform Architecture}
+\label{fig:central-platform-architecture}
+\end{figure}
+
+\textbf{Core functional components.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Canonical data model for customers, projects, requirements, approvals, tasks,
+          billing records, incidents, and staff-capacity tags;
+    \item API and webhook gateway for synchronising selected data from GitHub, Google Sheets,
+          email, and approved messaging workflows;
+    \item Data-validation rules, duplicate detection, controlled identifiers, and reconciliation
+          reports;
+    \item Provenance, version history, and audit logging for all critical changes;
+    \item Role-based access control, central authentication, secrets management, and controlled
+          redaction; and
+    \item Management dashboards for status, risk, billing readiness, workload, and data quality.
+\end{itemize}
+
+\textbf{Technology requirements.}
+The platform can be implemented using a relational database such as PostgreSQL or MySQL, an
+API framework compatible with the organisation's current development skills, webhook and job
+processing, an identity provider, encrypted object storage, and a reporting layer. Open-source
+components may reduce licence cost, while managed services may reduce maintenance effort.
+The final technology choice should be based on internal capability, support requirements, data
+residency, and total cost of ownership rather than feature count alone.
+
+\textbf{Problems addressed.}
+This system directly addresses system fragmentation and data-governance deficiencies. It also
+supports communication traceability, security, reporting, and scalability by giving every other
+workflow a reliable source of truth.
+
+\textbf{Expected benefits.}
+The platform reduces duplicate entry, improves billing and reporting accuracy, enables auditable
+approvals, and gives management a consistent operational view. It also prevents later systems
+from creating new data silos.
+
+\subsubsection{Candidate System 02: Collaboration \& Workflow Management System}\label{sec:candidate-workflow}
+
+\textbf{System purpose.}
+The Collaboration \& Workflow Management System formalises how requests, requirements,
+approvals, tasks, changes, escalations, and client confirmations move through the organisation.
+It should be configured using an existing platform such as Jira, ClickUp, Notion, or another
+appropriate workflow product and integrated with the canonical platform rather than developed
+entirely from the beginning.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    flowstep/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=2.8cm, minimum height=1.0cm, align=center},
+    decision/.style={draw=orange!70!black, diamond, aspect=2.1, fill=orange!10,
+        minimum width=2.5cm, minimum height=1.0cm, align=center},
+    arrow/.style={-{Latex[length=2.5mm]}, thick, draw=black!65}
+]
+\node[flowstep] (request) at (0,0) {Client Request\\Captured};
+\node[flowstep] (requirement) at (3.4,0) {Structured Requirement\\and Acceptance Criteria};
+\node[decision] (approve) at (7.0,0) {Approved?};
+\node[flowstep] (task) at (10.4,0) {Task Assignment\\and Priority};
+\node[flowstep] (delivery) at (13.8,0) {Delivery, QA\\and Client Confirmation};
+\node[flowstep] (record) at (7.0,-2.0) {Canonical Record Updated\\with Timestamp, Actor, and Evidence};
+
+\draw[arrow] (request) -- (requirement);
+\draw[arrow] (requirement) -- (approve);
+\draw[arrow] (approve) -- node[above]{Yes} (task);
+\draw[arrow] (task) -- (delivery);
+\draw[arrow] (approve.south) -- ++(0,-.7) -| node[pos=.25,left]{No} (requirement.south);
+\draw[arrow] (requirement.south) -- (record.north);
+\draw[arrow] (task.south) -- (record.north);
+\draw[arrow] (delivery.south) -- (record.north);
+\end{tikzpicture}%
+}
+\caption{Proposed Structured Requirement and Approval Workflow}
+\label{fig:workflow-system-process}
+\end{figure}
+
+\textbf{Core functional components.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Standard templates for requirements, scope changes, approvals, incidents, onboarding,
+          and recurring work;
+    \item One-click confirmation or controlled review for important decisions originating in
+          chat or email;
+    \item Role-based assignment, priority rules, escalation timers, reminders, and manual override;
+    \item Linkage between requirements, tasks, code changes, QA evidence, client confirmations,
+          and billing status;
+    \item Shared dashboards for project managers, developers, management, HR, and finance; and
+    \item A searchable knowledge base containing decisions, process guidance, onboarding material,
+          and reusable project artefacts.
+\end{itemize}
+
+\textbf{Technology requirements.}
+The recommended approach is configuration and integration, not a full custom rebuild. The
+selected tool must support APIs or webhooks, custom fields, approval states, role-based views,
+export, audit history, and links to the central platform. The organisation should avoid a tool that
+cannot export its data or that requires users to maintain the same information in two places.
+
+\textbf{Problems addressed.}
+This system directly addresses fragmented communication and operational bottlenecks. It also
+improves data governance, reduces ambiguity, and supports security by moving critical actions
+from uncontrolled message threads into traceable workflows.
+
+\textbf{Expected benefits.}
+The system shortens clarification cycles, reduces dependence on project managers, improves
+scope control, and makes project status visible without repeated manual follow-up. It also gives
+clients and internal teams a consistent way to confirm decisions.
+
+\subsubsection{Candidate System 03: DevOps, QA \& Observability Platform}\label{sec:candidate-devops}
+
+\textbf{System purpose.}
+The DevOps, QA \& Observability Platform standardises software delivery from code commit to
+production support. It introduces automated build, test, security, deployment, monitoring, and
+incident-management controls linked to project and requirement records.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    stage/.style={draw=blue!65!black, rounded corners=3pt, fill=blue!7,
+        minimum width=2.45cm, minimum height=.95cm, align=center},
+    observe/.style={draw=orange!70!black, rounded corners=3pt, fill=orange!9,
+        minimum width=3.2cm, minimum height=.95cm, align=center},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
+]
+\node[stage] (commit) at (0,0) {Code Commit};
+\node[stage] (build) at (2.9,0) {Automated Build};
+\node[stage] (test) at (5.8,0) {Test and Security Checks};
+\node[stage] (stage) at (8.7,0) {Staging Deployment};
+\node[stage] (approve) at (11.6,0) {Release Approval};
+\node[stage] (prod) at (14.5,0) {Production};
+\node[observe] (monitor) at (10.0,-2.0) {Logs, Metrics, Alerts, and Incident Workflow};
+\node[observe] (feedback) at (4.5,-2.0) {Defect and Incident Evidence Linked to Requirement};
+
+\draw[arrow] (commit) -- (build);
+\draw[arrow] (build) -- (test);
+\draw[arrow] (test) -- (stage);
+\draw[arrow] (stage) -- (approve);
+\draw[arrow] (approve) -- (prod);
+\draw[arrow] (prod.south) -- (monitor.north);
+\draw[arrow] (monitor.west) -- (feedback.east);
+\draw[arrow] (feedback.north) -- (test.south);
+\end{tikzpicture}%
+}
+\caption{Proposed DevOps, QA, and Observability Delivery Pipeline}
+\label{fig:devops-pipeline}
+\end{figure}
+
+\textbf{Core functional components.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Standard repository and branching policies;
+    \item Continuous integration with automated unit, integration, and regression tests;
+    \item Staging deployment, release approval, rollback, and change evidence;
+    \item Centralised logs, metrics, alerting, and incident workflows;
+    \item Secrets management, credential rotation, dependency scanning, and access control; and
+    \item Links from code changes and deployments back to requirements, tasks, and client releases.
+\end{itemize}
+
+\textbf{Technology requirements.}
+GitHub Actions, GitLab CI, Jenkins, or another CI/CD platform may be used depending on the
+current repository environment. Monitoring can combine application logs, infrastructure
+metrics, uptime checks, and alert routing. The design should favour repeatable pipelines and
+small, observable services rather than project-specific deployment scripts that only one person
+understands.
+
+\textbf{Problems addressed.}
+This platform directly addresses scalability, quality, and security risks. It also reduces the
+impact of fragmented work by connecting implementation and deployment evidence to formal
+project records.
+
+\textbf{Expected benefits.}
+The platform reduces manual deployment effort, prevents avoidable defects, improves incident
+response, and creates a repeatable delivery model that can be used across projects. It also lowers
+key-person dependency in release and support activities.
+
+\subsubsection{Candidate System Comparison and Recommended Combination}\label{sec:candidate-comparison}
+
+The three candidate systems should be implemented as a coordinated architecture. The Central
+Integration \& Data Platform is the foundation because it establishes the canonical record,
+identity controls, and integration contracts. The Collaboration \& Workflow System should be
+configured next so that users can work through a structured but familiar interface. The DevOps,
+QA \& Observability Platform should then connect software-delivery evidence to the same data
+and workflow environment.
+
+\begin{table}[H]
+\centering
+\caption{Candidate System Comparison and Implementation Priority}
+\label{tab:candidate-comparison}
+\scriptsize
+\renewcommand{\arraystretch}{1.20}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\centering\arraybackslash}p{2.0cm}
+                                >{\centering\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.8cm}}
+\toprule
+\textbf{Candidate System} & \textbf{Primary Contribution} & \textbf{Complexity} & \textbf{Priority} & \textbf{Recommended Phase} \\
+\midrule
+Central Integration \& Data Platform & Canonical data, integrations, validation, audit, RBAC, and reporting & Medium--High & 1 & Foundation, Months 1--2 \\
+Collaboration \& Workflow System & Structured requirements, approvals, task flow, knowledge, and visibility & Medium & 2 & Alignment, Months 3--4 \\
+DevOps, QA \& Observability Platform & Automated delivery, testing, monitoring, incident response, and release evidence & Medium & 3 & Reliability, Months 5--6 \\
+Expansion and optimisation & Additional messaging capture, reporting refinement, and wider rollout & Variable & 4 & Months 7--9 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=4.2cm, minimum height=1.05cm, align=center, font=\small\bfseries},
+    user/.style={draw=purple!70!black, rounded corners=3pt, fill=purple!7,
+        minimum width=2.8cm, minimum height=.85cm, align=center},
+    cross/.style={draw=orange!70!black, rounded corners=3pt, fill=orange!9,
+        minimum width=12.0cm, minimum height=.9cm, align=center, font=\small\bfseries},
+    arrow/.style={-{Latex[length=2.5mm]}, thick, draw=black!65}
+]
+\node[user] (client) at (0,3.0) {Clients};
+\node[user] (pm) at (3.2,3.0) {Project Managers};
+\node[user] (dev) at (6.4,3.0) {Developers / QA};
+\node[user] (ops) at (9.6,3.0) {HR / Finance / Ops};
+\node[user] (mgmt) at (12.8,3.0) {Management};
+
+\node[box] (workflow) at (3.2,1.2) {Collaboration \& Workflow\\Management};
+\node[box] (devops) at (9.6,1.2) {DevOps, QA \&\\Observability};
+\node[box, minimum width=9.8cm] (data) at (6.4,-.55) {Central Integration \& Data Platform};
+\node[cross] (security) at (6.4,-2.05) {Cross-Cutting Controls: Identity, RBAC, Audit, Redaction, Data Quality, Backup, and Monitoring};
+
+\foreach \u in {client,pm,dev,ops,mgmt}{\draw[arrow] (\u.south) -- ++(0,-.35) -| (workflow.north);}
+\draw[arrow] (dev.south) -- ++(0,-.6) -| (devops.north);
+\draw[arrow] (workflow.south) -- (data.north);
+\draw[arrow] (devops.south) -- (data.north);
+\draw[arrow] (data.south) -- (security.north);
+\end{tikzpicture}%
+}
+\caption{Recommended Integrated Target Architecture for NextStepBD}
+\label{fig:integrated-target-architecture}
+\end{figure}
+
+
+
+\subsubsection{Functional and Non-Functional Requirements Baseline}
+\label{sec:functional-requirements}
+
+Before tool selection, NextStepBD should approve a requirements baseline that describes what the
+future operating system must achieve. This prevents the organisation from choosing a product
+because of attractive features while overlooking data ownership, auditability, integration, or user
+effort. The baseline should be treated as a controlled design artefact and updated only through a
+recorded decision.
+
+\begin{table}[H]
+\centering
+\caption{Functional Requirements Baseline for the Proposed Integrated System}
+\label{tab:functional-requirements}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.3cm}
+                                >{\raggedright\arraybackslash}p{3.2cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{2.5cm}}
+\toprule
+\textbf{ID} & \textbf{Requirement Area} & \textbf{Minimum Requirement} & \textbf{Primary Owner} \\
+\midrule
+FR-01 & Customer and project registry & Maintain unique customer, project, contract, and contact records with status and ownership & Operations / PM \\
+FR-02 & Requirement capture & Record requirement source, scope, acceptance criteria, priority, requester, version, and linked evidence & Product / PM \\
+FR-03 & Approval control & Capture approver, decision, timestamp, conditions, and the exact artefact approved & Account Lead \\
+FR-04 & Task and dependency tracking & Link tasks to requirements, owners, dates, dependencies, code changes, QA evidence, and release & Engineering Manager \\
+FR-05 & Billing readiness & Connect approved scope and accepted deliverables to invoice preparation and supporting evidence & Finance / Operations \\
+FR-06 & Integration and reconciliation & Synchronise selected fields with GitHub, Sheets, email, and approved messaging capture; report exceptions & Platform Owner \\
+FR-07 & Access and audit & Enforce role-based access, record sensitive actions, and retain searchable history & Security Owner \\
+FR-08 & Reporting & Provide project, workload, quality, billing, incident, and data-quality dashboards & Management \\
+FR-09 & Knowledge and onboarding & Provide role checklists, process guidance, reusable artefacts, and completion evidence & HR / Team Leads \\
+FR-10 & Incident management & Record incident severity, owner, timeline, root cause, action, and affected project or release & Engineering Manager \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The non-functional requirements are equally important because the main risk is not a missing screen;
+it is loss of trust in the system. The proposed environment should target 99.5\% availability during
+business hours for the central workflow service, encrypted transport and storage, verified backups,
+role-based least privilege, searchable audit history, documented recovery procedures, and acceptable
+response time for common operations. It should also support export of organisational data so that
+NextStepBD is not locked into a platform without a practical migration path.
+
+\begin{table}[H]
+\centering
+\caption{Non-Functional Requirements and Verification Method}
+\label{tab:nonfunctional-requirements}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.5cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{3.6cm}}
+\toprule
+\textbf{Quality Attribute} & \textbf{Proposed Requirement} & \textbf{Verification Method} \\
+\midrule
+Availability & Core workflow and record functions available for at least 99.5\% of agreed business hours & Monthly availability report and incident review \\
+Performance & Common list, search, save, and approval actions complete within an acceptable user threshold under pilot load & Timed acceptance test and application telemetry \\
+Security & Encryption, MFA for privileged roles, least privilege, secrets control, and periodic access review & Configuration inspection and access-control test \\
+Recoverability & Daily backup, documented restore procedure, and tested recovery for critical data & Quarterly restore exercise with evidence \\
+Auditability & Critical create, update, approve, export, and access events retained with actor and timestamp & Sample audit trace from request to billing \\
+Usability & A trained user can complete core tasks without parallel manual records & Role-based usability test and observation \\
+Portability & Core records and attachments can be exported in documented formats & Controlled export and re-import test \\
+Maintainability & Integrations, workflows, and validation rules are documented and owned & Documentation review and owner sign-off \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Data Migration and Integration Control Plan}
+\label{sec:data-migration-plan}
+
+Migration should not mean copying every historic spreadsheet, chat, and document into a new
+platform. That approach would increase cost and transfer existing inconsistency into the future
+system. The recommended method is to classify information into four groups: active master data,
+active transactional records, reference documents, and archived history. Only information that has
+a defined use, owner, and retention need should enter the canonical data store.
+
+The first migration wave should cover active customers, active projects, responsible employees,
+current requirements, open tasks, outstanding approvals, current billing status, and unresolved
+support incidents. Historic material should remain in controlled read-only storage unless a legal,
+operational, or client-service need justifies structured migration.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    mstep/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=2.45cm, minimum height=1.05cm, align=center},
+    gate/.style={draw=orange!75!black, diamond, aspect=2.0, fill=orange!10,
+        minimum width=2.1cm, minimum height=.9cm, align=center},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!60}
+]
+\node[mstep] (profile) at (0,0) {Profile and\\Classify Sources};
+\node[mstep] (clean) at (3.0,0) {Clean, Deduplicate\\and Map Fields};
+\node[mstep] (trial) at (6.0,0) {Trial Migration\\to Staging};
+\node[gate] (reconcile) at (9.0,0) {Reconciled?};
+\node[mstep] (approve) at (12.0,0) {Owner Review\\and Sign-off};
+\node[mstep] (cutover) at (15.0,0) {Controlled Cutover\\and Monitoring};
+\draw[arrow] (profile) -- (clean);
+\draw[arrow] (clean) -- (trial);
+\draw[arrow] (trial) -- (reconcile);
+\draw[arrow] (reconcile) -- node[above]{Yes} (approve);
+\draw[arrow] (approve) -- (cutover);
+\draw[arrow] (reconcile.south) -- ++(0,-.8) -| node[pos=.3,below]{No: correct mapping or source} (clean.south);
+\end{tikzpicture}%
+}
+\caption{Controlled Data Migration and Reconciliation Cycle}
+\label{fig:data-migration-cycle}
+\end{figure}
+
+Every connector should have an explicit direction of authority. For example, GitHub may remain the
+authoritative source for commits and pull-request status, while the canonical platform remains the
+authoritative source for customer, project, requirement, approval, and billing status. Where two-way
+synchronisation is unavoidable, conflict rules and exception ownership must be documented.
+
+\begin{table}[H]
+\centering
+\caption{Migration and Integration Control Checklist}
+\label{tab:migration-controls}
+\small
+\renewcommand{\arraystretch}{1.17}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.7cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{3.4cm}}
+\toprule
+\textbf{Control Area} & \textbf{Required Control} & \textbf{Acceptance Evidence} \\
+\midrule
+Scope & Approved list of records and date range for migration & Signed migration inventory \\
+Field mapping & Source-to-target mapping, transformation, and mandatory-field rule & Reviewed mapping specification \\
+Data quality & Duplicate, invalid, missing, and inconsistent records identified and resolved or accepted & Profiling and exception report \\
+Reconciliation & Record counts, key totals, sampled fields, and linked attachments compared & Reconciliation report with owner sign-off \\
+Rollback & Previous source retained and a tested rollback or re-run method available & Cutover and rollback runbook \\
+Integration ownership & Direction of authority, retry policy, alert, and exception owner defined & Connector operating specification \\
+Privacy and retention & Sensitive fields minimised; retention and archive decision recorded & Data-classification approval \\
+Post-cutover monitoring & Error, latency, missing-update, and duplicate indicators monitored & First-week monitoring report \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Security Architecture and Access-Control Model}
+\label{sec:security-architecture}
+
+Security must be designed as a shared service across the three candidate systems rather than as a
+separate checklist added at the end. The proposed model uses identity as the control point, data
+classification to determine protection, role-based permissions for normal work, and auditable
+exceptions for elevated access. It should reduce the number of credentials stored in project files,
+limit personal-device storage, and provide evidence of who accessed or changed sensitive records.
+
+The minimum role model should distinguish management, project management, engineering, QA,
+finance and operations, HR, system administration, and external customer access. Roles should grant
+only the permissions required for routine work. Temporary elevated access should have a reason,
+expiry time, and review. Employees who change role or leave the organisation should trigger a
+standard access-removal workflow across all connected tools.
+
+\begin{table}[H]
+\centering
+\caption{Proposed Security Control Matrix}
+\label{tab:security-control-matrix}
+\scriptsize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}p{3.3cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{2.7cm}}
+\toprule
+\textbf{Control Domain} & \textbf{Minimum Control} & \textbf{Operational Application} & \textbf{Evidence} \\
+\midrule
+Identity & Named accounts, MFA for privileged roles, no shared administrative credentials & Central authentication where supported; unique service accounts for connectors & Account and MFA report \\
+Authorisation & Role-based least privilege and quarterly access review & Project, finance, HR, and customer records separated by role and need & Approved access matrix \\
+Secrets & Managed secret store and rotation process & API keys and deployment credentials removed from chats, sheets, and source files & Secret scan and rotation log \\
+Data protection & Encryption, classification, controlled export, and redaction & Personal and client-sensitive data restricted and minimised & Configuration and sample test \\
+Audit & Immutable or protected event history for critical actions & Approval, access, export, role change, and billing-relevant edits traceable & Audit-trail sample \\
+Endpoint and sharing & Approved storage locations and restricted public links & Limit local copies; expire external shares; review project offboarding & Sharing and offboarding report \\
+Continuity & Backup, restore, incident response, and communication runbooks & Restore test and defined incident owner with severity rules & Exercise report \\
+Vendor assurance & Contract, data location, export, availability, and support review & SaaS tools assessed before business-critical adoption & Vendor evaluation record \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The security design is feasible for NextStepBD because most controls can be implemented through
+configuration, disciplined ownership, and standard platform capabilities. The potential blind spot is
+to purchase tools with strong security features but leave roles, offboarding, exports, and exception
+handling unmanaged. Control ownership and review cadence are therefore as important as the
+selected technology.
+
+
+\subsection{Comprehensive Feasibility Evaluation}
+\label{subsec:comprehensive-feasibility}
+
+\subsubsection{Performance Analysis}\label{sec:feas-performance}
+
+The proposed architecture improves performance primarily by reducing non-value-adding manual
+work rather than by increasing raw computing capacity. The most important gains are faster
+information retrieval, fewer clarification cycles, less reconciliation, more reliable reporting,
+repeatable deployments, and quicker identification of incidents.
+
+The targets below are pilot acceptance targets drawn from the planning and quality objectives in
+Chapter~3. They should be validated using baseline measurements before implementation and
+should not be treated as guaranteed outcomes.
+
+\begin{table}[H]
+\centering
+\caption{Proposed System Performance and Pilot Acceptance Metrics}
+\label{tab:performance-metrics}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{4.2cm}}
+\toprule
+\textbf{Metric} & \textbf{Current Baseline} & \textbf{Pilot Target} \\
+\midrule
+Formal approval capture & Approvals may remain in chat or email and are not consistently linked to work items & At least 95\% of formal approvals captured and linked \\
+Approval clarification cycles & Repeated clarification is common & 50\% reduction in approval-related clarification cycles \\
+Core-data synchronisation & Manual copying and reconciliation across tools & At least 95\% successful, auditable synchronisation of selected fields \\
+Canonical record completeness & Mandatory fields and identifiers vary across files & At least 90\% completeness for mandatory migrated fields \\
+Audit coverage & Critical changes are not consistently traceable & 100\% audit coverage for changes to pilot canonical records \\
+Automated assignment accuracy & Routine assignment depends on manual judgement & At least 90\% correct assignment for routine task categories \\
+Onboarding time & Typically four to six weeks to productive contribution & Reduce by approximately two weeks during the pilot \\
+Deployment and incident visibility & Project-specific scripts and fragmented logs & Every pilot release linked to build, test, approval, deployment, and monitoring evidence \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Expected performance effects.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Faster decision flow:} structured approvals and escalation rules reduce waiting
+          time between client confirmation and task execution;
+    \item \textbf{Lower reconciliation effort:} automatic synchronisation and exception reports
+          replace routine copy-paste work;
+    \item \textbf{Improved delivery consistency:} reusable workflows and CI/CD pipelines reduce
+          variation between projects;
+    \item \textbf{Better management visibility:} dashboards use canonical data instead of manually
+          assembled reports; and
+    \item \textbf{Higher service reliability:} logs, alerts, and incident workflows reduce the time
+          required to detect and understand operational failures.
+\end{itemize}
+
+\subsubsection{Potential Risks Analysis}\label{sec:feas-risks}
+
+The programme is feasible, but a weak implementation could create another set of disconnected
+tools. The highest risks are therefore not only technical. Adoption, governance, migration, and
+scope discipline require equal attention.
+
+\begin{table}[H]
+\centering
+\caption{Potential Risks and Mitigation Actions}
+\label{tab:risk-analysis}
+\scriptsize
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.7cm}
+                                >{\centering\arraybackslash}p{1.65cm}
+                                >{\centering\arraybackslash}p{1.45cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{2.3cm}}
+\toprule
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} & \textbf{Primary Owner} \\
+\midrule
+User adoption friction & Medium & High & Pilot with two representative teams, use role-specific micro-training, retain familiar channels, and measure user effort & Project Manager / HR \\
+Poor legacy data quality & High & High & Data profiling, duplicate rules, migration dry-runs, backups, reconciliation reports, and staged cutover & Data Analyst \\
+WhatsApp or third-party API limits & Medium & Medium--High & Use a human-in-the-loop review queue, limit pilot scope, design retry and exception handling, and avoid dependence on raw transcript capture & Integration Lead \\
+Security misconfiguration & Medium & High & Least-privilege RBAC, test roles, central secrets management, audit review, and controlled redaction & Security Adviser / DevOps \\
+Notification overload & Medium & Medium & Define escalation thresholds, digest notifications, role-based subscriptions, and manual override & Workflow Owner \\
+Vendor lock-in & Medium & Medium & Require data export, documented APIs, portable identifiers, and contract exit provisions & Steering Committee \\
+Scope expansion & High & Medium--High & Use phased release gates, formal change control, a prioritised backlog, and measurable acceptance criteria & Executive Sponsor / PM \\
+Insufficient process ownership & Medium & High & Assign data owners, workflow owners, and system administrators before the pilot starts & Management \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=.92, font=\small]
+    % Grid
+    \foreach \x in {0,...,4}{
+        \foreach \y in {0,...,4}{
+            \pgfmathtruncatemacro{\score}{(\x+1)*(\y+1)}
+            \ifnum\score<5
+                \def\cellcolor{green!10}
+            \else\ifnum\score<10
+                \def\cellcolor{yellow!18}
+            \else\ifnum\score<17
+                \def\cellcolor{orange!20}
+            \else
+                \def\cellcolor{red!18}
+            \fi\fi\fi
+            \fill[\cellcolor] (\x,\y) rectangle ++(1,1);
+            \draw[black!35] (\x,\y) rectangle ++(1,1);
+        }
+    }
+    \node[rotate=90, font=\bfseries] at (-.85,2.5) {Impact};
+    \node[font=\bfseries] at (2.5,-.75) {Likelihood};
+    \foreach \i/\lab in {0/Very Low,1/Low,2/Medium,3/High,4/Very High}{
+        \node[font=\scriptsize, rotate=45, anchor=east] at (\i+.5,-.12) {\lab};
+        \node[font=\scriptsize, anchor=east] at (-.12,\i+.5) {\lab};
+    }
+    % Risk points
+    \node[circle, fill=red!70, text=white, inner sep=2.2pt] at (2.5,3.5) {A};
+    \node[circle, fill=red!70, text=white, inner sep=2.2pt] at (4.5,3.5) {D};
+    \node[circle, fill=orange!80, text=white, inner sep=2.2pt] at (2.5,4.5) {S};
+    \node[circle, fill=orange!80, text=white, inner sep=2.2pt] at (1.5,3.5) {C};
+    \node[circle, fill=orange!80, text=white, inner sep=2.2pt] at (2.5,2.5) {N};
+    \node[circle, fill=orange!80, text=white, inner sep=2.2pt] at (1.5,2.5) {V};
+
+    \node[anchor=west, font=\scriptsize] at (5.5,4.5) {A = Adoption friction};
+    \node[anchor=west, font=\scriptsize] at (5.5,4.0) {D = Data quality / migration};
+    \node[anchor=west, font=\scriptsize] at (5.5,3.5) {S = Scope expansion};
+    \node[anchor=west, font=\scriptsize] at (5.5,3.0) {C = Security configuration};
+    \node[anchor=west, font=\scriptsize] at (5.5,2.5) {N = Notification overload};
+    \node[anchor=west, font=\scriptsize] at (5.5,2.0) {V = Vendor lock-in};
+\end{tikzpicture}
+\caption{Indicative Risk Impact Matrix for the Proposed Programme}
+\label{fig:risk-impact-matrix}
+\end{figure}
+
+\subsubsection{Technical Feasibility Analysis}\label{sec:feas-technical}
+
+The technical feasibility is high because the proposed capabilities rely on mature, widely used
+technologies rather than experimental components. NextStepBD is itself a software and automation
+company, and the proposed project team includes backend, integration, QA/DevOps, and business-
+analysis roles. Existing tools such as GitHub, Google Sheets, email, and collaboration platforms
+provide APIs, webhooks, export functions, or scheduled integration options.
+
+\textbf{Factors supporting technical feasibility.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Relational databases, API services, webhook processing, identity providers, audit logs,
+          and CI/CD platforms are mature and well documented;
+    \item The architecture can be modular and introduced without replacing all existing tools;
+    \item The organisation already possesses relevant development and automation capability;
+    \item The pilot can begin with only Google Sheets, GitHub, and selected approval workflows;
+          and
+    \item Security, backup, rollback, and reconciliation can be designed into the foundation.
+\end{itemize}
+
+\textbf{Technical constraints.}
+The main constraints are inconsistent identifiers in legacy spreadsheets, limits imposed by
+third-party messaging APIs, the need to map data across different project structures, and the
+challenge of applying central identity controls to external tools. These constraints do not make
+the programme infeasible. They require staged migration, documented interfaces, exception
+queues, and careful acceptance testing.
+
+\begin{table}[H]
+\centering
+\caption{Technical Feasibility Rating by Capability}
+\label{tab:technical-feasibility}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.0cm}
+                                >{\centering\arraybackslash}p{2.0cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Capability} & \textbf{Rating} & \textbf{Reason} \\
+\midrule
+Canonical database and APIs & High & Standard architecture and strong internal development fit \\
+GitHub and Sheets integration & High & Mature APIs, exports, and webhook options \\
+Messaging approval capture & Medium--High & Feasible, but provider limits and privacy controls require a review queue \\
+RBAC, SSO, audit, and secrets & High & Mature identity and security patterns are available \\
+Legacy-data migration & Medium & Technically straightforward but dependent on data quality and mapping effort \\
+CI/CD and observability & High & Existing repository environment supports incremental automation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Technical judgement.}
+The programme is technically feasible with a phased, API-first architecture. A large, single-release
+custom platform would be unnecessarily risky. The correct design is a modular foundation with
+clear integration contracts, automated tests, rollback capability, and measurable pilot gates.
+
+\subsubsection{Economic Feasibility Analysis}\label{sec:feas-economic}
+
+Economic feasibility is strong, but it depends on controlling scope and reusing existing tools.
+The organisation should not attempt to purchase every enterprise feature or develop every
+component internally. The recommended cost strategy is to configure established workflow and
+DevOps products, build only the integration and governance components that create unique value,
+and expand after the pilot demonstrates measurable benefit.
+
+\textbf{Main cost categories.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Internal engineering, integration, QA, data-analysis, security, and project-management time;
+    \item Workflow, identity, messaging-gateway, cloud, monitoring, or iPaaS subscriptions where
+          managed services are selected;
+    \item Data profiling, cleaning, migration, and reconciliation effort;
+    \item Training, documentation, onboarding content, and change-management support; and
+    \item Ongoing administration, monitoring, backup, and integration maintenance.
+\end{itemize}
+
+\textbf{Main benefit categories.}
+\begin{itemize}[leftmargin=1.6em]
+    \item Reduced time spent searching, copying, reconciling, and preparing reports;
+    \item Fewer clarification cycles, defects, billing disputes, and duplicated tasks;
+    \item Faster onboarding and better use of available staff capacity;
+    \item Lower probability and impact of security, data-loss, and deployment incidents; and
+    \item Increased ability to handle more projects without proportional growth in coordination cost.
+\end{itemize}
+
+Exact monetary return requires vendor quotations, internal time records, baseline defect data, and
+billing-loss estimates that are not currently available. The business case should therefore use the
+following measurable model during the pilot:
+
+\begin{equation}
+\begin{aligned}
+\text{Annual Benefit} ={}&
+(\text{Hours Saved} \times \text{Loaded Hourly Cost}) \\
+&+ \text{Avoided Rework} + \text{Avoided Billing Leakage} \\
+&+ \text{Avoided Incident Cost}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\text{ROI (\%)} =
+\frac{\text{Total Quantified Benefit} - \text{Total Programme Cost}}
+{\text{Total Programme Cost}} \times 100
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Indicative Cost-Benefit Forecast}
+\label{tab:cost-benefit-forecast}
+\scriptsize
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.3cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Component} & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} \\
+\midrule
+Implementation cost & Highest: foundation, configuration, integrations, migration, and training & Lower: support, refinement, and selected expansion & Stable maintenance and optimisation \\
+Operational saving & Initial saving after pilot; limited by phased adoption & Higher saving from reduced reconciliation, reporting, and rework & Maximum saving after broader standardisation \\
+Risk-reduction value & Better access control, auditability, backup, and release control & Fewer recurring data and deployment incidents & Stronger client trust and enterprise readiness \\
+Revenue and capacity effect & Faster delivery and more reliable billing begin to improve capacity & Ability to handle more projects without equivalent PM growth & Scalable delivery model supports sustained expansion \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Economic judgement.}
+The programme is economically feasible if the first release remains small, selected tools are
+reused, and each phase must meet measurable acceptance criteria before expansion. A big-bang
+custom build would weaken the business case and should be rejected.
+
+\subsubsection{Operational Impact Assessment}\label{sec:feas-operational}
+
+Operational feasibility is high because stakeholders broadly support standardisation and
+workflow improvement. The support scores in Section~4.3.1.7 were 5 for the CEO, 4 for HR,
+4 for the Engineering Manager, 4.73 for employees, and 4 for customers. The main operational
+challenge is not resistance to the idea. It is ensuring that the new processes reduce effort instead
+of creating another administrative layer.
+
+\begin{table}[H]
+\centering
+\caption{Operational Before-and-After Assessment}
+\label{tab:operational-before-after}
+\scriptsize
+\renewcommand{\arraystretch}{1.23}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Operational Dimension} & \textbf{Current State} & \textbf{Proposed State} \\
+\midrule
+Requirements and approvals & Distributed across chat, email, notes, and memory & Structured, timestamped, actor-linked, and connected to tasks \\
+Project and task data & Repeated in Sheets, GitHub, and documents & Canonical record with controlled synchronisation \\
+Task assignment & Manager-dependent and often informal & Template-based and role-aware, with manual override \\
+Management reporting & Manually assembled from multiple sources & Dashboard generated from governed data \\
+Billing evidence & Requires cross-checking messages, tasks, and spreadsheets & Deliverables and approvals linked to billing readiness \\
+Security and access & Tool-specific access with inconsistent audit history & RBAC, SSO where possible, redaction, secrets control, and audit logs \\
+Software delivery & Project-specific scripts and inconsistent QA evidence & Repeatable CI/CD, testing, release approval, and rollback \\
+Incident response & Informal routing and fragmented logs & Central monitoring, alerting, ownership, and incident evidence \\
+Onboarding and knowledge & Person-dependent, with weak cross-training & Checklists, micro-training, knowledge base, mentors, and skills tags \\
+Customer experience & Fast but informal communication & Familiar channels plus formal confirmation and historical evidence \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Stakeholder impact.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Management:} receives more reliable visibility into delivery, risk, workload,
+          billing readiness, and system performance;
+    \item \textbf{Project managers:} spend less time copying information and chasing routine
+          confirmations, but become accountable for workflow quality and exception handling;
+    \item \textbf{Developers and QA staff:} receive clearer requirements, fewer interruptions,
+          and more consistent delivery pipelines;
+    \item \textbf{Finance and operations:} gain stronger links between approved scope,
+          deliverables, billing, and historical evidence;
+    \item \textbf{HR:} gains onboarding checklists, role information, skills visibility, and more
+          structured knowledge transfer; and
+    \item \textbf{Customers:} retain familiar communication channels while gaining formal,
+          retrievable confirmation of important decisions.
+\end{itemize}
+
+\textbf{Operational prerequisites.}
+The programme requires named owners for data, workflows, integrations, security, and reporting.
+Training should be short, role-specific, and task-based. Pilot feedback must be reviewed weekly,
+and users must have a clear escalation path when an automation or synchronisation rule is wrong.
+The organisation should remove duplicate manual records once a process is proven; otherwise,
+the new system will add work rather than reduce it.
+
+
+
+\subsection{Implementation, Validation and Control Strategy}
+\label{sec:implementation-validation}
+
+A feasible design can still fail through poor implementation. The proposed strategy therefore
+uses controlled phases, measurable baselines, representative pilot projects, and explicit decision
+gates. The objective is not to deploy the maximum number of features. It is to demonstrate that
+the integrated operating model reduces effort, improves traceability, protects information, and can
+be supported by the organisation after the project team steps back.
+
+\subsubsection{Phased Migration and Release Approach}
+\label{sec:phased-release}
+
+The recommended programme uses five releases over approximately twenty-four weeks. The exact
+calendar should be adjusted after vendor selection and technical discovery, but the sequence should
+remain stable because each release prepares the controls required by the next.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\scriptsize,
+    bar/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!16, minimum height=.55cm},
+    gate/.style={draw=teal!70!black, diamond, aspect=1.5, fill=teal!12, minimum width=.55cm, minimum height=.55cm},
+]
+\def\xscale{0.48}
+\foreach \w in {0,2,4,6,8,10,12,14,16,18,20,22,24}{
+  \draw[gray!35] ({\w*\xscale},0.5) -- ({\w*\xscale},-5.3);
+  \node[above] at ({\w*\xscale},0.5) {W\w};
+}
+\node[left, align=right] at (-.2,0) {Release 0\\Discovery and baseline};
+\node[left, align=right] at (-.2,-1.05) {Release 1\\Foundation controls};
+\node[left, align=right] at (-.2,-2.10) {Release 2\\Workflow pilot};
+\node[left, align=right] at (-.2,-3.15) {Release 3\\Integration and migration};
+\node[left, align=right] at (-.2,-4.20) {Release 4\\Delivery automation};
+\node[left, align=right] at (-.2,-5.25) {Release 5\\Stabilise and expand};
+\draw[bar] (0,0.27) rectangle ({3*\xscale},-.27);
+\draw[bar, fill=teal!15, draw=teal!70!black] ({2*\xscale},-.78) rectangle ({7*\xscale},-1.32);
+\draw[bar, fill=orange!17, draw=orange!75!black] ({6*\xscale},-1.83) rectangle ({12*\xscale},-2.37);
+\draw[bar, fill=blue!12, draw=blue!65!black] ({10*\xscale},-2.88) rectangle ({17*\xscale},-3.42);
+\draw[bar, fill=purple!13] ({14*\xscale},-3.93) rectangle ({21*\xscale},-4.47);
+\draw[bar, fill=teal!12, draw=teal!70!black] ({20*\xscale},-4.98) rectangle ({24*\xscale},-5.52);
+\foreach \w/\yy in {3/0,7/-1.05,12/-2.10,17/-3.15,21/-4.20,24/-5.25}{
+  \node[gate] at ({\w*\xscale},\yy) {};
+}
+\end{tikzpicture}%
+}
+\caption{Proposed Twenty-Four-Week Phased Implementation and Decision Gates}
+\label{fig:phased-implementation}
+\end{figure}
+
+\textbf{Release 0: Discovery and baseline.} Confirm process scope, select two representative pilot
+projects, measure current search and reconciliation effort, review data sources, classify sensitive
+information, and approve the ownership model. No major configuration should begin until the
+baseline and pilot boundaries are clear.
+
+\textbf{Release 1: Foundation controls.} Establish identity, roles, audit logging, backup, the
+canonical identifiers, and the first data model. Demonstrate that a project, requirement, approval,
+and task can be traced without relying on personal messages.
+
+\textbf{Release 2: Workflow pilot.} Configure requirement, approval, task, escalation, onboarding,
+and status-reporting workflows. Run the pilot with real work, not a demonstration dataset. Remove
+parallel records only after the users and process owners confirm that the new record is reliable.
+
+\textbf{Release 3: Integration and migration.} Connect selected GitHub and spreadsheet fields,
+migrate active records, and introduce reconciliation dashboards. Connector errors should route to a
+named queue instead of failing silently.
+
+\textbf{Release 4: Delivery automation.} Standardise build, test, staging, release approval,
+monitoring, and incident linkage for the pilot applications. This release proves that governance and
+engineering delivery can operate as one system.
+
+\textbf{Release 5: Stabilise and expand.} Review metrics, remove unnecessary steps, resolve support
+issues, document ownership, and decide whether to expand to other projects. Expansion should be
+based on evidence, not pressure to use the new platform everywhere.
+
+\subsubsection{Testing and Acceptance Framework}
+\label{sec:testing-acceptance}
+
+Testing must cover more than software functions. It should verify workflow accuracy, data quality,
+security, recovery, user effort, and operational support. A feature should not be accepted if it works
+technically but forces users to maintain duplicate records or creates unresolved exceptions.
+
+\begin{table}[H]
+\centering
+\caption{Integrated Testing and Acceptance Matrix}
+\label{tab:acceptance-matrix}
+\scriptsize
+\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.3cm}
+                                >{\raggedright\arraybackslash}p{3.3cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{2.7cm}}
+\toprule
+\textbf{Test Category} & \textbf{Focus} & \textbf{Minimum Acceptance Condition} & \textbf{Responsible Role} \\
+\midrule
+Functional & Requirement, approval, task, billing, incident, and reporting workflows & All priority scenarios complete with correct status, links, and ownership & Process Owner \\
+Integration & API, webhook, import, retry, and exception handling & Selected records synchronise correctly; failures are visible and recoverable & Platform Engineer \\
+Data quality & Completeness, duplicate, validity, consistency, and provenance & Agreed quality threshold reached and unresolved exceptions assigned & Data Owner \\
+Security & Authentication, authorisation, export, audit, secrets, and role change & No critical access defect; privileged actions traceable & Security Owner \\
+Performance & Search, list, approval, dashboard, and batch activity & Pilot workload meets agreed response and completion thresholds & Technical Lead \\
+Recovery & Backup, restore, connector re-run, and release rollback & Recovery executed within agreed objective using documented procedure & System Administrator \\
+Usability & Role-based completion of common tasks & Users complete tasks without unsupported workaround or parallel log & PM / HR \\
+Operational support & Alert routing, incident ownership, runbook, and escalation & Support team resolves simulated failure with complete evidence & Engineering Manager \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Acceptance should be evidence-based. Screenshots alone are not enough. The pilot package should
+include test results, audit traces, reconciliation reports, user observations, access review, restore
+evidence, unresolved-risk register, support runbook, and owner sign-off. Any critical security,
+recovery, or data-integrity defect should block expansion even when user feedback is positive.
+
+\subsubsection{Measurement Framework and Baseline Method}
+\label{sec:measurement-framework}
+
+The existing questionnaires show the direction and relative severity of the problems, but they are
+not sufficient to quantify return on investment. Before the pilot begins, NextStepBD should measure
+a small set of operational baselines for two to four weeks. The measurement method should be
+simple enough to sustain and precise enough to support a decision.
+
+\begin{table}[H]
+\centering
+\caption{Pilot Baseline and Outcome Measurement Framework}
+\label{tab:measurement-framework}
+\small
+\renewcommand{\arraystretch}{1.17}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{3.3cm}}
+\toprule
+\textbf{Measure} & \textbf{Definition and Collection Method} & \textbf{Desired Direction} \\
+\midrule
+Approval capture rate & Approved scope or decision with actor, timestamp, artefact, and project link divided by approvals sampled & Increase toward 95\% or higher \\
+Clarification cycle time & Elapsed time from clarification request to recorded resolution & Decrease \\
+Search and reconciliation effort & Weekly staff time used to find, copy, compare, and assemble project information & Decrease materially \\
+Data exception rate & Invalid, duplicate, missing, or conflicting selected records per hundred records & Decrease and remain controlled \\
+Billing evidence completeness & Invoice-ready deliverables with linked approval and acceptance evidence & Increase \\
+Release lead time & Time from approved change to production release for comparable work & Decrease without quality loss \\
+Escaped defect rate & Confirmed defects discovered after release per release or change volume & Decrease \\
+Onboarding time to independent work & Time from joining a role to completing agreed tasks without continuous support & Decrease \\
+User effort and adoption & Completion rate, task time, support requests, and short role-based feedback & Improve without duplicate logging \\
+Incident recovery & Time to detect, assign, contain, and restore service for relevant incidents & Decrease \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Management should review trends rather than isolated values. A lower release lead time is not a
+success if escaped defects increase. Higher approval capture is not a success if users copy the same
+information into three systems. The decision dashboard should therefore show paired measures such
+as speed and quality, automation and exception rate, or adoption and user effort.
+
+\subsubsection{Change Management, Training and Role Transition}
+\label{sec:change-management}
+
+The change-management objective is to make the correct process easier than the informal process.
+A long general training session will not achieve this. Training should be organised by role and task,
+using the actual pilot workflow and realistic examples. Each user group should know what changes,
+what remains familiar, what evidence is required, and where to report a problem.
+
+\begin{table}[H]
+\centering
+\caption{Role-Based Change and Training Plan}
+\label{tab:change-training}
+\small
+\renewcommand{\arraystretch}{1.17}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.7cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{3.4cm}}
+\toprule
+\textbf{Audience} & \textbf{Training and Transition Focus} & \textbf{Evidence of Readiness} \\
+\midrule
+Management & Dashboard interpretation, decision gates, risk ownership, and exception escalation & Can review pilot status and make documented gate decision \\
+Project managers & Requirement, approval, task, change, billing-readiness, and escalation workflow & Completes end-to-end project scenario \\
+Developers and QA & Linked requirements, task updates, code and QA evidence, release and incident process & Completes change from task to verified release \\
+Finance and operations & Billing evidence, data-quality exceptions, report generation, and record ownership & Produces sample invoice support package \\
+HR and team leads & Onboarding checklist, role access, skills tags, knowledge material, and offboarding & Completes joiner and leaver simulations \\
+Administrators and owners & Configuration, access review, backup, monitoring, connector exception, and support runbook & Resolves controlled support scenarios \\
+Customers in pilot & Formal confirmation, visibility, and support route while retaining agreed communication channel & Completes approval and retrieves history \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A named champion should support each pilot team, but the process must not become dependent on
+that champion. Frequently asked questions, short screen recordings, checklists, and one-page job
+aids should be created from actual pilot issues. The project team should track repeated support
+questions because they often indicate poor workflow design rather than weak users.
+
+\subsubsection{Governance, Monitoring and Continuous Improvement}
+\label{sec:governance-monitoring}
+
+After deployment, ownership should move from the implementation team to operational roles. The
+central platform requires a product owner, data owners, integration ownership, security ownership,
+and process owners. These roles may be part-time, but accountability must be explicit. Without
+ownership, validation rules, connectors, access lists, and dashboards will gradually become
+unreliable.
+
+\begin{table}[H]
+\centering
+\caption{Proposed Operating Governance Cadence}
+\label{tab:governance-cadence}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Cadence} & \textbf{Participants} & \textbf{Required Review} \\
+\midrule
+Daily during cutover & Platform support, PM, technical lead & Connector failures, blocked users, data exceptions, incidents, and workarounds \\
+Weekly during pilot & Process owners, pilot leads, data and security owners & KPI trend, user effort, unresolved defects, risks, adoption, and change requests \\
+Monthly after stabilisation & Management, system owner, operations, engineering, finance, HR & Benefits, operating cost, quality, access review findings, capacity, and roadmap \\
+Quarterly & Management and control owners & Restore test, privileged access review, vendor performance, retention, and major risk register \\
+After major incident & Affected owners and management & Timeline, root cause, control weakness, corrective action, and learning communication \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Change requests should be assessed against four questions: Does the change remove measurable
+friction? Does it preserve the canonical data model? Does it introduce security or support cost? Can
+its result be measured? This prevents the platform from becoming a collection of local exceptions
+that recreates the original fragmentation.
+
+\subsubsection{Scenario and Sensitivity Analysis}
+\label{sec:sensitivity-analysis}
+
+The economic and operational outcome depends on adoption, integration complexity, and the amount
+of manual effort that can genuinely be removed. A sensitivity view helps management avoid a false
+single-point forecast. The following scenarios are indicative and should be replaced with measured
+pilot values before full rollout.
+
+\begin{table}[H]
+\centering
+\caption{Indicative Scenario and Sensitivity Analysis}
+\label{tab:sensitivity-analysis}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.5cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Factor} & \textbf{Conservative Scenario} & \textbf{Base Scenario} & \textbf{Strong Scenario} \\
+\midrule
+Adoption & Users continue parallel records and use only selected features & Pilot teams use agreed workflows with manageable exceptions & Workflows become the normal operating method and duplicate records are removed \\
+Integration & Several mappings require manual correction & Priority integrations reach stable quality after pilot refinement & Standard connectors and data ownership reduce exception volume quickly \\
+Time saving & Limited because process steps are added without retiring old work & Clear reduction in search, reconciliation, and report preparation & Major reduction plus improved project-manager capacity \\
+Quality and risk & Better audit evidence but limited delivery-quality improvement & Fewer clarification, data, billing, and release issues & Strong traceability, predictable release quality, and rapid incident learning \\
+Economic outcome & Longer payback; expansion should pause & Positive business case after measured pilot and controlled rollout & Strong capacity and risk-reduction case for wider standardisation \\
+Management action & Simplify workflow, remove duplicate steps, and reconsider tool scope & Continue through decision gates and prioritise high-value integrations & Expand carefully while protecting governance and support capacity \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The conservative scenario is a warning: a technically successful deployment can still fail if old
+records remain mandatory and the new system becomes additional work. Therefore, every rollout
+phase should include a formal decision on which spreadsheet, manual report, or informal approval
+practice will be retired. Benefit realisation depends as much on stopping unnecessary work as on
+adding new capability.
+
+
+\section{Recommendation and Conclusion}
+\label{sec:analysis-recommendation}
+
+The detailed analysis supports a \textbf{go decision for a phased pilot}. The need is clear,
+stakeholder support is strong, the required technologies are mature, and the organisation has
+relevant internal capability. However, the programme should not be treated as a single large
+software-development project. The most practical strategy is to establish a small canonical
+platform, configure a structured workflow environment, connect delivery automation, and expand
+only after the pilot demonstrates measurable improvement.
+
+The recommended implementation sequence is:
+
+\begin{enumerate}[label=\textbf{Phase \arabic*:}, leftmargin=2.2cm]
+    \item Build the canonical data model, authentication, RBAC, audit logging, and the first
+          Google Sheets and GitHub integrations;
+    \item Configure requirement, approval, task, escalation, onboarding, and reporting workflows
+          for two representative pilot teams;
+    \item Introduce CI/CD, test automation, staging, monitoring, and incident linkage for the same
+          pilot projects; and
+    \item Add selected messaging capture, broader reporting, migration, and organisational rollout
+          after the acceptance targets are met.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\caption{Recommended Decision Gates for Pilot Expansion}
+\label{tab:decision-gates}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}X
+                                >{\raggedright\arraybackslash}p{4.2cm}}
+\toprule
+\textbf{Gate} & \textbf{Required Evidence} & \textbf{Decision} \\
+\midrule
+Foundation gate & Canonical model approved; RBAC and audit working; backup and rollback tested & Proceed to workflow pilot only after controls pass \\
+Workflow gate & 95\% approval capture, reduced clarification, acceptable user effort, no uncontrolled PII & Expand to additional teams or revise workflow \\
+Integration gate & 95\% selected-field sync, reconciliation report, provenance, and manageable exception rate & Add further connectors only if quality is stable \\
+Delivery gate & Automated build and test, staging approval, release evidence, monitoring, and rollback demonstrated & Standardise the pipeline across suitable projects \\
+Scale gate & Positive stakeholder feedback, measurable time saving, acceptable operating cost, and named process owners & Approve wider organisational rollout \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+In conclusion, NextStepBD does not need to abandon the tools that made its early growth possible.
+It needs to place those tools inside a governed information architecture. The proposed combination
+of a Central Integration \& Data Platform, a Collaboration \& Workflow Management System,
+and a DevOps, QA \& Observability Platform directly addresses the five identified problems while
+preserving user familiarity. A phased implementation with measurable gates offers the strongest
+balance of feasibility, cost control, user acceptance, security, and long-term scalability.
 \end{document}
