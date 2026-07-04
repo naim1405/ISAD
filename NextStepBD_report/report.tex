@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[table]{xcolor}
+\usepackage{etoolbox}
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{float}
@@ -59,6 +60,43 @@
 \definecolor{softgray}{HTML}{F5F5F5}
 \definecolor{darkgray}{HTML}{333333}
 \definecolor{nextstepblue}{HTML}{005BB5} % Vibrant Corporate Blue for Cover
+% =================================================================
+% ERD-table colour palette (Chapter 5)
+% =================================================================
+% Row striping
+\definecolor{roweven}{HTML}{FAFBFD}
+\definecolor{rowodd}{HTML}{F2F0F8}
+% Key column tints
+\definecolor{keypkbg}{HTML}{D6CFEC}
+\definecolor{keypktx}{HTML}{2E1A5E}
+\definecolor{keyfkbg}{HTML}{FCE0B7}
+\definecolor{keyfktx}{HTML}{8A4A00}
+\definecolor{keyuqbg}{HTML}{B8E0D9}
+\definecolor{keyuqtx}{HTML}{005246}
+\definecolor{keynobg}{HTML}{ECECEC}
+\definecolor{keynotx}{HTML}{888888}
+% Column tints
+\definecolor{coltype}{HTML}{EAF1F8}
+\definecolor{colsize}{HTML}{FFF6E0}
+% Header row
+\definecolor{headerbg}{HTML}{4B2E83}
+\definecolor{headertx}{HTML}{FFFFFF}
+
+% ERD-table macros
+\newcommand{\keyfmt}[1]{%
+  \ifstrequal{#1}{PK}{\colorbox{keypkbg}{\textcolor{keypktx}{\textbf{#1}}}}{%
+    \ifstrequal{#1}{FK}{\colorbox{keyfkbg}{\textcolor{keyfktx}{\textbf{#1}}}}{%
+      \ifstrequal{#1}{UQ}{\colorbox{keyuqbg}{\textcolor{keyuqtx}{\textbf{#1}}}}{%
+        \ifstrequal{#1}{}{\colorbox{keynobg}{\textcolor{keynotx}{\,--\,}}}{%
+          \colorbox{keynobg}{\textcolor{keynotx}{#1}}%
+        }%
+      }%
+    }%
+  }%
+}
+\newcommand{\dtype}[1]{\colorbox{coltype}{\texttt{#1}}}
+\newcommand{\dsize}[1]{\colorbox{colsize}{#1}}
+
 
 % ------------------------------------------------
 % HYPERLINK SETUP
@@ -4034,5 +4072,2088 @@ the strategy; Chapter~5 specifies the system.
 
 % END OF CHAPTER 4 — Analysis
 % ================================================================
+
+% =================================================================
+% START OF CHAPTER 5 — Design
+% =================================================================
+
+\chapter{Design}
+
+% ----------------------------------------------------------------
+\section{Introduction}
+\label{sec:design-introduction}
+
+The Design chapter translates the analytical findings and the comparative feasibility
+conclusion of Chapter~4 into concrete system specifications for the recommended solution.
+The detailed analysis in Section~4.4 evaluated three alternative solution strategies
+(Buy, Configure, Build) against the five priority problems and, on the basis of weighted
+comparative scoring, recommended the \textbf{Configure} strategy: keep the team's
+preferred chat and development tools, configure a best-of-breed collaboration and workflow
+tool, and connect everything to a small integration core that records the canonical
+business entities (customer, project, requirement, approval, task) and exchanges data
+with the other tools through APIs and webhooks. This chapter specifies the design of
+that recommended system in full.
+
+The chapter is organised into four principal design areas, each closing a different
+class of question about the future system.
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Data Flow Diagrams (DFDs).} Section~5.2 presents the top-level
+          proposed-system DFD and three subsystem DFDs that decompose the most
+          operationally critical processes. Together they show how information
+          flows between users, processes, data stores, and external systems in the
+          redesigned operating environment.
+    \item \textbf{Database Design.} Section~5.3 presents the Entity-Relationship
+          (ER) diagram and the normalised relational table specifications for the
+          canonical data model. This section defines exactly how the canonical
+          entities are persisted, what their attributes and constraints are, and
+          how referential integrity is preserved across the integration core.
+    \item \textbf{Form Design.} Section~5.4 presents the user interface
+          specifications for the five operational forms that bank staff
+          --- here, NextStepBD staff and clients --- use to enter data into the
+          system. Each form is purpose-calibrated to its user role and to the
+          process it feeds.
+    \item \textbf{Conclusion.} Section~5.5 synthesises how the DFDs, the
+          database design, and the forms work as an integrated whole, and links
+          the design back to the cost-benefit projections of Section~4.4.
+\end{itemize}
+
+The design presented in this chapter adheres to the following modelling conventions,
+which are also used in the existing-state DFDs of Chapter~4 for consistency:
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Data Flow Diagrams} use the Gane--Sarson notation already
+          used in Chapter~4: external entities are shown as solid rectangles,
+          processes as labelled circles, data stores as open-ended bars, and data
+          flows as labelled directed arrows.
+    \item \textbf{Entity-Relationship modelling} uses standard Chen-style notation:
+          entities as rectangles, attributes as ovals, and relationships as
+          connecting lines with cardinality indicators (1, M, N).
+    \item \textbf{Relational database design} targets Third Normal Form (3NF) to
+          eliminate update anomalies and redundancy, with explicit primary keys,
+          foreign keys, and integrity constraints (NOT NULL, UNIQUE, CHECK) applied
+          systematically.
+\end{itemize}
+
+Every design choice in this chapter is traceable to one of the three inputs: the root
+cause analysis of the five problems (Section~4.4), the comparative evaluation of the
+three solution strategies (Section~4.4), and the supporting technical, economic, and
+operational feasibility judgements (Section~4.4). The design is the implementable
+expression of the recommendation, not a separate creative exercise.
+
+\begin{highlightBox}
+\textbf{What this chapter covers.} The design of the Configure strategy
+selected in Section~4.4: a top-level DFD and three subsystem DFDs (Section~5.2),
+an ER diagram and 8 normalised table specifications (Section~5.3), five
+operational form designs plus an integration summary (Section~5.4), and a
+synthesis conclusion (Section~5.5). What this chapter does \emph{not} cover is
+the rollout plan, the pilot acceptance criteria, the testing matrix, and the
+change-management plan --- these are deferred to Chapter~6.
+\end{highlightBox}
+
+% ----------------------------------------------------------------
+\section{Data Flow Diagrams of the Proposed System}
+\label{sec:design-dfds}
+
+The Data Flow Diagrams in this section model the information architecture of the
+recommended Configure strategy. The diagrams are organised hierarchically: a single
+top-level diagram shows the complete proposed system, and three subsystem diagrams
+decompose the most operationally critical processes into their constituent
+sub-processes, revealing the internal data flows and logic that drive each functional
+area.
+
+The Gane--Sarson DFD notation used here is identical to the notation used in the
+existing-state DFDs of Chapter~4, so the visual language remains consistent across
+analysis and design. The diagrams that follow are intentionally compact: each
+subsystem DFD carries only the entities, processes, and stores that are new or
+substantially modified relative to the existing state, with cross-cutting controls
+(identity, audit, redaction) shown as a single block at the top level rather than
+repeated at every level.
+
+The new-system DFDs in this section are deliberately drawn \emph{as a delta on top
+of} the existing-state DFDs of Chapter~4 (Figures~\ref{fig:dfd_context}--\ref{fig:dfd_prob5})
+rather than as a standalone target architecture. The same four external entities
+(E1 Customers, E2 Management/CEO, E3 Employees, E4 HR Department) appear in both
+the existing and the new context diagrams, and the existing data stores (D1--D13 in
+the Chapter~4 level-1 DFDs --- WhatsApp, email, Sheets, GitHub, etc.) are shown
+as \emph{legacy stores} in the new diagrams, retained in use but now connected to
+a single new canonical store (D-canonical) through the integration core. The
+two new top-level DFDs in this section make this migration visible: the first
+shows the new system as a replacement for the undifferentiated process P0 of the
+existing context diagram, and the second shows the same architecture with
+labelled data flows and problem tags so the reader can see which flow addresses
+which of the five problems identified in Chapter~1.
+
+% ----------------------------------------------------------------
+\subsection{Complete System DFD (New System Replacing P0)}
+\label{sec:dfd-complete}
+
+Figure~\ref{fig:dfd-complete-system} shows the top-level DFD of the recommended
+new system, drawn with the same four external entities as the existing context
+diagram (Chapter~4, Figure~\ref{fig:dfd_context}). The single undifferentiated
+process P0 of the existing diagram is replaced by a structured set of new
+processes: the integration core (P-new-core), the configured collaboration and
+workflow tool (P-new-collab), and the DevOps, QA, and observability stack
+(P-new-devops). The existing data stores D1--D13 from the level-1 DFDs in
+Chapter~4 are shown in the diagram as legacy stores that remain in use but are
+now bridged to a single new canonical store (D-canonical) through the
+integration core. Cross-cutting controls (identity, RBAC, audit, redaction) are
+shown as a single block that wraps the new architecture.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    entity/.style={draw=primary, fill=secondary, very thick, text width=2.4cm,
+        align=center, minimum height=1.0cm, font=\small\bfseries},
+    procnew/.style={draw=accent, fill=softteal, very thick, text width=3.0cm,
+        align=center, minimum size=2.5cm, font=\small\bfseries},
+    proclegacy/.style={draw=accent!50!gray, fill=softteal!40, text width=2.4cm,
+        align=center, minimum size=2.0cm, font=\small\itshape},
+    storenew/.style={draw=blue!65!black, fill=blue!8, text width=4.2cm,
+        align=center, minimum height=1.0cm, font=\small\bfseries},
+    storlegacy/.style={draw=blue!50!gray, fill=blue!5, text width=2.4cm,
+        align=center, minimum height=0.85cm, font=\scriptsize\itshape},
+    cross/.style={draw=orange!70!black, rounded corners=3pt, fill=orange!10,
+        text width=12.0cm, align=center, minimum height=0.9cm,
+        font=\small\bfseries},
+    flow/.style={-{Latex[length=2.4mm]}, thick, color=primary!80!black},
+    flowsync/.style={-{Latex[length=2.0mm]}, thick, dashed, color=accent!80!black},
+    flab/.style={font=\scriptsize\sffamily, align=center}
+]
+
+% --- External entities (same as existing context diagram) ---
+\node[entity] (cust) at (0,    5.4) {\textbf{E1}\\Customers};
+\node[entity] (ceo)  at (-6.5, 0) {\textbf{E2}\\Management\\(CEO)};
+\node[entity] (emp)  at (6.5,  0) {\textbf{E3}\\Employees};
+\node[entity] (hr)   at (0,   -5.4) {\textbf{E4}\\HR\\Department};
+
+% --- New system processes (replacing P0) ---
+\node[procnew] (pcollab) at (-3.6, 1.6) {P-new-collab\\Configured\\Collaboration\\\& Workflow};
+\node[procnew] (pcore)   at (0,    1.6) {P-new-core\\Integration\\Core\\(API, Webhooks,\\Review Queue)};
+\node[procnew] (pdevops) at (3.6,  1.6) {P-new-devops\\DevOps, QA\\\& Observability};
+
+% --- New canonical store ---
+\node[storenew] (dcanon) at (0, 3.6) {D-canonical --- Canonical Store: Customer, Project,
+    Requirement, Approval, Task, BillingRecord, Incident, AuditLog};
+
+% --- Legacy stores (existing D1--D13) shown faded on the right ---
+\node[storlegacy] (lstore) at (6.0, 0) {Legacy stores D1--D13 (from Ch.4):\\WhatsApp, Email,
+    Sheets, GitHub, Ad-hoc Notes,\\PM's Personal Notes};
+\node[proclegacy] (p0) at (6.0, -2.2) {(legacy)\\P0\\Existing Manual\\Procedures\\(informal)};
+
+% --- Cross-cutting controls ---
+\node[cross] (security) at (0, -3.6)
+    {Cross-Cutting Controls: Identity, RBAC, Audit Log, Redaction, Data Quality, Backup, Monitoring};
+
+% --- Customer flows (same as existing context diagram) ---
+\draw[flow] ([xshift=-10pt]cust.south) -- ([xshift=-10pt]dcanon.north)
+    node[flab, midway, left] {Requirements, Approvals,\\Payments};
+\draw[flow] ([xshift=10pt]dcanon.north) -- ([xshift=10pt]cust.south)
+    node[flab, midway, right] {Deliverables,\\Invoices, Updates};
+
+% --- Management (CEO) flows ---
+\draw[flow] ([yshift=8pt]ceo.east) -- ([yshift=8pt]pcore.west)
+    node[flab, midway, above] {Policies, Decisions};
+\draw[flow] ([yshift=-8pt]pcore.west) -- ([yshift=-8pt]ceo.east)
+    node[flab, midway, below] {Reports};
+
+% --- Employees flows ---
+\draw[flow] ([yshift=8pt]emp.west) -- ([yshift=8pt]pcollab.east)
+    node[flab, midway, above] {Task Updates};
+\draw[flow] ([yshift=-8pt]pcollab.east) -- ([yshift=-8pt]emp.west)
+    node[flab, midway, below] {Tasks, Instructions};
+
+% --- HR flows ---
+\draw[flow] ([xshift=-10pt]hr.north) -- ([xshift=-10pt]pcore.south)
+    node[flab, midway, left] {Employee\\Information};
+\draw[flow] ([xshift=10pt]pcore.south) -- ([xshift=10pt]hr.north)
+    node[flab, midway, right] {Staffing\\Requests};
+
+% --- Internal new-system flows ---
+\draw[flow] (pcollab.south) -- (dcanon.south west);
+\draw[flow] (pcore.south) -- (dcanon.south);
+\draw[flow] (pdevops.south) -- (dcanon.south east);
+
+% --- New system bridges legacy stores (sync) ---
+\draw[flowsync] (pcore.east) -- node[flab, midway, above]{\scriptsize Two-way sync\\(bidirectional)} (lstore.west);
+\draw[flowsync] (lstore.north) -- node[flab, midway, right]{\scriptsize continues in use} (dcanon.south east);
+
+% --- Legacy process P0 fades to the new system (migration) ---
+\draw[flow, dashed, color=gray!70!black] (p0.north) -- node[flab, midway, left]{\scriptsize replaced} (pcore.south east);
+
+% --- Cross-cutting controls wrap the new architecture ---
+\draw[flow] (security.north) -- (pcollab.south west);
+\draw[flow] (security.north) -- (pcore.south);
+\draw[flow] (security.north) -- (pdevops.south east);
+
+% --- Legend ---
+\node[anchor=west, font=\scriptsize, align=left] at (-7.0, -4.7) {%
+    \textbf{Legend:} \textbf{External entities} (corners) match the existing context
+    diagram (Ch.~4 Fig.~\ref{fig:dfd_context}).\\
+    \textbf{Solid arrows} = primary data flow (replaces existing flow). \textbf{Dashed
+    arrows} = two-way synchronisation between new integration core and legacy stores.};
+\node[anchor=west, font=\scriptsize, align=left] at (-7.0, -5.3) {%
+    \textbf{P0 (struck through)} marks the existing undifferentiated manual procedures,
+    which are progressively replaced by the new processes P-new-collab, P-new-core,
+    P-new-devops. The legacy stores D1--D13 remain in use but are no longer the
+    system of record --- D-canonical is.};
+
+\end{tikzpicture}%
+}
+\caption{Complete System DFD --- the recommended new system drawn on top of
+the existing context diagram. External entities (E1--E4) are the same as
+Chapter~4, Figure~\ref{fig:dfd_context}; the undifferentiated process P0 is
+replaced by three new processes (P-new-collab, P-new-core, P-new-devops) and
+one canonical store (D-canonical). The existing data stores D1--D13 remain in
+use but are now bridged to the canonical store through the integration core.}
+\label{fig:dfd-complete-system}
+\end{figure}
+
+\noindent The diagram makes three architectural decisions visible that are
+not visible in the existing-state DFDs of Chapter~4.
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{The new system has structure where P0 had none.} The
+          existing context diagram collapses all operations into a single
+          process P0, which is exactly the abstraction that hides the
+          fragmentation problem. The new diagram breaks P0 into three
+          explicit new processes --- collaboration, integration core, and
+          DevOps --- so the reader can see which layer is responsible for
+          what, and so the governance controls can be attached to the
+          right layer.
+    \item \textbf{Legacy stores D1--D13 are kept but demoted.} The
+          existing tools (WhatsApp, Sheets, GitHub, email, etc.) do not
+          disappear. They remain in use, but they are no longer the
+          \emph{system of record} --- the canonical store D-canonical is. The
+          dashed arrows show the two-way synchronisation between the
+          integration core and each legacy store. This is the Configure
+          strategy in picture form: keep the tools the team already uses,
+          layer governance over them, do not replace them.
+    \item \textbf{Cross-cutting controls wrap the new architecture.} The
+          existing system has no equivalent to the cross-cutting controls
+          block. In the new system, identity, RBAC, audit, redaction, data
+          quality, backup, and monitoring are implemented once in the
+          integration core and enforced across every other layer, which
+          is the structural answer to Problems~2 (fragmentation) and~4
+          (security).
+\end{itemize}
+
+\noindent The same architecture, drawn with the data flows that the new
+system actually carries and the problems those flows address, is shown in
+Figure~\ref{fig:dfd-problem-solving}. That figure makes explicit \emph{why}
+each flow exists and \emph{which} of the five problems identified in
+Chapter~1 it solves, so the design can be read as a direct response to the
+analysis rather than as a generic target architecture.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    entity/.style={draw=primary, fill=secondary, very thick, text width=2.2cm,
+        align=center, minimum height=0.9cm, font=\small\bfseries},
+    procold/.style={draw=accent!50!gray, fill=softteal!40, text width=2.0cm,
+        align=center, minimum size=1.8cm, font=\scriptsize\itshape},
+    procnew/.style={draw=accent, fill=softteal, text width=2.4cm,
+        align=center, minimum size=2.2cm, font=\small\bfseries},
+    ptag/.style={circle, draw=primary, fill=secondary, inner sep=1.2pt,
+        font=\scriptsize\bfseries, minimum size=3.6mm},
+    flow/.style={-{Latex[length=2.0mm]}, thick, color=primary!80!black},
+    flownew/.style={-{Latex[length=2.0mm]}, thick, color=accent!80!black},
+    flab/.style={font=\scriptsize\sffamily, align=center},
+    fnlab/.style={font=\scriptsize\sffamily, align=center, color=accent!80!black}
+]
+
+% =====================================================
+% EXISTING SYSTEM (LEFT HALF)  --- mirrors Ch.4 Fig. 4.1
+% =====================================================
+
+% External entities (left half)
+\node[entity] (e1L) at (-7.0, 4.4) {\textbf{E1}\\Customers};
+\node[entity] (e2L) at (-9.5, 0)  {\textbf{E2}\\Management};
+\node[entity] (e3L) at (-7.0, -4.4) {\textbf{E3}\\Employees};
+\node[entity] (e4L) at (-4.5, 0)  {\textbf{E4}\\HR};
+
+% Existing process P0 (single undifferentiated, in the centre-left)
+\node[procold] (p0) at (-6.0, 0) {P0\\Existing System\\(informal + manual)};
+
+% Existing flow labels (mirroring Ch.4 Fig. 4.1)
+\draw[flow] (e1L.south) -- node[flab, midway, left]{\scriptsize Requirements,\\Approvals} (p0.north);
+\draw[flow] (p0.north) -- node[flab, midway, right]{\scriptsize Deliverables,\\Updates} (e1L.south);
+\draw[flow] (e2L.east) -- node[flab, midway, above]{\scriptsize Policies} (p0.west);
+\draw[flow] (p0.west) -- node[flab, midway, below]{\scriptsize Reports} (e2L.east);
+\draw[flow] (e3L.west) -- node[flab, midway, above]{\scriptsize Updates} (p0.east);
+\draw[flow] (p0.east) -- node[flab, midway, below]{\scriptsize Tasks} (e3L.west);
+\draw[flow] (e4L.north) -- node[flab, midway, left]{\scriptsize Staffing} (p0.south);
+\draw[flow] (p0.south) -- node[flab, midway, right]{\scriptsize Employee\\info} (e4L.north);
+
+% Label for existing system
+\node[font=\small\bfseries, color=primary] at (-7.0, 5.3) {Existing System (Ch.4)};
+
+% =====================================================
+% NEW SYSTEM (RIGHT HALF)  --- replaces P0
+% =====================================================
+
+% External entities (right half, same labels)
+\node[entity] (e1R) at ( 4.5, 0)  {\textbf{E1}\\Customers};
+\node[entity] (e2R) at ( 7.0, 4.4) {\textbf{E2}\\Management};
+\node[entity] (e3R) at ( 7.0,-4.4) {\textbf{E3}\\Employees};
+\node[entity] (e4R) at ( 4.5, 0)  {\textbf{E4}\\HR};
+
+% New processes (replacing P0)
+\node[procnew] (pcollab) at (1.5, 2.5) {P-new-collab\\Collaboration\\\& Workflow};
+\node[procnew] (pcore)   at (1.5, 0)   {P-new-core\\Integration\\Core};
+\node[procnew] (pdevops) at (1.5,-2.5) {P-new-devops\\DevOps,\\QA \& Obs.};
+
+% Canonical store (between processes and external entities)
+\node[procnew, text width=2.2cm, minimum size=1.0cm, fill=blue!8, draw=blue!65!black]
+    (canon) at (4.0, 0) {D-canonical\\Customer,\\Project, Req,\\Task, \ldots};
+
+% Problem badges near the new flows they address
+\node[ptag] (p1) at (0.0,  3.5) {P1};
+\node[ptag] (p2) at (3.5,  2.5) {P2};
+\node[ptag] (p3) at (3.5,  0.0) {P3};
+\node[ptag] (p4) at (3.5, -1.5) {P4};
+\node[ptag] (p5) at (0.0, -3.5) {P5};
+
+% New data flows (with problem tags implicitly on the diagrams below)
+% e1 (Customers) -> P-new-collab (P1 fix: capture informal request)
+\draw[flownew] (e1R.west) -- node[fnlab, midway, above]{\scriptsize Requirements\\(P1)} (pcollab.east);
+\draw[flownew] (pcollab.east) -- node[fnlab, midway, below]{\scriptsize Deliverables} (e1R.west);
+% e2 (Management) -> P-new-core (reports)
+\draw[flownew] (e2R.west) -- node[fnlab, midway, left]{\scriptsize Policies} (pcore.north east);
+\draw[flownew] (pcore.north east) -- node[fnlab, midway, right]{\scriptsize Reports (P3)} (e2R.west);
+% e3 (Employees) -> P-new-devops (tasks/updates)
+\draw[flownew] (e3R.west) -- node[fnlab, midway, below]{\scriptsize Updates} (pdevops.east);
+\draw[flownew] (pdevops.east) -- node[fnlab, midway, above]{\scriptsize Tasks (P5)} (e3R.west);
+% e4 (HR) -> P-new-core (employee info / staffing)
+\draw[flownew] (e4R.east) -- node[fnlab, midway, above]{\scriptsize Employee\\info} (pcore.east);
+\draw[flownew] (pcore.east) -- node[fnlab, midway, below]{\scriptsize Staffing} (e4R.east);
+
+% New processes -> canonical store (P2, P3)
+\draw[flownew] (pcollab.south) -- node[fnlab, midway, right]{\scriptsize Req/Approval\\(P2)} (canon.north west);
+\draw[flownew] (pcore.east) -- node[fnlab, midway, above]{\scriptsize Sync\\(P3)} (canon.west);
+\draw[flownew] (pdevops.north) -- node[fnlab, midway, right]{\scriptsize Release\\evidence (P2)} (canon.south west);
+
+% Cross-cutting (P4) shown as a halo around the new system
+\node[draw=orange!70!black, dashed, rounded corners, fill=orange!10,
+    fit=(pcollab)(pcore)(pdevops)(canon), inner sep=10pt,
+    label={[font=\small\bfseries, color=orange!80!black]above:{P4 --- Cross-Cutting Controls (Identity, RBAC, Audit, Redaction, DQ)}}] (halo) {};
+
+% Label for new system
+\node[font=\small\bfseries, color=accent!80!black] at (1.5, 4.5) {New System (Ch.5 --- Configure)};
+
+% =====================================================
+% MIGRATION ARROW (existing -> new)
+% =====================================================
+\draw[flow, dashed, very thick, color=primary] (-4.0, 0) -- node[flab, midway, above]{\textit{(legacy P0 replaced by new system)}} (-2.0, 0);
+
+% "P0" struck-through effect, drawn manually as a node
+\node[font=\small\bfseries, color=primary] at (-2.7, 0.6) {P0};
+\draw[line width=1pt, color=primary] (-3.0, 0.65) -- (-2.4, 0.55);
+
+\end{tikzpicture}%
+}
+\caption{Problem-Solving System DFD --- side-by-side comparison of the
+existing system (left, from Chapter~4 Figure~\ref{fig:dfd_context}) and
+the new system (right, replacing P0). External entities (E1--E4) are
+the same in both halves. The problem badges (P1--P5) on the new flows
+indicate which of the five Chapter~1 problems each flow addresses; the
+full mapping is given in Table~\ref{tab:problem-flow-mapping}.}
+\label{fig:dfd-problem-solving}
+\end{figure}
+
+\noindent Figure~\ref{fig:dfd-problem-solving} is read as a left-to-right
+migration: the existing P0 on the left is replaced by the new processes
+(P-new-collab, P-new-core, P-new-devops) and the new canonical store on
+the right, with the same four external entities (E1--E4) and the same flow
+categories as the existing context diagram. Every new flow is tagged with
+the problem it addresses (P1--P5). The full mapping, including the specific
+record or evidence that each new flow produces, is given in
+Table~\ref{tab:problem-flow-mapping}.
+
+\begin{table}[H]
+\centering
+\caption{Problem-to-Flow Mapping --- which new flow addresses which
+problem, and the canonical record or evidence it produces.}
+\label{tab:problem-flow-mapping}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.3cm}
+                                >{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{4.6cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Prob.} & \textbf{New Flow} & \textbf{Canonical Record / Evidence} & \textbf{What Changes for the User} \\
+\midrule
+P1 & Customer $\rightarrow$ Requirement Intake
+      & \texttt{Requirements} (with \texttt{SourceMessage} provenance)
+      & A chat message becomes a queryable record, not a forgotten thread. \\
+P1 & PM $\rightarrow$ Approval Capture
+      & \texttt{Approvals} (approver, decision, source, timestamp)
+      & An informal "OK" in chat becomes evidence that the scope was approved. \\
+P2 & All flows $\rightarrow$ Canonical Store (D-canonical)
+      & One row per entity, one source of truth
+      & A change in one tool automatically appears in the other connected tools. \\
+P2 & Legacy stores D1--D13 $\leftrightarrow$ Integration Core
+      & Two-way sync (dashed arrows)
+      & Sheets, GitHub, chat, email keep working but are no longer the system of record. \\
+P3 & Finance / Mgmt $\rightarrow$ Reporting
+      & \texttt{BillingRecords} with \texttt{evidence\_bundle} JSON
+      & Invoices are produced from a query, not from a manual reconciliation. \\
+P3 & Integration Core $\rightarrow$ Data Quality service
+      & \texttt{DataQuality} reports and exception queue
+      & Inconsistencies between tools are surfaced, not hidden. \\
+P4 & Cross-cutting controls (Identity, RBAC, Audit, Redaction)
+      & \texttt{AuditLog}, RBAC roles, redacted fields
+      & Every sensitive action is logged and access is governed by role, not by who happens to be in a chat. \\
+P5 & Dev $\rightarrow$ Task \& Incident Workflow
+      & \texttt{Tasks}, \texttt{Incidents} (template-driven, role-based)
+      & Tasks are assigned through templates and capacity tags, not by a single coordinator. \\
+P5 & Onboarding workflow (under P-new-collab)
+      & \texttt{Users.capacity\_tag}, \texttt{Users.is\_mentor}
+      & New hires are productive in weeks 1--2, not 4--6. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent The five problems and the five architectural responses, in
+summary, are:
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{P1 (Fragmented Communication)} $\rightarrow$ Requirement
+          Intake, Approval Capture, and SourceMessage provenance. Every
+          informal decision becomes a canonical record.
+    \item \textbf{P2 (System Fragmentation)} $\rightarrow$ Integration Core
+          as single source of truth, with two-way sync to every connected
+          tool. Legacy stores D1--D13 remain in use but are demoted.
+    \item \textbf{P3 (Data Governance)} $\rightarrow$ Canonical schema with
+          mandatory fields, validation, and a data-quality service that
+          runs reconciliation and surfaces exceptions. Invoices are produced
+          from a query, not from a manual reconciliation.
+    \item \textbf{P4 (Security \& Access Control)} $\rightarrow$ Identity
+          and RBAC, audit log, and redaction built in as cross-cutting
+          services rather than as after-the-fact policies. Every sensitive
+          action is logged; access is governed by role.
+    \item \textbf{P5 (Scalability Bottlenecks)} $\rightarrow$ Templates,
+          auto-assignment, role-based routing, and an onboarding workflow
+          that does not depend on a single coordinator.
+\end{itemize}
+
+\noindent The diagram has four layers.
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{User layer (top)}: the five user groups interact primarily
+          through the configured collaboration tool, with developers and QA
+          additionally accessing the DevOps, QA, and observability stack for
+          build, test, and release activities.
+    \item \textbf{Functional layer (middle)}: the configured collaboration tool
+          (e.g., Jira, ClickUp, Notion, or Linear) hosts the human-facing
+          workflow for requirements, approvals, tasks, and onboarding. The
+          DevOps, QA, and observability stack provides build, test, staging,
+          release approval, monitoring, and incident management.
+    \item \textbf{Integration core (bottom)}: a small canonical store with
+          APIs and webhooks that records the canonical entities and exchanges
+          data with both functional layers, ensuring that the collaboration
+          tool, the DevOps stack, and any retained legacy system (Sheets, GitHub,
+          email) stay synchronised around one source of truth.
+    \item \textbf{Cross-cutting controls (foundation)}: identity, RBAC, audit,
+          redaction, data quality, backup, and monitoring are implemented once
+          in the integration core and enforced across every layer, so that
+          security and governance are not bolted on after the fact.
+\end{enumerate}
+
+\noindent The three subsystem DFDs that follow (5.2.2, 5.2.3, 5.2.4) decompose
+each of the three functional layers and the integration core, in turn, into the
+sub-processes that each layer is responsible for.
+
+% ----------------------------------------------------------------
+\subsection{Integration Core Subsystem DFD}
+\label{sec:dfd-integration-core}
+
+The integration core is the foundation of the Configure strategy. It owns the
+canonical record of the business entities (customer, project, requirement, approval,
+task, billing record, incident, employee-capacity), provides the API and webhook
+gateway through which the collaboration tool, the DevOps stack, and the retained
+legacy systems exchange data, and implements the cross-cutting controls (identity,
+RBAC, audit, redaction, data quality, backup, monitoring) that the rest of the
+system relies on. The subsystem DFD in Figure~\ref{fig:dfd-integration-core} shows
+the internal sub-processes of the integration core.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    ext/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
+        minimum width=2.4cm, minimum height=.85cm, align=center},
+    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=2.6cm, minimum height=1.0cm, align=center, font=\small\bfseries},
+    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.6cm,
+        minimum height=1.0cm, align=center, font=\small\bfseries},
+    service/.style={draw=black!60, rounded corners=2pt, fill=black!3,
+        minimum width=2.6cm, minimum height=.85cm, align=center},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
+]
+
+% External connectors (left)
+\node[ext] (wa) at (-4.0,3.0) {WhatsApp / Slack};
+\node[ext] (sheet) at (-4.0,1.6) {Sheets / Excel};
+\node[ext] (git) at (-4.0,0.2) {GitHub};
+\node[ext] (email) at (-4.0,-1.2) {Email};
+
+% Inbound gateway process
+\node[proc] (gateway) at (-1.0,1.0) {P1.1\\API \& Webhook\\Gateway};
+
+% Validation and dedupe
+\node[proc] (validate) at (2.0,2.0) {P1.2\\Validate\\\& Dedupe};
+\node[proc] (review) at (2.0,0.0) {P1.3\\Operator Review\\Queue};
+
+% Canonical store
+\node[store] (canonical) at (5.5,1.0) {D1\\Canonical Store\\(Customer, Project,\\Requirement, Approval,\\Task, Billing,\\Incident, Audit)};
+
+% Outbound services (right)
+\node[service] (audit) at (9.5,2.5) {Audit Log\\\& Lineage};
+\node[service] (iam) at (9.5,1.0) {Identity\\\& RBAC};
+\node[service] (dash) at (9.5,-0.5) {Reporting\\\& Dashboards};
+\node[service] (dq) at (9.5,-2.0) {Data Quality\\\& Reconciliation};
+
+% Flows from connectors into gateway
+\foreach \n in {wa,sheet,git,email}{\draw[arrow] (\n.east) -- (gateway.west);}
+
+% Gateway to validation / review
+\draw[arrow] (gateway.east) -- ++(0.6,0) |- (validate.west);
+\draw[arrow] (gateway.east) -- ++(0.6,0) |- (review.west);
+
+% Validation / review into canonical
+\draw[arrow] (validate.east) -- (canonical.west);
+\draw[arrow] (review.east) -- (canonical.west);
+
+% Cross-cutting services around canonical
+\draw[arrow] (canonical.east) -- (audit.west);
+\draw[arrow] (canonical.east) -- (iam.west);
+\draw[arrow] (canonical.east) -- (dash.west);
+\draw[arrow] (canonical.east) -- (dq.west);
+
+% Background label
+\node[font=\scriptsize\itshape, color=darkgray] at (-1.0,-1.8) {Inbound integration layer};
+\node[font=\scriptsize\itshape, color=darkgray] at (5.5,-1.8) {Persistent canonical layer};
+\node[font=\scriptsize\itshape, color=darkgray] at (9.5,-3.2) {Cross-cutting services};
+
+\end{tikzpicture}%
+}
+\caption{Integration Core Subsystem DFD}
+\label{fig:dfd-integration-core}
+\end{figure}
+
+\noindent The integration core is organised into three functional bands.
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Inbound integration layer (left band).} The gateway (P1.1)
+          receives webhooks and scheduled imports from the retained legacy
+          tools --- WhatsApp / Slack, Sheets / Excel, GitHub, and email ---
+          and normalises them into candidate records. The validator (P1.2)
+          applies the canonical schema, runs duplicate detection, and either
+          persists the record or, when the match is ambiguous, escalates it
+          to the operator review queue (P1.3).
+    \item \textbf{Persistent canonical layer (centre).} The canonical store
+          (D1) holds the authoritative record of every business entity, with
+          provenance metadata that records the source tool, the operator who
+          approved the record (if any), and the timestamp of each change. Audit
+          lineage is derived from these provenance fields rather than from a
+          separate system.
+    \item \textbf{Cross-cutting services (right band).} The canonical store
+          exposes a query and event API to four services: an audit log and
+          lineage service, an identity and RBAC service, a reporting and
+          dashboards service, and a data quality and reconciliation service.
+          These services are the cross-cutting controls (Section~4.4) made
+          concrete.
+\end{itemize}
+
+The review queue (P1.3) is the human-in-the-loop exception path. Its purpose is to
+keep the system from forcing low-confidence records into the canonical store; it is
+the operational expression of the "operator review" component from the high-level
+architecture and is critical for the chat-approval capture workflow described in
+the configured collaboration subsystem (5.2.3).
+
+% ----------------------------------------------------------------
+\subsection{Configured Collaboration \& Workflow Subsystem DFD}
+\label{sec:dfd-collaboration}
+
+The configured collaboration and workflow subsystem is where the human-facing work
+of the system happens. It is built on a best-of-breed commercial tool (e.g., Jira,
+ClickUp, Notion, or Linear) configured with templates, automation rules, and
+approval flows that match NextStepBD's operational reality. The subsystem DFD in
+Figure~\ref{fig:dfd-collaboration} shows the internal sub-processes and the flows
+to and from the integration core.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    actor/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
+        minimum width=2.4cm, minimum height=.85cm, align=center},
+    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=2.6cm, minimum height=1.0cm, align=center, font=\small\bfseries},
+    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.6cm,
+        minimum height=1.0cm, align=center, font=\small\bfseries},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
+]
+
+% Actors (left)
+\node[actor] (client) at (-4.5,2.6) {Client};
+\node[actor] (pm) at (-4.5,0.6) {Project Manager};
+\node[actor] (dev) at (-4.5,-1.4) {Developer / QA};
+
+% Workflow processes (centre)
+\node[proc] (intake) at (0.0,2.6) {P2.1\\Requirement\\Intake};
+\node[proc] (approve) at (0.0,0.6) {P2.2\\Approval\\Capture};
+\node[proc] (task) at (0.0,-1.4) {P2.3\\Task\\Assignment};
+\node[proc] (escalate) at (4.0,2.6) {P2.4\\Escalation\\\& Reminder};
+\node[proc] (onboard) at (4.0,0.6) {P2.5\\Onboarding\\Workflow};
+\node[proc] (template) at (4.0,-1.4) {P2.6\\Template\\Library};
+
+% Stores
+\node[store] (issue) at (8.0,2.6) {D2\\Issue / Ticket\\Repository};
+\node[store] (conf) at (8.0,0.6) {D3\\Workflow\\Configuration};
+\node[store] (know) at (8.0,-1.4) {D4\\Knowledge\\Base};
+
+% Cross-cutting link
+\node[font=\scriptsize\itshape, color=darkgray, align=center] at (4.0,-3.2) {All processes read/write the integration core (Section 5.2.2)};
+
+% Actor to process flows
+\draw[arrow] (client.east) -- (intake.west);
+\draw[arrow] (pm.east) -- (approve.west);
+\draw[arrow] (pm.east) -- (task.west);
+\draw[arrow] (dev.east) -- (task.west);
+
+% Process internal flows
+\draw[arrow] (intake.east) -- (approve.north);
+\draw[arrow] (intake.east) -- (template.north);
+\draw[arrow] (approve.east) -- (escalate.north);
+\draw[arrow] (approve.east) -- (template.north);
+\draw[arrow] (task.east) -- (escalate.north);
+\draw[arrow] (task.east) -- (template.north);
+
+% Process to store flows
+\draw[arrow] (intake.east) -- (issue.west);
+\draw[arrow] (approve.east) -- (issue.west);
+\draw[arrow] (task.east) -- (issue.west);
+\draw[arrow] (escalate.east) -- (conf.west);
+\draw[arrow] (onboard.east) -- (know.west);
+\draw[arrow] (template.east) -- (conf.west);
+
+\end{tikzpicture}%
+}
+\caption{Configured Collaboration \& Workflow Subsystem DFD}
+\label{fig:dfd-collaboration}
+\end{figure}
+
+\noindent The subsystem has six sub-processes organised in two columns.
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Left column --- the core request-to-task flow.}
+          \begin{itemize}
+              \item P2.1 \textbf{Requirement Intake}: a client or internal
+                    user submits a requirement through a form (Section~5.4.1)
+                    or a structured channel. The requirement is recorded in
+                    the issue / ticket repository (D2) and a corresponding
+                    canonical record is created in the integration core
+                    (Section~5.2.2).
+              \item P2.2 \textbf{Approval Capture}: an approval that happened
+                    informally in chat or email is captured into the
+                    workflow tool through a one-click confirmation, then
+                    promoted into the canonical approval record. This is
+                    the principal fix for Problem~1 (fragmented
+                    communication).
+              \item P2.3 \textbf{Task Assignment}: tasks are created from
+                    requirements, linked to owners, and dispatched to
+                    developers. Templates from the template library (P2.6)
+                    are applied for routine task types.
+          \end{itemize}
+    \item \textbf{Right column --- the supporting processes.}
+          \begin{itemize}
+              \item P2.4 \textbf{Escalation \& Reminder}: automated
+                    escalation timers, reminder rules, and role-based
+                    notifications ensure that work items are not blocked
+                    by a single absent stakeholder. The escalation policy is
+                    stored in the workflow configuration (D3).
+              \item P2.5 \textbf{Onboarding Workflow}: new hires are
+                    onboarded through a structured workflow with checklists,
+                    mentorship assignments, and a skills-tag capture that
+                    feeds the integration core's employee-capacity record.
+                    This is the principal fix for Problem~5 (scalability).
+              \item P2.6 \textbf{Template Library}: a curated set of
+                    templates for requirements, approvals, tasks, incidents,
+                    and onboarding flows. Templates are the lever by which
+                    process standardisation scales without adding per-team
+                    customisation overhead.
+          \end{itemize}
+\end{itemize}
+
+All six processes read and write the canonical store through the integration core
+(5.2.2). The bidirectional connection is the structural reason why the
+collaboration tool does not become yet another silo: every meaningful event in the
+tool is captured as a canonical record, and every canonical record can be surfaced
+back in the tool through a linked view.
+
+% ----------------------------------------------------------------
+\subsection{DevOps, QA \& Observability Subsystem DFD}
+\label{sec:dfd-devops}
+
+The DevOps, QA, and observability subsystem is responsible for the technical
+delivery pipeline. It standardises build, test, staging, release, monitoring, and
+incident management for the pilot projects, and it links deployment evidence back
+to the canonical requirements and approvals in the integration core. The subsystem
+DFD in Figure~\ref{fig:dfd-devops} shows the pipeline from code commit to
+production, with the observability loop that closes it.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    actor/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
+        minimum width=2.4cm, minimum height=.85cm, align=center},
+    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
+        minimum width=2.4cm, minimum height=1.0cm, align=center, font=\small\bfseries},
+    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.4cm,
+        minimum height=1.0cm, align=center, font=\small\bfseries},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
+]
+
+% Actors
+\node[actor] (dev) at (-3.5,0.5) {Developer};
+\node[actor] (qa) at (-3.5,-1.4) {QA Engineer};
+\node[actor] (sre) at (-3.5,-3.3) {SRE / Lead};
+
+% Pipeline
+\node[proc] (commit) at (0.5,0.5) {P3.1\\Commit\\\& Branch};
+\node[proc] (ci) at (3.0,0.5) {P3.2\\CI Build\\\& Tests};
+\node[proc] (security) at (5.5,0.5) {P3.3\\Security\\\& Quality};
+\node[proc] (staging) at (8.0,0.5) {P3.4\\Staging\\Deploy};
+\node[proc] (release) at (10.5,0.5) {P3.5\\Release\\Approval};
+\node[proc] (prod) at (13.0,0.5) {P3.6\\Production};
+
+% Observability layer
+\node[proc] (monitor) at (3.0,-1.4) {P3.7\\Monitor\\\& Alert};
+\node[proc] (incident) at (5.5,-1.4) {P3.8\\Incident\\Workflow};
+\node[proc] (rollback) at (8.0,-1.4) {P3.9\\Rollback};
+
+% Stores
+\node[store] (repo) at (0.5,-3.3) {D5\\Source\\Repository};
+\node[store] (art) at (3.0,-3.3) {D6\\Artifact\\Registry};
+\node[store] (logs) at (5.5,-3.3) {D7\\Logs / Metrics\\Registry};
+\node[store] (tickets) at (8.0,-3.3) {D8\\Incident\\Tickets};
+
+% Main pipeline flow
+\draw[arrow] (dev.east) -- (commit.west);
+\draw[arrow] (commit) -- (ci);
+\draw[arrow] (ci) -- (security);
+\draw[arrow] (security) -- (staging);
+\draw[arrow] (staging) -- (release);
+\draw[arrow] (release) -- (prod);
+
+% Cross-cutting loops
+\draw[arrow] (prod.south) -- ++(0,-0.4) -| (monitor.east);
+\draw[arrow] (monitor.east) -- ++(0.5,0) |- (incident.west);
+\draw[arrow] (incident.east) -- ++(0.5,0) |- (rollback.west);
+\draw[arrow] (rollback.north) -- ++(0,0.4) -| (staging.south);
+
+% Stores
+\draw[arrow] (commit.south) -- (repo.north);
+\draw[arrow] (ci.south) -- (art.north);
+\draw[arrow] (monitor.south) -- (logs.north);
+\draw[arrow] (incident.south) -- (tickets.north);
+
+% QA gate
+\draw[arrow] (qa.east) -- ++(0.5,0) |- (security.south);
+\draw[arrow] (sre.east) -- ++(0.5,0) |- (prod.south);
+
+\end{tikzpicture}%
+}
+\caption{DevOps, QA, and Observability Subsystem DFD}
+\label{fig:dfd-devops}
+\end{figure}
+
+\noindent The subsystem is a linear pipeline (top row) closed by an observability
+loop (middle row) and supported by four stores (bottom row).
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Top row --- the delivery pipeline.}
+          \begin{itemize}
+              \item P3.1 \textbf{Commit \& Branch}: developer pushes code to
+                    the source repository (D5) following the project's
+                    branching policy.
+              \item P3.2 \textbf{CI Build \& Tests}: continuous integration
+                    runs the build, unit tests, integration tests, and
+                    regression tests. Successful builds produce an
+                    immutable artifact in the artifact registry (D6).
+              \item P3.3 \textbf{Security \& Quality}: automated security
+                    scanning, dependency checks, linting, and code-quality
+                    gates run on every build. QA engineers review and
+                    sign off the test report before staging.
+              \item P3.4 \textbf{Staging Deploy}: the artifact is deployed
+                    to a staging environment that mirrors production.
+                    Smoke tests and integration tests run against staging.
+              \item P3.5 \textbf{Release Approval}: a formal release
+                    approval is recorded against the deployment, linked
+                    to the requirement or task that drove the change. This
+                    is where the canonical store receives a \emph{release
+                    evidence} record.
+              \item P3.6 \textbf{Production}: the artifact is deployed to
+                    production with health checks in place.
+          \end{itemize}
+    \item \textbf{Middle row --- the observability loop.}
+          \begin{itemize}
+              \item P3.7 \textbf{Monitor \& Alert}: continuous monitoring of
+                    logs, metrics, and uptime (D7) produces alerts on
+                    service-level breaches.
+              \item P3.8 \textbf{Incident Workflow}: an alert opens an
+                    incident ticket (D8) in the collaboration tool, linked
+                    to the affected requirement or task.
+              \item P3.9 \textbf{Rollback}: an incident can trigger a
+                    rollback to the previous production artifact.
+          \end{itemize}
+\end{itemize}
+
+The observability loop closes back to the staging stage: when monitoring detects a
+regression, the system can roll forward to a known-good artifact or roll back to
+the previous one. The release approval (P3.5) is the operational moment at which
+the canonical record of "what was deployed, by whom, against which requirement"
+is created; that record is the evidence that the system can use for change
+tracking, billing evidence, and audit.
+
+% ----------------------------------------------------------------
+\section{Database Design}
+\label{sec:design-database}
+
+The database design is the persistent foundation of the recommended system. It
+specifies exactly how the canonical entities identified in Section~5.2.2 are
+structured, constrained, and related, so that the data model is internally
+consistent, supports the workflows of Section~5.2.3, and persists the release and
+incident evidence created by Section~5.2.4.
+
+The database architecture for the proposed system addresses five requirement
+buckets that were identified through the root cause analysis and the comparative
+feasibility evaluation:
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Canonical operational record.} Structured storage for
+          customers, projects, requirements, approvals, and tasks, providing the
+          authoritative record that the collaboration tool and the DevOps
+          stack both read from and write to. This is the principal fix for
+          Problems~2 (fragmentation) and~3 (data governance).
+    \item \textbf{Billing and operational readiness.} Tables that connect
+          approved scope and accepted deliverables to invoice preparation
+          and supporting evidence, so that finance and operations can
+          produce invoices without manual cross-referencing. This is the
+          principal fix for the billing evidence gap that contributed to
+          Problem~3.
+    \item \textbf{Audit, security, and access.} Tables for the audit log, the
+          user roster, and the role catalogue, with foreign-key linkage to
+          every entity that an operator can touch. This is the principal
+          fix for Problem~4 (security and access control).
+    \item \textbf{Incident and capacity tracking.} Tables for incidents
+          (post-deployment issues, support tickets) and employee-capacity
+          tags (skills, current load, mentor status) that the workflow
+          system and the DevOps system both depend on. This is the
+          principal fix for Problem~5 (scalability).
+    \item \textbf{System integration.} The SourceMessage table records
+          inbound events from legacy tools (Sheets, GitHub, chat) with
+          provenance, so that any record in the canonical store is
+          traceable to its original source. Foreign-key relationships
+          enforce referential integrity across the eight core tables.
+\end{itemize}
+
+All tables are designed to Third Normal Form (3NF) to eliminate update anomalies
+and redundancy. Integrity constraints (NOT NULL, UNIQUE, CHECK, FOREIGN KEY) are
+applied systematically. Indexing strategies prioritise the high-frequency query
+patterns identified in the functional requirements --- in particular, the
+approval lookup (P2.2 in Figure~\ref{fig:dfd-collaboration}) and the
+requirement-to-task traversal (P2.3).
+
+% ----------------------------------------------------------------
+\subsection{ER Diagram}
+\label{sec:design-er}
+
+Figure~\ref{fig:er-diagram} shows the Entity-Relationship diagram for the eight
+core tables of the canonical data model. Entities are shown as rectangles,
+attributes as ovals, and relationships as connecting lines with cardinality
+indicators. Foreign-key relationships are explicit, and the audit lineage is
+modelled as a first-class relationship from every canonical entity to the
+AuditLog table.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\small,
+    entity/.style={draw=primary, fill=secondary, thick, minimum width=2.2cm,
+        minimum height=0.9cm, align=center, font=\bfseries},
+    rel/.style={draw=accent, thick, align=center, font=\scriptsize},
+    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=primary!70!black}
+]
+
+% Top row: Customer, Project
+\node[entity] (customer) at (0,4) {Customer};
+\node[entity] (project) at (5,4) {Project};
+\node[entity] (employee) at (10,4) {Employee};
+\node[entity] (user) at (13,4) {User / Role};
+
+% Middle row: Requirement, Approval, Task
+\node[entity] (requirement) at (0,1.5) {Requirement};
+\node[entity] (approval) at (4,1.5) {Approval};
+\node[entity] (task) at (8,1.5) {Task};
+
+% Bottom row: Billing, Incident, AuditLog, SourceMessage
+\node[entity] (billing) at (0,-1) {BillingRecord};
+\node[entity] (incident) at (4,-1) {Incident};
+\node[entity] (audit) at (8,-1) {AuditLog};
+\node[entity] (source) at (13,-1) {SourceMessage};
+
+% Cross-cutting center
+\node[entity, fill=softcream] (xref) at (8,4) {\shortstack{Cross-Cutting\\Controls}};
+
+% Relationships (top row -> middle row)
+\draw[arrow] (customer) -- node[left, font=\scriptsize]{1} (requirement);
+\draw[arrow] (project) -- node[left, font=\scriptsize]{1} (requirement);
+\draw[arrow] (requirement) -- node[above, font=\scriptsize]{0..N} (approval);
+\draw[arrow] (requirement) -- node[above, font=\scriptsize]{1..N} (task);
+\draw[arrow] (employee) -- node[left, font=\scriptsize]{1} (task);
+\draw[arrow] (user) -- node[above, font=\scriptsize]{1..N} (audit);
+
+% Middle row -> bottom row
+\draw[arrow] (task) -- node[right, font=\scriptsize]{0..N} (billing);
+\draw[arrow] (task) -- node[above, font=\scriptsize]{0..N} (incident);
+\draw[arrow] (approval) -- node[above, font=\scriptsize]{0..N} (audit);
+\draw[arrow] (requirement) -- node[above, font=\scriptsize]{0..N} (audit);
+\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (requirement);
+\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (approval);
+\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (task);
+\draw[arrow] (xref) -- (audit);
+\draw[arrow] (xref) -- (user);
+
+\end{tikzpicture}%
+}
+\caption{ER Diagram --- Canonical Data Model}
+\label{fig:er-diagram}
+\end{figure}
+
+\noindent The cardinality of the principal relationships is:
+
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Customer} 1 --- N \textbf{Project} (a customer may have
+          many projects, each project has exactly one customer).
+    \item \textbf{Project} 1 --- N \textbf{Requirement} (a project has many
+          requirements; a requirement belongs to one project).
+    \item \textbf{Requirement} 1 --- N \textbf{Approval} (each requirement
+          may have one or more approvals, including scope, sign-off, and
+          delivery approvals).
+    \item \textbf{Requirement} 1 --- N \textbf{Task} (a requirement is
+          decomposed into one or more tasks).
+    \item \textbf{Employee} 1 --- N \textbf{Task} (an employee can be
+          assigned many tasks; a task is assigned to one employee at a
+          time).
+    \item \textbf{Task} 0..N --- 1 \textbf{BillingRecord} (a task may be
+          billable; a billing record aggregates one or more tasks into an
+          invoice line).
+    \item \textbf{Task} 0..N --- 1 \textbf{Incident} (a task or release may
+          spawn an incident).
+    \item \textbf{User} 1 --- N \textbf{AuditLog} (every audit record
+          identifies a user actor).
+    \item \textbf{SourceMessage} 0..N --- 1 \textbf{Requirement / Approval /
+          Task} (a record may be traceable back to a source event).
+\end{itemize}
+
+The audit log is treated as a first-class entity, not as a side-effect of
+operational tables. Every change to a canonical entity produces a row in
+AuditLog with the actor, the timestamp, the before-image, and the after-image.
+This means a regulator or auditor can answer "who changed this record, when,
+and from what source" with a single SQL query, which is a substantial
+improvement over the present state (Problem~4).
+
+% ----------------------------------------------------------------
+\subsection{Database Tables and Data Specifications}
+\label{sec:design-tables}
+
+The eight most operationally critical tables are specified below. The column
+format is: field name, key type (PK = primary key, FK = foreign key, UQ =
+unique), data type, size / constraint, and a one-line description. Each table
+also carries a row-count estimate and an index note at the end of the
+specification, since indexing strategy is a non-trivial part of the design
+even though the column details are the primary deliverable.
+
+\subsubsection{Users Table}
+\label{tab:users}
+
+The Users table is the master record of every individual who interacts with the
+system, including internal employees and external client contacts. It is the
+authoritative source of identity for the audit log, the assignment record, and
+the approval record.
+
+\begin{table}[H]
+\centering
+\caption{Users Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\centering\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+user\_id           & \keyfmt{PK} & \dtype{INT}          & \dsize{NOT NULL, AUTO\_INCREMENT}   & Unique user identifier \\
+full\_name         & \keyfmt{}   & \dtype{VARCHAR}      & \dsize{NOT NULL, 120}               & Display name \\
+email              & \keyfmt{UQ} & \dtype{VARCHAR}      & \dsize{NOT NULL, 180}               & Login and notification address \\
+role               & \keyfmt{}   & \dtype{ENUM}         & \dsize{NOT NULL}                    & CEO, PM, DEV, QA, FIN, OPS, HR, CLIENT, ADMIN \\
+external\_id       & \keyfmt{}   & \dtype{VARCHAR}      & \dsize{120}                         & SSO provider subject (Keycloak, Google) \\
+capacity\_tag      & \keyfmt{}   & \dtype{VARCHAR}      & \dsize{40}                          & Skill tag for auto-assignment (e.g., backend-go) \\
+is\_mentor         & \keyfmt{}   & \dtype{BOOLEAN}      & \dsize{NOT NULL, DEFAULT FALSE}     & Onboarding mentor flag \\
+created\_at        & \keyfmt{}   & \dtype{TIMESTAMP}    & \dsize{NOT NULL, DEFAULT NOW}       & Account creation time \\
+last\_login\_at     & \keyfmt{}   & \dtype{TIMESTAMP}    & \dsize{NULL}                        & Last successful authentication \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{user\_id}; UQ on \texttt{email};
+INDEX on \texttt{role} (for role-based dashboards); INDEX on
+\texttt{capacity\_tag} (for capacity-based auto-assignment).
+
+% ----------------------------------------------------------------
+\subsubsection{Customers Table}
+\label{tab:customers}
+
+The Customers table is the master record of every client organisation that
+NextStepBD serves. It is the parent of the Project table and the source of
+billing references.
+
+\begin{table}[H]
+\centering
+\caption{Customers Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+customer\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique customer identifier \\
+name & \keyfmt{} & \dtype{VARCHAR} & \dsize{NOT NULL, 200} & Customer organisation name \\
+primary\_contact & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & Primary contact user \\
+billing\_email & \keyfmt{} & \dtype{VARCHAR} & \dsize{180} & Address for invoice delivery \\
+billing\_address & \keyfmt{} & \dtype{TEXT} & \dsize{NULL} & Postal address for invoicing \\
+tax\_id & \keyfmt{} & \dtype{VARCHAR} & \dsize{40} & VAT / tax identifier \\
+contract\_type & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & PROJECT, RETAINER, MIXED \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & ACTIVE, PAUSED, CLOSED \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Onboarding date \\
+updated\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, ON UPDATE NOW} & Last canonical change \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{customer\_id}; UQ on \texttt{name} +
+\texttt{billing\_email} (preventing duplicate onboarding); FK index on
+\texttt{primary\_contact}; INDEX on \texttt{status} (for active-client
+dashboards).
+
+% ----------------------------------------------------------------
+\subsubsection{Projects Table}
+\label{tab:projects}
+
+The Projects table is the parent of every requirement, approval, and task. Each
+project has exactly one customer and may have one or more team members drawn
+from the Users table.
+
+\begin{table}[H]
+\centering
+\caption{Projects Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+project\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique project identifier \\
+customer\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Customers} & Owning customer \\
+name & \keyfmt{} & \dtype{VARCHAR} & \dsize{NOT NULL, 200} & Project name \\
+code & \keyfmt{UQ} & \dtype{VARCHAR} & \dsize{NOT NULL, 20} & Short code, e.g., AC-2026-07 \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & PLANNED, ACTIVE, PAUSED, CLOSED \\
+pm\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & Project manager \\
+start\_date & \keyfmt{} & \dtype{DATE} & \dsize{NULL} & Project start \\
+end\_date & \keyfmt{} & \dtype{DATE} & \dsize{NULL} & Projected end \\
+sheet\_source\_id & \keyfmt{} & \dtype{VARCHAR} & \dsize{60} & External Google Sheet ID, if applicable \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Record creation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{project\_id}; UQ on \texttt{code}; FK
+index on \texttt{customer\_id}; FK index on \texttt{pm\_user\_id}; INDEX on
+\texttt{status} (for portfolio dashboards).
+
+% ----------------------------------------------------------------
+\subsubsection{Requirements Table}
+\label{tab:requirements}
+
+The Requirements table is the canonical record of every feature, change, or
+scope item the customer has agreed to. Each requirement has one or more
+approvals and is decomposed into one or more tasks. This is the principal
+fix for Problem~1 (fragmented communication), because the requirement is the
+first place where an informal decision is promoted into a structured record.
+
+\begin{table}[H]
+\centering
+\caption{Requirements Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+requirement\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique requirement identifier \\
+project\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Projects} & Owning project \\
+title & \keyfmt{} & \dtype{VARCHAR} & \dsize{NOT NULL, 200} & Short description \\
+description & \keyfmt{} & \dtype{TEXT} & \dsize{NOT NULL} & Full requirement text \\
+source\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES SourceMessages} & Provenance to original chat / email / sheet row \\
+priority & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & LOW, MEDIUM, HIGH, CRITICAL \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & DRAFT, APPROVED, IN\_PROGRESS, DONE, WITHDRAWN \\
+acceptance\_criteria & \keyfmt{} & \dtype{TEXT} & \dsize{NULL} & Definition-of-done for QA \\
+created\_by & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & User who created the record \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Record creation \\
+updated\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, ON UPDATE NOW} & Last canonical change \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{requirement\_id}; FK index on
+\texttt{project\_id}; FK index on \texttt{source\_id}; INDEX on
+\texttt{status} (for in-flight requirement dashboards); INDEX on
+\texttt{priority} (for backlog prioritisation).
+
+% ----------------------------------------------------------------
+\subsubsection{Approvals Table}
+\label{tab:approvals}
+
+The Approvals table is the canonical record of every approval decision, no
+matter where the decision was originally communicated. It is the structural
+answer to Problem~1: a binding approval is never "in a chat" or "in an email"
+--- it is always here, with the actor, the timestamp, the artefact approved,
+and the source from which the decision was captured.
+
+\begin{table}[H]
+\centering
+\caption{Approvals Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+approval\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique approval identifier \\
+requirement\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Requirements} & Requirement being approved \\
+approver\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & Person who approved \\
+decision & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & APPROVED, REJECTED, CONDITIONAL \\
+conditions & \keyfmt{} & \dtype{TEXT} & \dsize{NULL} & Free-text conditions attached to a CONDITIONAL approval \\
+source\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES SourceMessages} & Provenance to the chat / email / form where it was captured \\
+captured\_via & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & ONE\_CLICK\_CONFIRM, OPERATOR\_REVIEW, FORM, INTEGRATION \\
+captured\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Capture timestamp \\
+approved\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NULL} & Original decision timestamp, if different from capture \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{approval\_id}; FK index on
+\texttt{requirement\_id}; FK index on \texttt{approver\_user\_id}; FK index on
+\texttt{source\_id}; INDEX on \texttt{captured\_via} (for review of which
+approvals were operator-verified vs. self-captured).
+
+% ----------------------------------------------------------------
+\subsubsection{Tasks Table}
+\label{tab:tasks}
+
+The Tasks table is the operational unit of work. Each task is created from a
+requirement (or, in incident-driven cases, from an Incident) and assigned to an
+employee. Tasks are the principal entity consumed by the DevOps, QA, and
+observability subsystem (Section~5.2.4).
+
+\begin{table}[H]
+\centering
+\caption{Tasks Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+task\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique task identifier \\
+requirement\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Requirements} & Originating requirement \\
+assignee\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES Users} & Currently assigned employee \\
+title & \keyfmt{} & \dtype{VARCHAR} & \dsize{NOT NULL, 200} & Short description \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & TODO, IN\_PROGRESS, IN\_REVIEW, DONE, BLOCKED \\
+priority & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & LOW, MEDIUM, HIGH, CRITICAL \\
+estimate\_hours & \keyfmt{} & \dtype{DECIMAL(5,1)} & \dsize{NULL} & Initial estimate \\
+logged\_hours & \keyfmt{} & \dtype{DECIMAL(5,1)} & \dsize{NULL, DEFAULT 0.0} & Time logged against this task \\
+is\_billable & \keyfmt{} & \dtype{BOOLEAN} & \dsize{NOT NULL, DEFAULT TRUE} & Whether this task contributes to billing \\
+external\_issue\_id & \keyfmt{} & \dtype{VARCHAR} & \dsize{60} & ID in the configured collaboration tool \\
+github\_pr\_url & \keyfmt{} & \dtype{VARCHAR} & \dsize{300} & Linked pull request URL, if any \\
+release\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES AuditLog} & Linked release approval (when DONE) \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Record creation \\
+updated\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, ON UPDATE NOW} & Last canonical change \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{task\_id}; FK index on
+\texttt{requirement\_id}; FK index on \texttt{assignee\_user\_id}; UQ on
+\texttt{external\_issue\_id} (to prevent duplicate sync from the collaboration
+tool); INDEX on \texttt{status} (for Kanban-style dashboards); INDEX on
+\texttt{is\_billable} (for billing extraction).
+
+% ----------------------------------------------------------------
+\subsubsection{BillingRecords Table}
+\label{tab:billing}
+
+The BillingRecords table aggregates approved scope and accepted deliverables
+into invoice-ready records. Each row is the canonical evidence supporting a
+billing line; finance and operations consume this table to produce invoices
+without manual cross-referencing. This is the principal fix for the
+billing-evidence gap in Problem~3.
+
+\begin{table}[H]
+\centering
+\caption{BillingRecords Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+billing\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique billing record identifier \\
+project\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Projects} & Project being billed \\
+invoice\_number & \keyfmt{UQ} & \dtype{VARCHAR} & \dsize{40} & Issued invoice number, NULL until invoiced \\
+period\_start & \keyfmt{} & \dtype{DATE} & \dsize{NOT NULL} & Billing period start \\
+period\_end & \keyfmt{} & \dtype{DATE} & \dsize{NOT NULL} & Billing period end \\
+total\_amount & \keyfmt{} & \dtype{DECIMAL(12,2)} & \dsize{NOT NULL} & Total amount in BDT \\
+currency & \keyfmt{} & \dtype{CHAR(3)} & \dsize{NOT NULL, DEFAULT 'BDT'} & Currency code \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & DRAFT, SENT, PAID, OVERDUE \\
+evidence\_bundle & \keyfmt{} & \dtype{JSON} & \dsize{NOT NULL} & Linked approval\_ids, task\_ids, release\_ids for audit \\
+issued\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NULL} & Time invoice was sent \\
+paid\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NULL} & Time payment was received \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Record creation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{billing\_id}; UQ on
+\texttt{invoice\_number}; FK index on \texttt{project\_id}; INDEX on
+\texttt{status} (for accounts-receivable ageing); INDEX on
+\texttt{period\_start} (for periodic extraction).
+
+The \texttt{evidence\_bundle} JSON column is the structural device that makes
+billing auditable. It stores an array of the approval, task, and release IDs
+that justify the line, so a regulator or auditor can reconstruct the chain of
+evidence for any invoice with a single query, without re-reading chat
+transcripts.
+
+% ----------------------------------------------------------------
+\subsubsection{AuditLog Table}
+\label{tab:auditlog}
+
+The AuditLog table is the canonical record of every change to a canonical
+entity. It is the structural answer to Problem~4: every sensitive action is
+logged with the actor, the timestamp, the before-image, and the after-image,
+and the log is searchable, exportable, and retained per the policy in
+Section~4.4 (auditability target: 100\% coverage of changes to canonical
+records).
+
+\begin{table}[H]
+\centering
+\caption{AuditLog Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+audit\_id & \keyfmt{PK} & \dtype{BIGINT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Monotonically increasing audit identifier \\
+actor\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & Who performed the change \\
+entity\_type & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & CUSTOMER, PROJECT, REQUIREMENT, APPROVAL, TASK, BILLING, INCIDENT \\
+entity\_id & \keyfmt{} & \dtype{INT} & \dsize{NOT NULL} & Primary key of the affected record \\
+action & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & CREATE, UPDATE, DELETE, EXPORT, VIEW, APPROVE, REJECT \\
+before\_json & \keyfmt{} & \dtype{JSON} & \dsize{NULL} & Snapshot of the record before the change \\
+after\_json & \keyfmt{} & \dtype{JSON} & \dsize{NULL} & Snapshot of the record after the change \\
+ip\_address & \keyfmt{} & \dtype{VARCHAR} & \dsize{45} & Source IP for the change \\
+user\_agent & \keyfmt{} & \dtype{VARCHAR} & \dsize{200} & Browser / client identifier \\
+occurred\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Event timestamp \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{audit\_id}; FK index on
+\texttt{actor\_user\_id}; INDEX on \texttt{(entity\_type, entity\_id)} (for
+"show me the history of this record"); INDEX on \texttt{occurred\_at} (for
+time-range queries); INDEX on \texttt{action} (for compliance reports).
+
+Because AuditLog is append-only and never updated, it is safe to retain
+indefinitely and to expose to the data quality service for completeness
+checks. A record that should be in AuditLog and is not is, by definition, a
+data-integrity bug.
+
+% ----------------------------------------------------------------
+\subsubsection{Incidents Table}
+\label{tab:incidents}
+
+The Incidents table records post-deployment issues and support tickets. Each
+incident is linked to the task or release that produced it (or to the
+requirement that was affected), and is the operational entry point for the
+DevOps, QA, and observability subsystem's incident workflow (P3.8 in
+Figure~\ref{fig:dfd-devops}).
+
+\begin{table}[H]
+\centering
+\caption{Incidents Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+incident\_id & \keyfmt{PK} & \dtype{INT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique incident identifier \\
+title & \keyfmt{} & \dtype{VARCHAR} & \dsize{NOT NULL, 200} & Short description \\
+severity & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & P1, P2, P3, P4 \\
+status & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & OPEN, IN\_PROGRESS, RESOLVED, CLOSED \\
+linked\_task\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES Tasks} & Originating task, if known \\
+linked\_requirement\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES Requirements} & Affected requirement, if known \\
+reporter\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NOT NULL, REFERENCES Users} & Who reported the incident \\
+assignee\_user\_id & \keyfmt{FK} & \dtype{INT} & \dsize{NULL, REFERENCES Users} & On-call engineer currently assigned \\
+root\_cause & \keyfmt{} & \dtype{TEXT} & \dsize{NULL} & Post-mortem summary when resolved \\
+resolved\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NULL} & Resolution timestamp \\
+created\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Report time \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{incident\_id}; FK index on
+\texttt{linked\_task\_id}; FK index on \texttt{linked\_requirement\_id}; FK
+index on \texttt{reporter\_user\_id}; FK index on \texttt{assignee\_user\_id};
+INDEX on \texttt{severity} (for P1 dashboards); INDEX on
+\texttt{(status, severity)} (for triage views).
+
+% ----------------------------------------------------------------
+\subsubsection{SourceMessage Table}
+\label{tab:sourcemessage}
+
+The SourceMessage table records every inbound event from a legacy system
+(Sheets, GitHub, chat, email) that has been processed by the integration
+core's gateway (P1.1 in Figure~\ref{fig:dfd-integration-core}). It is the
+structural reason why the canonical record has provenance: every Requirements,
+Approvals, or Tasks row that was created from a legacy source points back
+to a SourceMessage row that records exactly what was received, when, and from
+where.
+
+\begin{table}[H]
+\centering
+\caption{SourceMessage Table: Data Types and Specifications}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}
+                                >{\raggedright\arraybackslash}p{1.4cm}
+                                >{\raggedright\arraybackslash}p{2.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}X}
+\rowcolor{headerbg}
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.6cm}}{\textcolor{headertx}{\textbf{Field Name}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\centering\arraybackslash}p{1.4cm}}{\textcolor{headertx}{\textbf{Key}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{2.2cm}}{\textcolor{headertx}{\textbf{Data Type}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}p{3.4cm}}{\textcolor{headertx}{\textbf{Size / Constraint}}} &
+\multicolumn{1}{>{\columncolor{headerbg}\raggedright\arraybackslash}X}{\textcolor{headertx}{\textbf{Description}}} \\
+\midrule
+source\_id & \keyfmt{PK} & \dtype{BIGINT} & \dsize{NOT NULL, AUTO\_INCREMENT} & Unique inbound event identifier \\
+source\_type & \keyfmt{} & \dtype{ENUM} & \dsize{NOT NULL} & WHATSAPP, SLACK, EMAIL, SHEETS, GITHUB, FORM \\
+source\_ref & \keyfmt{} & \dtype{VARCHAR} & \dsize{200} & External identifier (message ID, sheet row, PR number) \\
+raw\_text & \keyfmt{} & \dtype{TEXT} & \dsize{NULL} & Original payload, redacted for PII if needed \\
+parsed\_json & \keyfmt{} & \dtype{JSON} & \dsize{NULL} & Structured extraction by the validator (P1.2) \\
+confidence & \keyfmt{} & \dtype{DECIMAL(3,2)} & \dsize{NULL} & Extraction confidence, 0.00--1.00 \\
+mapped\_entity & \keyfmt{} & \dtype{ENUM} & \dsize{NULL} & REQUIREMENT, APPROVAL, TASK, INCIDENT (if recognised) \\
+mapped\_entity\_id & \keyfmt{} & \dtype{INT} & \dsize{NULL} & FK to the resulting canonical row, if created \\
+needs\_review & \keyfmt{} & \dtype{BOOLEAN} & \dsize{NOT NULL, DEFAULT FALSE} & Routed to operator review queue (P1.3) \\
+received\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NOT NULL, DEFAULT NOW} & Inbound timestamp from the source \\
+processed\_at & \keyfmt{} & \dtype{TIMESTAMP} & \dsize{NULL} & When the validator (P1.2) finished extraction \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent \emph{Indexes}: PK on \texttt{source\_id}; INDEX on
+\texttt{source\_type}; INDEX on \texttt{(source\_type, source\_ref)} (for
+duplicate detection on re-sync); INDEX on \texttt{needs\_review} (for
+operator queue dashboard); INDEX on \texttt{received\_at}.
+
+% ----------------------------------------------------------------
+\subsection{Table-to-Process Cross-Reference}
+\label{sec:design-tables-xref}
+
+The eight table specifications above are the operational deliverable of
+Section~5.3, but they only become useful when the reader can see which process
+writes to which table. Table~\ref{tab:tables-xref} provides that cross-reference
+at a glance.
+
+\begin{table}[H]
+\centering
+\caption{Cross-Reference: Tables to DFD Processes}
+\label{tab:tables-xref}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}p{4.6cm}
+                                >{\raggedright\arraybackslash}p{4.0cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Table} & \textbf{Primary Writer} & \textbf{Primary Reader} & \textbf{Primary Use} \\
+\midrule
+Users                 & Identity service            & All                       & Login, role-based access, capacity assignment \\
+Customers             & CRM connector / form         & All                       & Customer master record \\
+Projects              & PM workflow (P2.1)          & PMs, finance, management  & Project master record, portfolio view \\
+Requirements          & Intake form (P2.1)          & PMs, developers, QA       & Work decomposition, acceptance criteria \\
+Approvals             & Approval capture (P2.2)     & Finance, QA, PMs          & Authoritative approval evidence \\
+Tasks                 & Task assignment (P2.3)      & Developers, QA, finance   & Operational work, billing extraction \\
+BillingRecords        & Billing extraction (job)    & Finance, clients          & Invoice generation, evidence bundle \\
+AuditLog              & All services                & Security, management, regulators & Compliance, change history, investigation \\
+Incidents             & QA / on-call (P3.8)         & QA, PMs, SRE              & Defect and support tracking \\
+SourceMessage         & Gateway (P1.1)              & All (transitively)        & Provenance for legacy-sourced records \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ----------------------------------------------------------------
+\section{Form Design}
+\label{sec:design-forms}
+
+The form design section specifies the user interface layer for the five
+operational forms that NextStepBD staff and clients use to enter data into
+the system. Each form is purpose-calibrated to its user role and to the
+process it feeds, and follows a consistent internal pattern: purpose, user
+role, input fields, validation rules, and integration with the corresponding
+database table and DFD process node. All forms are accessible through a
+unified web-based staff portal and through a lightweight client portal for
+external client users.
+
+The five forms together cover the most important data entry touchpoints in
+the recommended system:
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{Client Requirement Intake Form} --- the principal entry
+          point for new requirements from clients.
+    \item \textbf{Approval Capture Form} --- the structural answer to
+          Problem~1 (fragmented communication); turns an approval that
+          happened in chat or email into a canonical record.
+    \item \textbf{Task Status / Change Request Form} --- used by
+          developers and PMs to update a task, change scope, or record
+          completion.
+    \item \textbf{Incident Report Form} --- used by developers and QA to
+          report a post-deployment issue.
+    \item \textbf{Billing Evidence Form} --- used by finance to attach
+          task and approval references to a billing period.
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\subsection{Client Requirement Intake Form}
+\label{sec:form-intake}
+
+\textbf{Purpose.} The Client Requirement Intake Form is the principal entry
+point for new requirements from clients. It is used by account leads, project
+managers, and (for client-portal self-service) by client users themselves.
+The form turns a free-text client request into a structured Requirement
+record (Section~\ref{tab:requirements}) and a linked draft issue in the
+configured collaboration tool.
+
+\textbf{User role.} Account lead, project manager, or client user (via the
+client portal).
+
+\textbf{Input fields.}
+
+\begin{table}[H]
+\centering
+\caption{Client Requirement Intake Form: Input Fields}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{1.6cm}
+                                >{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Field} & \textbf{Required} & \textbf{Type} & \textbf{Notes} \\
+\midrule
+Project (lookup)            & Yes & Dropdown    & From \texttt{Projects} table; filtered by user role \\
+Title                       & Yes & Text (200)  & Short description, shown in the issue title \\
+Description                 & Yes & Long text   & Full requirement text; markdown supported \\
+Acceptance criteria         & No  & Long text   & Definition-of-done; may be added later by PM \\
+Priority                    & Yes & Dropdown    & LOW, MEDIUM, HIGH, CRITICAL \\
+Source reference            & No  & Text (200)  & Optional external reference (e.g., email subject, chat message ID) \\
+Linked parent requirement   & No  & Dropdown    & For change requests against an existing requirement \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Validation rules.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Title and description are non-empty.} Empty title is rejected
+          client-side and server-side.
+    \item \textbf{Priority is required.} Defaults to MEDIUM if not explicitly
+          set; CRITICAL triggers an automatic escalation in the workflow
+          tool.
+    \item \textbf{Project lookup is filtered by role.} A client user sees only
+          their own projects; a PM sees projects they manage; an admin sees
+          all.
+    \item \textbf{Source reference is sanitised.} If the source is a chat or
+          email message, PII is redacted before the source reference is
+          stored in SourceMessage.
+\end{itemize}
+
+\textbf{Integration.} On submit, the form:
+\begin{itemize}[leftmargin=1.6em]
+    \item creates a row in \texttt{Requirements} (Section~\ref{tab:requirements})
+          with \texttt{status = DRAFT} and \texttt{priority} as set;
+    \item creates a corresponding row in \texttt{SourceMessage}
+          (Section~\ref{tab:sourcemessage}) with the form submission as the
+          payload and \texttt{mapped\_entity = REQUIREMENT};
+    \item creates a draft issue in the configured collaboration tool (D2 in
+          Figure~\ref{fig:dfd-collaboration}) linked to the
+          \texttt{external\_issue\_id} field of the task that will be created
+          from the requirement;
+    \item writes an audit log row (Section~\ref{tab:auditlog}) with
+          \texttt{action = CREATE}, \texttt{entity\_type = REQUIREMENT}.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Approval Capture Form}
+\label{sec:form-approval}
+
+\textbf{Purpose.} The Approval Capture Form is the structural answer to
+Problem~1. Approvals in NextStepBD frequently happen informally in chat or
+email; before this form existed, there was no traceable record of who
+approved what, when. The form turns an informal decision into a canonical
+Approvals row (Section~\ref{tab:approvals}) and is the most important
+single form in the system.
+
+\textbf{User role.} Project manager, account lead, client user, or operator
+(when a low-confidence inbound approval is routed to the operator review
+queue, P1.3 in Figure~\ref{fig:dfd-integration-core}).
+
+\textbf{Input fields.}
+
+\begin{table}[H]
+\centering
+\caption{Approval Capture Form: Input Fields}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{1.6cm}
+                                >{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Field} & \textbf{Required} & \textbf{Type} & \textbf{Notes} \\
+\midrule
+Requirement (lookup)       & Yes & Dropdown    & From \texttt{Requirements} table; must be APPROVED or earlier status \\
+Approver (lookup)           & Yes & User picker & Pre-filled with current user; can be reassigned to a delegated approver \\
+Decision                   & Yes & Radio       & APPROVED, REJECTED, CONDITIONAL \\
+Conditions                 & No  & Long text   & Required when \texttt{Decision = CONDITIONAL} \\
+Source of approval         & No  & Dropdown    & CHAT, EMAIL, MEETING, FORM, INTEGRATION (pre-filled when invoked from a captured message) \\
+Source reference            & No  & Text (200)  & Optional external reference \\
+Original approval timestamp & No  & Datetime    & Pre-filled from the source message timestamp when available \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Validation rules.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Conditions is required when Decision is CONDITIONAL.} The
+          form rejects submission if \texttt{Decision = CONDITIONAL} and
+          \texttt{conditions} is empty.
+    \item \textbf{Approver must have permission to approve this requirement.}
+          The form checks the role catalogue (Users.role) against the
+          requirement's project; a developer cannot approve a financial
+          scope change, for example.
+    \item \textbf{One approval per requirement per approver, by default.}
+          Duplicate approvals are detected server-side and the form presents
+          the existing approval with an option to update rather than create a
+          duplicate.
+    \item \textbf{Source reference is preserved exactly.} The form does not
+          silently modify the source reference; if it is a chat message
+          URL, the URL is stored verbatim.
+\end{itemize}
+
+\textbf{Integration.} On submit, the form:
+\begin{itemize}[leftmargin=1.6em]
+    \item creates a row in \texttt{Approvals} (Section~\ref{tab:approvals})
+          with the actor, decision, conditions, and source reference as
+          captured;
+    \item links the new approval to the originating
+          \texttt{SourceMessage} row (if the approval was invoked from a
+          captured message) or creates a new \texttt{SourceMessage} row with
+          \texttt{mapped\_entity = APPROVAL};
+    \item transitions the originating \texttt{Requirement} to status
+          \texttt{APPROVED} (or leaves it at the prior status if rejected or
+          conditional);
+    \item writes an audit log row (Section~\ref{tab:auditlog}).
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Task Status / Change Request Form}
+\label{sec:form-task}
+
+\textbf{Purpose.} The Task Status / Change Request Form is the operational
+update form for tasks. It is used by developers and PMs to record progress,
+flag blockers, request scope changes, and close tasks. It is also the form
+that bridges the workflow tool to the canonical store, because every status
+change submitted here produces an updated \texttt{Tasks} row and an audit
+log row.
+
+\textbf{User role.} Developer (for status updates) or project manager (for
+scope changes, reassignments, and blockers).
+
+\textbf{Input fields.}
+
+\begin{table}[H]
+\centering
+\caption{Task Status / Change Request Form: Input Fields}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{1.6cm}
+                                >{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Field} & \textbf{Required} & \textbf{Type} & \textbf{Notes} \\
+\midrule
+Task (lookup)              & Yes & Dropdown    & From \texttt{Tasks} table; pre-filled when invoked from a task view \\
+New status                 & Yes & Dropdown    & TODO, IN\_PROGRESS, IN\_REVIEW, DONE, BLOCKED \\
+Assignee (override)        & No  & User picker & PM use; defaults to current user for developers \\
+Logged hours               & No  & Decimal     & Added to \texttt{logged\_hours} when changed \\
+Reason for change          & Cond. & Long text & Required when transitioning to BLOCKED or to a different assignee \\
+Linked PR URL              & No  & Text (300)  & GitHub pull request URL, set automatically by the CI webhook when present \\
+Linked release ID          & No  & Text (60)   & Set automatically when the task's status transitions to DONE and a release is recorded \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Validation rules.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Transition to BLOCKED requires a reason.} This is the most
+          important rule in the system: the BLOCKED state is the operational
+          signal that a task is stuck, and a reason is mandatory so the
+          weekly review (governance cadence, Section~4.4) can act on it.
+    \item \textbf{Transition to DONE triggers release check.} If the task
+          has \texttt{is\_billable = TRUE} and there is no linked release
+          record, the form warns and asks the user to confirm or attach a
+          release.
+    \item \textbf{Logged hours cannot decrease.} Negative deltas to
+          \texttt{logged\_hours} are rejected; corrections require a
+          separate adjustment task.
+    \item \textbf{Reassignment requires a reason.} Reassigning a task to a
+          different employee produces a reason field; the audit log captures
+          the previous assignee for traceability.
+\end{itemize}
+
+\textbf{Integration.} On submit, the form:
+\begin{itemize}[leftmargin=1.6em]
+    \item updates the \texttt{Tasks} row (Section~\ref{tab:tasks}) with the
+          new status, assignee, hours, and PR / release references;
+    \item writes an audit log row (Section~\ref{tab:auditlog}) with
+          \texttt{action = UPDATE} and the before / after snapshots;
+    \item if \texttt{status} is BLOCKED, opens a draft \texttt{Incident}
+          (Section~\ref{tab:incidents}) linked back to the task and the
+          originating \texttt{Requirement}, ready for triage by the
+          on-call engineer.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Incident Report Form}
+\label{sec:form-incident}
+
+\textbf{Purpose.} The Incident Report Form is the entry point for
+post-deployment issues, support tickets, and defect reports. It is used by
+developers, QA engineers, and (for client-reported issues) by account leads
+on behalf of clients. Each incident is linked back to the task or release
+that produced it, so post-mortems are grounded in the same canonical record
+that drove the original work.
+
+\textbf{User role.} Developer, QA engineer, or account lead (on behalf of
+client).
+
+\textbf{Input fields.}
+
+\begin{table}[H]
+\centering
+\caption{Incident Report Form: Input Fields}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{1.6cm}
+                                >{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Field} & \textbf{Required} & \textbf{Type} & \textbf{Notes} \\
+\midrule
+Title                       & Yes & Text (200)  & Short description, shown in the incident list \\
+Severity                    & Yes & Dropdown    & P1, P2, P3, P4 \\
+Description                 & Yes & Long text   & Reproduction steps, observed vs. expected, environment \\
+Linked task (lookup)         & No  & Dropdown    & From \texttt{Tasks} table; if known, the incident is pre-linked \\
+Linked requirement (lookup)  & No  & Dropdown    & From \texttt{Requirements} table; if known, the affected requirement is pre-linked \\
+Assignee (on-call)           & No  & User picker & Defaults to the on-call rotation, can be reassigned \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Validation rules.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{P1 incidents trigger immediate notification.} Submission of
+          a P1 incident opens a notification to the on-call engineer and the
+          engineering manager within 60 seconds.
+    \item \textbf{Description must include reproduction steps or a
+          justification.} A description that contains fewer than 20
+          characters and no observed/expected pair is rejected; this
+          prevents "can't reproduce" tickets from entering the backlog
+          without context.
+    \item \textbf{Link to a known task or requirement is encouraged but not
+          forced.} Some incidents (e.g., infrastructure issues) do not
+          have a single originating task; the link is therefore optional
+          but visible by default.
+\end{itemize}
+
+\textbf{Integration.} On submit, the form:
+\begin{itemize}[leftmargin=1.6em]
+    \item creates a row in \texttt{Incidents} (Section~\ref{tab:incidents});
+    \item writes an audit log row (Section~\ref{tab:auditlog});
+    \item if the incident is P1, dispatches a notification through the
+          collaboration tool and through the alerting service (P3.7 in
+          Figure~\ref{fig:dfd-devops});
+    \item opens a triage view in the collaboration tool with the incident
+          linked to its candidate root-cause task or requirement.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Billing Evidence Form}
+\label{sec:form-billing}
+
+\textbf{Purpose.} The Billing Evidence Form is used by finance and project
+managers to attach task and approval references to a billing period, so
+that invoice lines are auditable back to the canonical record. It is the
+operational entry point for the \texttt{evidence\_bundle} JSON field in the
+BillingRecords table.
+
+\textbf{User role.} Finance officer or project manager (with finance
+review).
+
+\textbf{Input fields.}
+
+\begin{table}[H]
+\centering
+\caption{Billing Evidence Form: Input Fields}
+\small
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{roweven}{rowodd}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.6cm}
+                                >{\raggedright\arraybackslash}p{1.6cm}
+                                >{\raggedright\arraybackslash}p{2.4cm}
+                                >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Field} & \textbf{Required} & \textbf{Type} & \textbf{Notes} \\
+\midrule
+Project (lookup)            & Yes & Dropdown    & From \texttt{Projects} table \\
+Billing period start        & Yes & Date        & First day of the period being billed \\
+Billing period end          & Yes & Date        & Last day of the period being billed \\
+Included tasks (multi)      & Yes & Multi-pick  & From \texttt{Tasks} where \texttt{is\_billable = TRUE} and \texttt{status = DONE} in the period \\
+Included approvals (multi)  & No  & Multi-pick  & From \texttt{Approvals} that justify the included scope \\
+Total amount (auto)         & No  & Decimal     & Computed from selected tasks; user can override with a reason \\
+Currency                    & Yes & Dropdown    & BDT (default), USD, EUR, GBP \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Validation rules.}
+\begin{itemize}[leftmargin=1.6em]
+    \item \textbf{Selected tasks must be DONE and billable.} The form
+          presents only tasks in the chosen period with
+          \texttt{status = DONE} and \texttt{is\_billable = TRUE}; tasks in
+          other states are not selectable.
+    \item \textbf{Override of total amount requires a reason.} If the
+          user-edited total differs from the computed total by more than
+          1\%, a reason field is required.
+    \item \textbf{Billing periods do not overlap for the same project.} The
+          form rejects periods that overlap with existing DRAFT or SENT
+          invoices for the same project.
+    \item \textbf{Included approvals are scoped to the included tasks.} An
+          approval is selectable only if it is linked to one or more of
+          the currently selected tasks.
+\end{itemize}
+
+\textbf{Integration.} On submit, the form:
+\begin{itemize}[leftmargin=1.6em]
+    \item creates a row in \texttt{BillingRecords} (Section~\ref{tab:billing})
+          with the \texttt{evidence\_bundle} JSON field populated from the
+          selected tasks and approvals;
+    \item writes an audit log row (Section~\ref{tab:auditlog}) with
+          \texttt{action = CREATE};
+    \item transitions the selected tasks to a \texttt{INVOICED} substate
+          so they cannot be double-counted in a subsequent billing period.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Form Design Integration Summary}
+\label{sec:form-integration}
+
+The five forms above collectively cover all the principal data entry
+touchpoints in the recommended system. Each form is purpose-built to its
+user role and process context, minimising the fields visible to each user
+type, maximising data quality through inline validation, and creating the
+structured, auditable records that the system's database and reporting
+capabilities depend upon.
+
+Table~\ref{tab:form-integration} summarises how each form links to its
+primary user, its linked DFD process, and its primary database table. The
+table closes the design argument: every form is the data entry point for
+a process, and every process writes to a canonical record, and every
+canonical record is auditable.
+
+\begin{table}[H]
+\centering
+\caption{Form Design Integration Summary}
+\label{tab:form-integration}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.2cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}p{3.4cm}
+                                >{\raggedright\arraybackslash}p{3.0cm}}
+\toprule
+\textbf{Form} & \textbf{Primary User} & \textbf{Linked Process} & \textbf{Primary DB Table} \\
+\midrule
+Client Requirement Intake   & Account lead / client & P2.1 (Requirement intake)            & Requirements \\
+Approval Capture           & PM / account lead / operator & P2.2 (Approval capture)     & Approvals \\
+Task Status / Change Request & Developer / PM        & P2.3 (Task assignment)               & Tasks \\
+Incident Report            & Developer / QA / lead  & P3.8 (Incident workflow)            & Incidents \\
+Billing Evidence           & Finance / PM           & Billing extraction (P2.3 + scheduled job) & BillingRecords \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent The Client Requirement Intake Form initiates the work pipeline that
+flows through the Approval Capture Form, the Task Status Form, the Incident
+Report Form, and finally the Billing Evidence Form. The Approval Capture
+Form is the operational moment at which an informal decision becomes a
+canonical record, and is the single most important form for closing the
+gap that Problem~1 (fragmented communication) opens. The Incident Report
+Form closes the delivery loop by feeding post-deployment issues back into
+the canonical record so that post-mortems and the requirement trace are
+kept consistent. The Billing Evidence Form closes the financial loop by
+producing invoice evidence bundles that can be audited without re-reading
+chat transcripts.
+
+% ----------------------------------------------------------------
+\section{Conclusion}
+\label{sec:design-conclusion}
+
+The design presented in this chapter translates the analytical findings and
+the comparative feasibility conclusion of Section~4.4 into a comprehensive,
+implementable system architecture for NextStepBD's Integrated Operational
+Excellence system. The four design elements --- the top-level and subsystem
+DFDs, the ER diagram, the eight table specifications, and the five form
+designs --- work as an integrated whole. The DFDs define what information
+flows where and through which processes; the ER diagram and the table
+specifications define exactly how that information is structured and
+persisted; and the forms define the human--computer interaction layer through
+which NextStepBD staff and clients enter data into the system in their
+day-to-day operational roles.
+
+The DFD hierarchy reveals a system designed around three architectural
+principles that fall directly out of the comparative selection in
+Section~4.4.
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{Small canonical core over monolithic build.} The
+          integration core (Section~5.2.2) is the single piece of
+          in-house software in the recommended architecture. It owns the
+          canonical record of customers, projects, requirements, approvals,
+          tasks, billing, and incidents, and provides the API and webhook
+          gateway that connects every other tool in the system. Everything
+          else --- the collaboration tool, the DevOps stack, the legacy
+          tools that remain in use --- is configured rather than built,
+          and the configuration is auditable through the cross-cutting
+          controls (identity, RBAC, audit, redaction, data quality,
+          backup, monitoring) that the integration core provides. This is
+          the structural realisation of the Configure strategy: the
+          organisation keeps the tools that have already earned user
+          trust, and layers governance over them rather than replacing
+          them.
+    \item \textbf{Familiar tooling over disruptive replacement.} The
+          configured collaboration and workflow subsystem (Section~5.2.3)
+          is built on a commercial product that NextStepBD staff already
+          know how to use. The system does not ask the team to learn a
+          new tool; it asks them to use the tool they already have, with
+          templates and automation rules that align the tool to the
+          canonical record. The Approval Capture Form (Section~5.4.2) is
+          the principal example: a one-click confirmation flow inside
+          the familiar tool, rather than a custom web app that the team
+          must learn to use.
+    \item \textbf{Captured decisions over informal memory.} Every form
+          in Section~5.4 produces a canonical record with provenance.
+          Every record is linked back to the originating source message
+          (Section~5.3.2, \texttt{SourceMessage} table), so the chain of
+          evidence from a chat message to a requirement to an approval
+          to a task to a billing line is reconstructable with a single
+          SQL query. This is the structural answer to Problem~1, the
+          audit-evidence requirement in Problem~4, and the
+          on-boarding-time requirement in Problem~5 simultaneously: a
+          new hire joining the team can read the canonical record of
+          past decisions instead of reconstructing them from memory.
+\end{enumerate}
+
+The database design implements these principles in a normalised,
+integrity-constrained relational schema. The eight tables specified in
+Section~5.3.2 provide the persistent data foundation for every process in
+the DFD hierarchy, with carefully designed foreign-key relationships
+ensuring referential integrity across the canonical model. Two design
+choices in particular deserve emphasis. First, the
+\texttt{evidence\_bundle} JSON column in BillingRecords stores the
+approval and task IDs that justify an invoice line, so a regulator or
+auditor can reconstruct the chain of evidence without re-reading chat
+transcripts. Second, the \texttt{SourceMessage} table makes provenance a
+first-class property of every record that originated from a legacy tool
+(Sheets, GitHub, chat, email), which is the structural reason why the
+canonical record is trustworthy.
+
+The five form designs complete the system specification by defining the
+user interaction layer. Each form is purpose-calibrated to its user role
+and to the process it feeds, ensuring that data enters the system in a
+structured, validated form at the earliest possible point --- preventing
+the data quality degradation that cascades when unvalidated inputs
+propagate through downstream processes. The Approval Capture Form, in
+particular, operationalises the cultural and process transformation
+required by the Configure strategy, giving the team a structured language
+for capturing decisions that replaces the ambiguous chat-only
+processes responsible for the bulk of the rework risk identified in
+Chapter~1.
+
+In aggregate, the designs presented in this chapter demonstrate that the
+resolution of NextStepBD's five critical problems is not dependent on
+technology investment alone, but on a coherent, mutually reinforcing
+architecture in which a small canonical core, a configured familiar
+tool, and a standard delivery pipeline are designed as an integrated
+system rather than as isolated components. The pilot acceptance targets
+in Section~4.4 --- 95\% formal approval capture, 50\% reduction in
+clarification cycles, 95\% selected-field synchronisation, 90\% correct
+auto-assignment, two-week reduction in onboarding time --- are
+operationally measurable in the system designed here, and the
+business case that supports them (Medium cost band, four-to-six-month
+pilot, six-to-nine-month full rollout) is consistent with the architecture
+specified in this chapter.
+
+% =================================================================
+% END OF CHAPTER 5 — Design
+% =================================================================
 
 \end{document}
