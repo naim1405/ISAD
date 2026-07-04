@@ -498,107 +498,18 @@ Custom Tools / Scripts & Used for automation, data processing, analytics, deploy
 The diagram below summarises the principal tools and the dominant information flows between them.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    grouplabel/.style={font=\sffamily\bfseries\small, color=primary},
-    box/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.4cm,
-        align=center,
-        minimum height=1.0cm
-    },
-    grpbox/.style={draw=primary!40, dashed, thick, rounded corners, fill=primary!4, inner sep=10pt},
-    arrow/.style={->, >=stealth, thick, color=primary}
-]
-
-% NODES
-\node[box] (wa)    at (0, 1.6)  {WhatsApp};
-\node[box] (email) at (0, -0.2) {Email};
-
-\node[box] (sheets) at (5, 1.6)  {Google Sheets};
-\node[box] (docs)   at (5, -0.2) {Shared Docs};
-
-\node[box] (gh) at (10, 1.6)  {GitHub};
-\node[box] (ci) at (10, -0.2) {CI/CD Scripts};
-
-% GROUP BOXES
-\begin{pgfonlayer}{background}
-    \node[grpbox, fit=(wa)(email)] (msg) {};
-    \node[grpbox, fit=(sheets)(docs)] (rec) {};
-    \node[grpbox, fit=(gh)(ci)] (eng) {};
-\end{pgfonlayer}
-
-\node[grouplabel] at (msg.north) [yshift=0.35cm] {Messaging};
-\node[grouplabel] at (rec.north) [yshift=0.35cm] {Records};
-\node[grouplabel] at (eng.north) [yshift=0.35cm] {Engineering};
-
-% ARROWS
-\draw[arrow] (wa)    -- node[above, font=\footnotesize] {conversations \& approvals} (sheets);
-\draw[arrow] (wa)    edge[bend right=20] node[below, font=\footnotesize, pos=0.55] {approvals \& files} (docs);
-\draw[arrow] (gh)    -- node[right, font=\footnotesize] {code \& PRs} (ci);
-\draw[arrow] (sheets) -- node[right, font=\footnotesize] {billing \& trackers} (docs);
-\draw[arrow] (email) -- node[above, font=\footnotesize, pos=0.5] {formal comms} (sheets);
-
-\end{tikzpicture}
-}
-\caption{Principal Tools and Dominant Information Flows in the Current System}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch1-fig1-tools-flows.png}
+    \caption{Principal Tools and Dominant Information Flows in the Current System}
 \end{figure}
 
 \subsection{Tool-Based Operational Environment}
 Because no single platform coordinates the company's work, each tool feeds into day-to-day operations independently. The hub-and-spoke view below illustrates how operations sit at the centre of several disconnected tools, with no direct integration between the spokes themselves.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.85\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\scriptsize},
-    tool/.style={
-        rectangle,
-        rounded corners,
-        draw=accent,
-        fill=softteal,
-        thick,
-        text width=2.4cm,
-        minimum height=0.9cm,
-        align=center
-    },
-    center/.style={
-        circle,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.3cm,
-        minimum size=2.4cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[center] (ops) at (0,0) {Current\\Operations};
-
-\node[tool] (wa) at (-5,2) {WhatsApp};
-\node[tool] (slack) at (0,3) {Slack};
-\node[tool] (email) at (5,2) {Email};
-\node[tool] (github) at (-5,-2) {GitHub};
-\node[tool] (excel) at (0,-3) {Excel};
-\node[tool] (sheets) at (5,-2) {Google Sheets};
-
-\draw[arrow] (wa) -- (ops);
-\draw[arrow] (slack) -- (ops);
-\draw[arrow] (email) -- (ops);
-\draw[arrow] (github) -- (ops);
-\draw[arrow] (excel) -- (ops);
-\draw[arrow] (sheets) -- (ops);
-
-\end{tikzpicture}
-}
-\caption{Current Tool-Based Operational Environment}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch1-fig2-tool-environment.png}
+    \caption{Current Tool-Based Operational Environment}
 \end{figure}
 
 \section{Current Workflow}
@@ -618,126 +529,18 @@ This workflow is practical for a small team and allows quick communication. Howe
 \subsection{Current Workflow Diagram}
 
 \begin{figure}[H]
-\centering
-\resizebox{0.85\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    node distance=1.1cm and 1.6cm,
-    box/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=3.2cm,
-        align=center,
-        minimum height=1.1cm
-    },
-    extbox/.style={
-        rectangle,
-        rounded corners,
-        draw=accent,
-        fill=softteal,
-        thick,
-        text width=3.2cm,
-        align=center,
-        minimum height=1.1cm
-    },
-    arrow/.style={->, >=stealth, thick, color=primary}
-]
-
-\node[box] (client) {Client message\\(WhatsApp / Email)};
-\node[box, below=of client] (pm) {Project Manager};
-\node[box, below left=of pm] (sheets) {Google Sheets};
-\node[box, below right=of pm] (dev) {Developer};
-\node[box, below=of dev] (gh) {GitHub};
-\node[extbox, below=of gh] (prod) {Production};
-\node[extbox, below=2.2cm of sheets] (finance) {Finance / Reporting};
-
-% ARROWS
-\draw[arrow] (client) -- (pm);
-\draw[arrow] (pm) -- node[above left, font=\footnotesize] {copy request} (sheets);
-\draw[arrow] (pm) -- node[above right, font=\footnotesize, pos=0.4] {assign work} (dev);
-\draw[arrow] (dev) -- node[right, font=\footnotesize] {push code} (gh);
-\draw[arrow] (gh.west) to[bend left=30] node[left, font=\footnotesize, pos=0.55] {pull request} (pm.east);
-\draw[arrow] (pm.east) to[bend left=40] node[below, font=\footnotesize, pos=0.65] {approve in chat} (dev.west);
-\draw[arrow] (gh) -- node[right, font=\footnotesize] {deploy via scripts} (prod);
-\draw[arrow] (sheets) -- node[left, font=\footnotesize, align=center] {status \&\\billing updates} (finance);
-\draw[arrow] (prod.west) to[bend left=20] node[below, font=\footnotesize] {release notes} (sheets.south);
-
-\end{tikzpicture}
-}
-\caption{Current Workflow for Handling a Client Request}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch1-fig3-workflow-request.png}
+    \caption{Current Workflow for Handling a Client Request}
 \end{figure}
 
 \subsection{Operational Swimlane View}
 To make the dependencies explicit, the swimlane diagram below maps the same workflow across three actors --- the client, the project manager, and the developer team. The shaded region highlights the high-dependency zone in which the project manager mediates almost every hand-off, and where information is exchanged through unstructured, informal channels.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    swimlane/.style={draw=gray!50, dashed, thick},
-    box/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.8cm,
-        align=center,
-        minimum height=1.2cm
-    },
-    riskbox/.style={
-        rectangle,
-        rounded corners,
-        draw=orange!80!black,
-        fill=softcream,
-        thick,
-        text width=2.8cm,
-        align=center,
-        minimum height=1.2cm
-    },
-    arrow/.style={->, >=stealth, thick, color=primary},
-    labelnode/.style={font=\sffamily\Large\bfseries, color=primary}
-]
-
-% SWIMLANES
-\draw[swimlane] (0,2.5) -- (21,2.5);
-\draw[swimlane] (0,-2.5) -- (21,-2.5);
-
-% LANE LABELS
-\node[labelnode, left] at (-0.5, 4.5) {Client};
-\node[labelnode, left] at (-0.5, 0) {Project Manager};
-\node[labelnode, left] at (-0.5, -4.5) {Developer (Team)};
-
-% NODES
-\node[riskbox] (req) at (1.5, 4.5) {Send Requirement\\(WhatsApp / Email)};
-\node[box] (log) at (5.0, 0) {Manual Sorting \&\\Logging (Sheets)};
-\node[riskbox] (assign) at (8.5, 0) {Assign Task\\(WhatsApp Group)};
-\node[box] (code) at (12.0, -4.5) {Write Code \&\\Commit (GitHub)};
-\node[riskbox] (notify) at (15.5, -4.5) {Notify Done\\(WhatsApp)};
-\node[box] (report) at (15.5, 0) {Compile Report\\(Excel / Sheets)};
-\node[riskbox] (delivery) at (19.0, 4.5) {Final Delivery\\(Email / Slack)};
-
-% ARROWS
-\draw[arrow] (req) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Unstructured Data} (log);
-\draw[arrow] (log) -- (assign);
-\draw[arrow] (assign) edge[bend right=20] node[left, xshift=-0.1cm] {\footnotesize Informal Comm.} (code);
-\draw[arrow] (code) -- (notify);
-\draw[arrow] (notify) edge[bend right=20] node[right, xshift=0.1cm] {\footnotesize Manual Ping} (report);
-\draw[arrow] (report) edge[bend left=20] node[right, xshift=0.1cm] {\footnotesize Shared Link} (delivery);
-
-% BACKGROUND HIGHLIGHT FOR RISK AREA
-\begin{pgfonlayer}{background}
-    \fill[orange!5, rounded corners] (3.0, 1.5) rectangle (17.5, -6);
-    \node[orange!80!black, font=\bfseries] at (10.25, -2.00) {High Dependency \& Fragmentation Zone};
-\end{pgfonlayer}
-
-\end{tikzpicture}
-}
-\caption{Current Operational Swimlane Diagram Showing the PM Bottleneck}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch1-fig4-swimlane-bottleneck.png}
+    \caption{Current Operational Swimlane Diagram Showing the PM Bottleneck}
 \end{figure}
 
 \subsection{Process Interpretation}
@@ -961,51 +764,9 @@ The proposed direction is not to replace the company's existing communication ha
 \end{table}
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    node distance=1.6cm,
-    every node/.style={font=\scriptsize},
-    process/.style={
-        rectangle,
-        rounded corners,
-        draw=primary,
-        fill=secondary,
-        thick,
-        text width=2.7cm,
-        minimum height=0.9cm,
-        align=center
-    },
-    decision/.style={
-        diamond,
-        draw=accent,
-        fill=softcream,
-        thick,
-        aspect=1.8,
-        text width=2.2cm,
-        align=center
-    },
-    arrow/.style={thick, -{Latex[length=2.5mm]}, color=primary}
-]
-
-\node[process] (need) {Need\\Recognition};
-\node[process, right=of need] (analysis) {TEO\\Analysis};
-\node[decision, right=of analysis] (decision) {Decision};
-\node[process, below=1.9cm of decision] (pilot) {Pilot\\Implementation};
-\node[process] (monitor) at (analysis |- pilot) {Monitoring\\and Feedback};
-\node[process] (scale) at (need |- pilot) {Full-Scale\\Adoption};
-
-\draw[arrow] (need) -- (analysis);
-\draw[arrow] (analysis) -- (decision);
-\draw[arrow] (decision) -- node[right, font=\scriptsize]{Feasible} (pilot);
-\draw[arrow] (pilot) -- (monitor);
-\draw[arrow] (monitor) -- (scale);
-\draw[arrow] (scale) -- (need);
-\draw[arrow, dashed] (decision.north) -- ++(0,0.9) -| node[above, font=\scriptsize]{Revise / Defer} (analysis.north);
-
-\end{tikzpicture}
-}
-\caption{Initial Feasibility Governance Cycle for NextStepBD}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch2-fig1-feasibility-cycle.png}
+    \caption{Initial Feasibility Governance Cycle for NextStepBD}
 \end{figure}
 
 \section{Initial Feasibility Analysis}
@@ -1378,45 +1139,9 @@ Project governance for this initiative will be established as a lightweight, acc
 Scope definition will be constrained to planning and pilot preparation activities during the initial project phase; the intention is to deliver planning artefacts, validated designs and pilots that demonstrate the expected operational improvements before full organisational rollout. Baseline planning deliverables include Work Breakdown Structures (WBS) for each identified problem area, detailed schedules (Gantt), stakeholder engagement records and a draft cost and quality management plan. Risk management and procurement strategies will be described in follow-up documentation but are considered in the schedule and stakeholder planning herein.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\scriptsize},
-    sponsor/.style={rectangle, rounded corners, draw=primary, fill=secondary, thick, text width=3.6cm, minimum height=0.95cm, align=center},
-    committee/.style={rectangle, rounded corners, draw=accent, fill=softteal, thick, text width=3.6cm, minimum height=0.95cm, align=center},
-    pm/.style={rectangle, rounded corners, draw=primary!80!black, fill=secondary, thick, text width=3.6cm, minimum height=0.95cm, align=center},
-    team/.style={rectangle, rounded corners, draw=darkgray!60, fill=white, thick, text width=2.6cm, minimum height=0.9cm, align=center},
-    ext/.style={rectangle, rounded corners, draw=orange!80!black, fill=softcream, dashed, thick, text width=2.6cm, minimum height=0.9cm, align=center},
-    arrow/.style={thick, -{Latex[length=2.3mm]}, color=primary},
-    line/.style={thick, color=primary}
-]
-
-\node[sponsor] (sponsor) at (0,0) {\textbf{Executive Sponsor}\\(Senior Partner)};
-\node[committee] (committee) at (5.5,0) {\textbf{Steering Committee}\\Delivery $\cdot$ Ops $\cdot$ Finance};
-\node[pm] (pm) at (0,-2) {\textbf{Project Manager}\\(PM / PO)};
-
-\draw[arrow] (sponsor) -- (pm);
-\draw[line, dashed] (sponsor) -- (committee);
-\draw[line, dashed] (committee) -- (pm);
-
-% Team members
-\node[team] (be)  at (-4.5,-4.2) {Backend\\Developer};
-\node[team] (int) at (-1.5,-4.2) {Integration\\Specialist};
-\node[team] (qa)  at (1.5,-4.2) {QA / DevOps\\Engineer};
-\node[team] (ba)  at (4.5,-4.2) {Business\\Analyst};
-\node[ext]  (ext) at (7.6,-4.2) {External\\Consultants};
-
-\draw[arrow] (pm) -- (be);
-\draw[arrow] (pm) -- (int);
-\draw[arrow] (pm) -- (qa);
-\draw[arrow] (pm) -- (ba);
-\draw[arrow, color=orange!80!black, dashed] (pm) -- (ext);
-
-\node[font=\scriptsize\itshape, color=darkgray] at (0,-5.4) {Cross-Functional Project Team};
-
-\end{tikzpicture}
-}
-\caption{Project Governance Structure for the Planning Initiative}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch3-fig1-governance-structure.png}
+    \caption{Project Governance Structure for the Planning Initiative}
 \end{figure}
 
 \section{Planning to Resolve the Problems}
@@ -1980,76 +1705,15 @@ An examination of NextStepBD's internal operating procedures highlights workflow
 The following diagrams illustrate the informal nature of the current core operations, highlighting the central bottlenecks and manual dependencies.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.7\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    node distance=1.0cm and 1.4cm,
-    actor/.style={ellipse, draw=accent, fill=softteal, thick, minimum height=0.9cm, align=center},
-    proc/.style={rectangle, rounded corners, draw=primary, fill=secondary, thick, text width=2.7cm, align=center, minimum height=1.0cm},
-    store/.style={cylinder, shape border rotate=90, aspect=0.25, draw=primary!70!black, fill=softgray, thick, text width=2.0cm, align=center, minimum height=1.0cm},
-    prod/.style={circle, draw=orange!80!black, fill=softcream, thick, align=center, minimum size=1.4cm},
-    arrow/.style={->, >=stealth, thick, color=primary}
-]
-\node[actor] (client) {Client};
-\node[proc, below=of client] (pm) {Project Manager};
-\node[store, below left=of pm] (sheets) {Google Sheets};
-\node[proc, below right=of pm] (dev) {Developer};
-\node[store, below=of dev] (gh) {GitHub};
-\node[proc, below=1.0cm of gh] (qa) {Developer / PM Check};
-\node[proc, left=of qa] (tl) {Team Lead};
-\node[prod, below=of tl] (prod) {Production};
-
-\draw[arrow] (client) -- node[right, font=\footnotesize] {WhatsApp / Email} (pm);
-\draw[arrow] (pm) -- node[above left, font=\footnotesize] {Manual Logging} (sheets);
-\draw[arrow] (pm) -- node[above right, font=\footnotesize] {Assign Task} (dev);
-\draw[arrow] (dev) -- node[right, font=\footnotesize] {Write Code} (gh);
-\draw[arrow] (dev) to[bend left=10] node[right, font=\footnotesize] {Ad-hoc Test} (qa);
-\draw[arrow] (qa) -- node[above, font=\footnotesize] {Chat Approval} (tl);
-\draw[arrow] (tl) -- node[left, font=\footnotesize] {Manual Deploy} (prod);
-\draw[arrow] (prod.west) to[bend left=35] node[below, font=\footnotesize] {Manual Notification} (client.west);
-\end{tikzpicture}
-}
-\caption{Current Engineering \& Delivery Workflow}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig1-eng-delivery-workflow.png}
+    \caption{Current Engineering \& Delivery Workflow}
 \end{figure}
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    actor/.style={ellipse, draw=accent, fill=softteal, thick, minimum height=0.9cm, align=center},
-    proc/.style={rectangle, rounded corners, draw=primary, fill=secondary, thick, text width=2.6cm, align=center, minimum height=1.0cm},
-    store/.style={cylinder, shape border rotate=90, aspect=0.25, draw=primary!70!black, fill=softgray, thick, text width=2.2cm, align=center, minimum height=1.0cm},
-    grp/.style={draw=primary!40, dashed, thick, rounded corners, inner sep=14pt},
-    arrow/.style={->, >=stealth, thick, color=primary}
-]
-% --- Billing subgraph ---
-\node[store] (s2) at (0,0) {Disparate Sheets};
-\node[proc] (pm2) at (4.2,0) {Project Manager};
-\node[proc] (xl) at (8.4,0) {Excel Invoice};
-\node[actor] (c2) at (12.0,0) {Client};
-\draw[arrow] (s2) -- node[above, font=\footnotesize] {Compile Data} (pm2);
-\draw[arrow] (pm2) -- node[above, font=\footnotesize] {Manual Entry} (xl);
-\draw[arrow] (xl) -- node[above, font=\footnotesize] {Email} (c2);
-
-% --- Incident subgraph ---
-\node[actor] (c3) at (0,-2.8) {Client};
-\node[proc] (sup) at (4.4,-2.8) {Developer / PM};
-\node[store] (gh2) at (9.0,-2.8) {GitHub};
-\draw[arrow] (c3) -- node[above, font=\footnotesize] {Direct Chat} (sup);
-\draw[arrow] (sup) -- node[above, font=\footnotesize] {Unstructured Fix} (gh2);
-
-% --- Group boxes ---
-\begin{pgfonlayer}{background}
-    \node[grp, fit=(s2)(pm2)(xl)(c2)] (gB) {};
-    \node[grp, fit=(c3)(sup)(gh2)] (gI) {};
-\end{pgfonlayer}
-\node[font=\sffamily\bfseries\small, color=primary, anchor=west] at (gB.north west) [yshift=3pt] {Billing Process};
-\node[font=\sffamily\bfseries\small, color=primary, anchor=west] at (gI.north west) [yshift=3pt] {Incident Management};
-\end{tikzpicture}
-}
-\caption{Current Billing and Support Workflows}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig2-billing-support.png}
+    \caption{Current Billing and Support Workflows}
 \end{figure}
 
 While these procedures offer a high degree of situational flexibility, they create significant bottlenecks. The reliance on manual approvals, lack of automated workflows, and informal quality checks restrict operational scalability and introduce heavy dependencies on specific personnel.
@@ -2926,51 +2590,10 @@ The diagrams use standard DFD notation: \emph{external entities} are shown as so
 The Context DFD (Figure~\ref{fig:dfd_context}) provides a high-level view of the entire organisation as a single system (\textbf{P0}) and illustrates its interactions with four external entities: Customers (E1), Management/CEO (E2), Employees (E3), and the HR Department (E4). Process P0 represents all operational activities currently performed by the company using a combination of manual procedures and disconnected software tools.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.92\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.6cm, align=center, minimum height=1.1cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=2.8cm, align=center, minimum size=3.2cm},
-    flow/.style={-{Latex[length=2.4mm]}, thick, color=primary!80!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% Central process
-\node[proc] (p0) at (0,0) {\textbf{P0}\\NextStepBD Existing Information System};
-
-% External entities (corners)
-\node[entity] (cust) at (0,5)    {\textbf{E1}\\Customers};
-\node[entity] (ceo)  at (-6.5,0) {\textbf{E2}\\Management (CEO)};
-\node[entity] (emp)  at (6.5,0)  {\textbf{E3}\\Employees};
-\node[entity] (hr)   at (0,-5)   {\textbf{E4}\\HR Department};
-
-% Customer flows
-\draw[flow] ([xshift=-12pt]cust.south) -- ([xshift=-12pt]p0.north)
-    node[flab, midway, left] {Requirements,\\Approvals, Payments};
-\draw[flow] ([xshift=12pt]p0.north) -- ([xshift=12pt]cust.south)
-    node[flab, midway, right] {Deliverables,\\Invoices, Updates};
-
-% CEO flows
-\draw[flow] ([yshift=10pt]ceo.east) -- ([yshift=10pt]p0.west)
-    node[flab, midway, above] {Policies, Decisions};
-\draw[flow] ([yshift=-10pt]p0.west) -- ([yshift=-10pt]ceo.east)
-    node[flab, midway, below] {Reports};
-
-% Employees flows
-\draw[flow] ([yshift=10pt]emp.west) -- ([yshift=10pt]p0.east)
-    node[flab, midway, above] {Task Updates};
-\draw[flow] ([yshift=-10pt]p0.east) -- ([yshift=-10pt]emp.west)
-    node[flab, midway, below] {Tasks, Instructions};
-
-% HR flows
-\draw[flow] ([xshift=-12pt]hr.north) -- ([xshift=-12pt]p0.south)
-    node[flab, midway, left] {Employee\\Information};
-\draw[flow] ([xshift=12pt]p0.south) -- ([xshift=12pt]hr.north)
-    node[flab, midway, right] {Staffing\\Requests};
-\end{tikzpicture}
-}
-\caption{Context Diagram (Level 0) of the Existing Information System}
-\label{fig:dfd_context}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig3-dfd-context.png}
+    \caption{Context Diagram (Level 0) of the Existing Information System}
+    \label{fig:dfd_context}
 \end{figure}
 
 \noindent The context diagram makes clear that every external entity transacts through a single, undifferentiated information ``system'' that is in reality a patchwork of manual procedures and disconnected tools. This single point of mediation is where most of the company's traceability and reconciliation problems originate.
@@ -2990,55 +2613,10 @@ The following five Level~1 DFDs provide focused views of the current system, eac
 This diagram (Figure~\ref{fig:dfd_prob1}) focuses on how requirements, approvals, and decisions flow through informal channels. It shows the heavy reliance on WhatsApp and email as both communication medium and de-facto record, with almost no structured capture into project artefacts.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.1cm, align=center, minimum height=0.9cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=2.0cm, align=center, minimum size=2.4cm},
-    flow/.style={-{Latex[length=2.0mm]}, thick, color=primary!80!black},
-    store/.style={thick, color=primary!70!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% External entities
-\node[entity] (cust) at (-2.5,5.5) {Customer};
-\node[entity] (pm)   at (-2.5,1.2) {Project Manager};
-\node[entity] (dev)  at (7.5,1.2)  {Developer};
-\node[entity] (qa)   at (12.5,3.0) {QA Engineer};
-
-% Processes (Problem 1 focus)
-\node[proc] (p11) at (3.5,5.5)  {\textbf{P1.1}\\Receive via\\Informal Channels};
-\node[proc] (p12) at (3.5,1.2)  {\textbf{P1.2}\\Interpret \&\\Forward (PM)};
-\node[proc] (p13) at (7.5,5.5)  {\textbf{P1.3}\\Develop from\\Chat Notes};
-\node[proc] (p14) at (11.5,5.5) {\textbf{P1.4}\\Verify \&\\Approve in Chat};
-\node[proc] (p15) at (7.5,8.5)  {\textbf{P1.5}\\Send Updates\\via Chat};
-
-% Problematic data stores
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.2cm, minimum height=0.75cm, align=center, font=\scriptsize] (d1) at (-0.5,-1.5) {\textbf{D1} \textbar{} WhatsApp Messages};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.75cm, align=center, font=\scriptsize] (d2) at (3.5,-1.5) {\textbf{D2} \textbar{} Email Threads};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=3.0cm, minimum height=0.75cm, align=center, font=\scriptsize] (d3) at (7.5,-1.5) {\textbf{D3} \textbar{} Ad-hoc Notes};
-
-% Flows
-\draw[flow] (cust) -- (p11) node[flab,midway,above]{Requirements / Approvals};
-\draw[flow] (pm) -- (p12) node[flab,midway,above]{Interprets};
-\draw[flow] (p11) -- (p12) node[flab,midway,right]{Raw messages};
-\draw[flow] (p12) -- (dev) node[flab,midway,above]{Verbal / chat tasks};
-\draw[flow] (dev) -- (p13) node[flab,midway,right]{Progress};
-\draw[flow] (p13) -- (p14) node[flab,midway,above]{Completed work};
-\draw[flow] (qa) -- (p14) node[flab,pos=0.4,right]{Verifies};
-\draw[flow] (p14) to[bend right=15] (p15) node[flab,pos=0.5,above right]{Approved};
-\draw[flow] (p15) to[bend right=20] (cust) node[flab,midway,above]{Status via chat};
-
-% Bidirectional store links (the core problem)
-\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p11) -- (d1);
-\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p11.south) to[bend left=8] (d2.north);
-\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p12) -- (d3);
-\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p13) -- (d1);
-\draw[flow,{Latex[length=1.8mm]}-{Latex[length=1.8mm]}] (p14) -- (d1);
-\end{tikzpicture}
-}
-\caption{Level~1 DFD — Problem 1: Fragmented Communication \& Collaboration}
-\label{fig:dfd_prob1}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig4-dfd-prob1.png}
+    \caption{Level~1 DFD — Problem 1: Fragmented Communication \& Collaboration}
+    \label{fig:dfd_prob1}
 \end{figure}
 
 \begin{problemBox}
@@ -3053,57 +2631,10 @@ This diagram (Figure~\ref{fig:dfd_prob1}) focuses on how requirements, approvals
 This diagram (Figure~\ref{fig:dfd_prob2}) shows how the same business information is scattered across five completely separate tools with no automated synchronisation. Every cross-tool action requires manual copy-paste or re-entry.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=1.9cm, align=center, minimum height=0.85cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.85cm, align=center, minimum size=2.1cm},
-    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
-    store/.style={thick, color=primary!70!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% Entities
-\node[entity] (cust) at (-3.2,4.8) {Customer};
-\node[entity] (pm)   at (-3.2,0.8) {PM};
-\node[entity] (dev)  at (4.5,4.8)  {Developer};
-\node[entity] (fin)  at (4.5,0.8)  {Finance};
-\node[entity] (mgt)  at (10.5,2.8){Management};
-
-% Processes
-\node[proc] (p21) at (0.5,4.8)  {\textbf{P2.1}\\Log in\\Sheets};
-\node[proc] (p22) at (0.5,0.8)  {\textbf{P2.2}\\Create\\GitHub Issue};
-\node[proc] (p23) at (7.5,4.8)  {\textbf{P2.3}\\Update\\Status};
-\node[proc] (p24) at (7.5,0.8)  {\textbf{P2.4}\\Record\\Billing};
-\node[proc] (p25) at (11.5,4.8) {\textbf{P2.5}\\Compile\\Reports};
-
-% Five disconnected stores (the fragmentation problem)
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d4) at (-1.5,-1.3) {\textbf{D4} \textbar{} Google Sheets};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.4cm, minimum height=0.7cm, align=center, font=\scriptsize] (d5) at (2.0,-1.3) {\textbf{D5} \textbar{} GitHub};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d6) at (5.5,-1.3) {\textbf{D6} \textbar{} WhatsApp};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.4cm, minimum height=0.7cm, align=center, font=\scriptsize] (d7) at (8.8,-1.3) {\textbf{D7} \textbar{} Email};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d8) at (12.2,-1.3) {\textbf{D8} \textbar{} Manual Docs};
-
-% Flows showing manual hand-offs
-\draw[flow] (cust) -- (p21) node[flab,midway,above]{Request};
-\draw[flow] (pm) -- (p21) node[flab,midway,above]{Copy to};
-\draw[flow] (p21) -- (p22) node[flab,midway,right,yshift=3pt]{Manual copy};
-\draw[flow] (dev) -- (p23) node[flab,midway,above]{Progress};
-\draw[flow] (p23) -- (p24) node[flab,midway,right]{Re-enter};
-\draw[flow] (fin) -- (p24) node[flab,midway,above]{Billing data};
-\draw[flow] (p24) -- (p25) node[flab,midway,right]{Export};
-\draw[flow] (p25) -- (mgt) node[flab,midway,above]{Reports};
-
-% All stores are isolated (no arrows between them)
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p21) -- (d4);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p22) -- (d5);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p23) -- (d6);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p23) -- (d7);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p25) -- (d8);
-\end{tikzpicture}
-}
-\caption{Level~1 DFD — Problem 2: System Fragmentation \& Lack of Integration}
-\label{fig:dfd_prob2}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig5-dfd-prob2.png}
+    \caption{Level~1 DFD — Problem 2: System Fragmentation \& Lack of Integration}
+    \label{fig:dfd_prob2}
 \end{figure}
 
 \begin{problemBox}
@@ -3118,55 +2649,10 @@ This diagram (Figure~\ref{fig:dfd_prob2}) shows how the same business informatio
 This diagram (Figure~\ref{fig:dfd_prob3}) illustrates the absence of a single authoritative source for core business entities. The same customer or project data exists in multiple places and is updated independently.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
-    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
-    store/.style={thick, color=primary!70!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% Entities
-\node[entity] (pm)   at (-2.8,4.5) {Project Manager};
-\node[entity] (dev)  at (3.5,4.5)  {Developer};
-\node[entity] (fin)  at (9.5,4.5)  {Finance};
-\node[entity] (mgt)  at (9.5,1.0)  {Management};
-
-% Processes
-\node[proc] (p31) at (0.2,4.5)  {\textbf{P3.1}\\Maintain\\Customer List};
-\node[proc] (p32) at (6.0,4.5)  {\textbf{P3.2}\\Track\\Project Data};
-\node[proc] (p33) at (12.0,4.5) {\textbf{P3.3}\\Update\\Billing};
-\node[proc] (p34) at (6.0,1.0)  {\textbf{P3.4}\\Reconcile\\\& Report};
-
-% Multiple conflicting stores for the same data
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d9)  at (-1.0,-1.2) {\textbf{D9} \textbar{} Sheets - Customers};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d10) at (2.8,-1.2) {\textbf{D10} \textbar{} Sheets - Projects};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d11) at (6.5,-1.2) {\textbf{D11} \textbar{} GitHub Projects};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d12) at (10.0,-1.2) {\textbf{D12} \textbar{} Billing Sheet};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d13) at (13.5,-1.2) {\textbf{D13} \textbar{} Master Report (manual)};
-
-% Flows showing duplication
-\draw[flow] (pm) -- (p31) node[flab,midway,above]{Update customer};
-\draw[flow] (dev) -- (p32) node[flab,midway,above]{Project status};
-\draw[flow] (fin) -- (p33) node[flab,midway,above]{Invoice data};
-\draw[flow] (p31) -- (p34) node[flab,midway,right]{Copy};
-\draw[flow] (p32) -- (p34) node[flab,midway,right]{Copy};
-\draw[flow] (p33) -- (p34) node[flab,midway,right]{Copy};
-\draw[flow] (p34) -- (mgt) node[flab,midway,above]{Inconsistent report};
-
-% All stores are written independently
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p31) -- (d9);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p31) -- (d10);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p32) -- (d10);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p32) -- (d11);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p33) -- (d12);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p34) -- (d13);
-\end{tikzpicture}
-}
-\caption{Level~1 DFD — Problem 3: Data Management \& Governance Deficiencies}
-\label{fig:dfd_prob3}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig6-dfd-prob3.png}
+    \caption{Level~1 DFD — Problem 3: Data Management \& Governance Deficiencies}
+    \label{fig:dfd_prob3}
 \end{figure}
 
 \begin{problemBox}
@@ -3181,52 +2667,10 @@ This diagram (Figure~\ref{fig:dfd_prob3}) illustrates the absence of a single au
 This diagram (Figure~\ref{fig:dfd_prob4}) highlights how sensitive information travels through the same insecure, unaudited channels used for everyday conversation, with no role-based controls or logging.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
-    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
-    store/.style={thick, color=primary!70!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% Entities
-\node[entity] (cust) at (-2.5,5.0) {Customer};
-\node[entity] (pm)   at (-2.5,1.0) {Project Manager};
-\node[entity] (dev)  at (5.5,5.0)  {Developer};
-\node[entity] (fin)  at (5.5,1.0)  {Finance};
-\node[entity] (ceo)  at (11.0,3.0) {CEO / Legal};
-
-% Processes
-\node[proc] (p41) at (1.0,5.0)  {\textbf{P4.1}\\Share via\\Chat};
-\node[proc] (p42) at (1.0,1.0)  {\textbf{P4.2}\\Forward\\Credentials};
-\node[proc] (p43) at (8.0,5.0)  {\textbf{P4.3}\\Store in\\Personal Docs};
-\node[proc] (p44) at (8.0,1.0)  {\textbf{P4.4}\\Access\\Ad-hoc};
-
-% Uncontrolled stores
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d14) at (0.5,-1.4) {\textbf{D14} \textbar{} WhatsApp Groups};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d15) at (4.0,-1.4) {\textbf{D15} \textbar{} Email Attachments};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d16) at (7.5,-1.4) {\textbf{D16} \textbar{} Local Drives};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.5cm, minimum height=0.7cm, align=center, font=\scriptsize] (d17) at (11.0,-1.4) {\textbf{D17} \textbar{} Shared Folders (no ACL)};
-
-% Sensitive flows
-\draw[flow] (cust) -- (p41) node[flab,midway,above]{PII / Contract};
-\draw[flow] (pm) -- (p42) node[flab,midway,above]{Credentials};
-\draw[flow] (p41) -- (p42) node[flab,midway,right]{Forward};
-\draw[flow] (dev) -- (p43) node[flab,midway,above]{Client data};
-\draw[flow] (fin) -- (p44) node[flab,midway,above]{Financials};
-\draw[flow] (p43) -- (p44) node[flab,midway,right]{Access};
-
-% No controls on stores
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p41) -- (d14);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p42) -- (d15);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p43) -- (d16);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p44) -- (d17);
-\end{tikzpicture}
-}
-\caption{Level~1 DFD — Problem 4: Security \& Access Control Risks}
-\label{fig:dfd_prob4}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig7-dfd-prob4.png}
+    \caption{Level~1 DFD — Problem 4: Security \& Access Control Risks}
+    \label{fig:dfd_prob4}
 \end{figure}
 
 \begin{problemBox}
@@ -3241,57 +2685,10 @@ This diagram (Figure~\ref{fig:dfd_prob4}) highlights how sensitive information t
 This diagram (Figure~\ref{fig:dfd_prob5}) shows the extreme centralisation of coordination and decision-making around a very small number of individuals (primarily the Project Manager), making the entire operation dependent on their availability.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    every node/.style={font=\sffamily\small},
-    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.0cm, align=center, minimum height=0.9cm},
-    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=1.9cm, align=center, minimum size=2.15cm},
-    flow/.style={-{Latex[length=1.8mm]}, thick, color=primary!80!black},
-    store/.style={thick, color=primary!70!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-% Entities
-\node[entity] (cust) at (-3.5,5.2) {Customer};
-\node[entity] (pm)   at (-3.5,1.0) {Project Manager};
-\node[entity] (dev1) at (3.0,5.2)  {Developer A};
-\node[entity] (dev2) at (7.0,5.2)  {Developer B};
-\node[entity] (qa)   at (11.0,5.2) {QA};
-\node[entity] (hr)   at (11.0,1.0) {HR / Onboarding};
-
-% Processes (all funnelling through PM)
-\node[proc] (p51) at (0.0,5.2)  {\textbf{P5.1}\\Route All\\Requests};
-\node[proc] (p52) at (0.0,1.0)  {\textbf{P5.2}\\Manual Task\\Assignment};
-\node[proc] (p53) at (5.0,1.0)  {\textbf{P5.3}\\Chase\\Updates};
-\node[proc] (p54) at (9.5,3.0)  {\textbf{P5.4}\\Approve \&\\Onboard};
-
-% Bottleneck stores
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.8cm, minimum height=0.7cm, align=center, font=\scriptsize] (d18) at (1.5,-1.5) {\textbf{D18} \textbar{} PM's Personal Notes};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.6cm, minimum height=0.7cm, align=center, font=\scriptsize] (d19) at (5.5,-1.5) {\textbf{D19} \textbar{} Chat History (PM only)};
-\node[draw=primary!70!black, fill=softgray, thick, minimum width=2.7cm, minimum height=0.7cm, align=center, font=\scriptsize] (d20) at (9.5,-1.5) {\textbf{D20} \textbar{} Email (PM inbox)};
-
-% All coordination arrows go through PM processes
-\draw[flow] (cust) -- (p51) node[flab,midway,above]{Any request};
-\draw[flow] (p51) -- (pm) node[flab,midway,right]{Only via PM};
-\draw[flow] (pm) -- (p52) node[flab,midway,above]{Assign};
-\draw[flow] (p52) -- (dev1) node[flab,midway,above]{Task};
-\draw[flow] (p52) -- (dev2) node[flab,midway,above]{Task};
-\draw[flow] (dev1) -- (p53) node[flab,midway,right]{Status?};
-\draw[flow] (dev2) -- (p53) node[flab,midway,right]{Status?};
-\draw[flow] (qa) -- (p53) node[flab,midway,above]{Ready?};
-\draw[flow] (p53) -- (pm) node[flab,midway,below]{Report back};
-\draw[flow] (pm) -- (p54) node[flab,midway,above]{Final approval};
-\draw[flow] (p54) -- (hr) node[flab,midway,above]{New staff};
-
-% PM's personal stores
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p51) -- (d18);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p52) -- (d19);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p53) -- (d20);
-\draw[flow,{Latex[length=1.6mm]}-{Latex[length=1.6mm]}] (p54) -- (d18);
-\end{tikzpicture}
-}
-\caption{Level~1 DFD — Problem 5: Scalability \& Operational Bottlenecks}
-\label{fig:dfd_prob5}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig8-dfd-prob5.png}
+    \caption{Level~1 DFD — Problem 5: Scalability \& Operational Bottlenecks}
+    \label{fig:dfd_prob5}
 \end{figure}
 
 \begin{problemBox}
@@ -3345,68 +2742,11 @@ security architecture, rollout plan, testing and acceptance framework, and chang
 --- is developed in Chapter~5 (Design).
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    problem/.style={draw=purple!70!black, rounded corners=3pt, fill=purple!8,
-        minimum width=3.0cm, minimum height=1.1cm, align=center},
-    strategy/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!9,
-        minimum width=4.0cm, minimum height=1.3cm, align=center, font=\small\bfseries},
-    evaluate/.style={draw=orange!75!black, rounded corners=3pt, fill=orange!10,
-        minimum width=3.0cm, minimum height=1.0cm, align=center},
-    decision/.style={draw=black!70, rounded corners=3pt, fill=black!6,
-        minimum width=4.5cm, minimum height=1.0cm, align=center, font=\small\bfseries},
-    rollout/.style={draw=blue!65!black, rounded corners=3pt, fill=blue!8,
-        minimum width=10.5cm, minimum height=0.9cm, align=center},
-    arrow/.style={-{Latex[length=2.5mm]}, thick, draw=black!60}
-]
-
-% Five problems across the top
-\node[problem] (p1) at (0,4.5) {Fragmented\\Communication};
-\node[problem] (p2) at (3.4,4.5) {System\\Fragmentation};
-\node[problem] (p3) at (6.8,4.5) {Data Governance\\Deficiencies};
-\node[problem] (p4) at (10.2,4.5) {Security \& Access\\Control Risks};
-\node[problem] (p5) at (13.6,4.5) {Scalability\\Bottlenecks};
-
-% Three candidate strategies below
-\node[strategy] (Sbuy)  at (2.3,2.0) {Strategy 1: \textbf{BUY}\\Off-the-shelf enterprise suite};
-\node[strategy] (Sconf) at (6.8,2.0) {Strategy 2: \textbf{CONFIGURE}\\Best-of-breed tools + small core};
-\node[strategy] (Sbuild) at (11.3,2.0) {Strategy 3: \textbf{BUILD}\\Custom in-house platform};
-
-% Feasibility lenses applied to each strategy
-\node[evaluate] (T) at (2.3,0.0) {Technical};
-\node[evaluate] (E) at (6.8,0.0) {Economic};
-\node[evaluate] (O) at (11.3,0.0) {Operational \& Schedule};
-
-% Decision
-\node[decision] (D) at (6.8,-1.8) {Comparative Selection\\\& Recommendation};
-
-% Design handoff (elaborated in Chapter 5)
-\node[rollout] (R) at (6.8,-3.4) {Design Handoff to Chapter 5: Requirements, Migration, Rollout, and Governance};
-
-% Connections: each problem informs each strategy
-\foreach \p in {p1,p2,p3,p4,p5}{
-    \draw[arrow, opacity=0.45] (\p.south) -- (Sbuy.north);
-    \draw[arrow, opacity=0.45] (\p.south) -- (Sconf.north);
-    \draw[arrow, opacity=0.45] (\p.south) -- (Sbuild.north);
-}
-% Strategies feed evaluation
-\draw[arrow] (Sbuy.south)  -- (T.north);
-\draw[arrow] (Sconf.south)  -- (E.north);
-\draw[arrow] (Sbuild.south) -- (O.north);
-% Evaluation to decision
-\draw[arrow] (T.south) -- (D.north west);
-\draw[arrow] (E.south) -- (D.north);
-\draw[arrow] (O.south) -- (D.north east);
-% Decision to rollout
-\draw[arrow] (D.south) -- (R.north);
-
-\end{tikzpicture}%
-}
-\caption{Comparative Feasibility Framework --- Three Alternative Solution Strategies
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig9-feasibility-framework.png}
+    \caption{Comparative Feasibility Framework --- Three Alternative Solution Strategies
          for the Five Identified Problems}
-\label{fig:feasibility-framework}
+    \label{fig:feasibility-framework}
 \end{figure}
 
 % ----------------------------------------------------------------
@@ -3561,24 +2901,10 @@ This layering is used as a lens for comparing the three candidate strategies in 
 section.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.96\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    layer/.style={draw=purple!70!black, rounded corners=4pt, minimum width=13.4cm,
-        minimum height=1.25cm, align=center, fill=purple!7, text width=12.8cm},
-    arrow/.style={-{Latex[length=2.6mm]}, thick, draw=black!60}
-]
-\node[layer] (foundation) at (0,0) {\textbf{Foundation Layer:} Canonical data, identifiers, identity, RBAC, audit, backup, integration standards};
-\node[layer, fill=teal!8, draw=teal!70!black] (process) at (0,-1.9) {\textbf{Process Layer:} Requirements, approvals, assignment, escalation, reporting, billing evidence, onboarding};
-\node[layer, fill=orange!9, draw=orange!75!black] (delivery) at (0,-3.8) {\textbf{Delivery Layer:} Source control, QA, CI/CD, release approval, monitoring, incident management, learning};
-\draw[arrow] (foundation) -- node[right]{enables reliable workflows} (process);
-\draw[arrow] (process) -- node[right]{provides controlled inputs} (delivery);
-\draw[arrow, dashed] (delivery.west) .. controls +(-2.0,-.8) and +(-2.0,.8) .. node[left, align=center]{performance and incident feedback} (foundation.west);
-\end{tikzpicture}%
-}
-\caption{Dependency Layers Connecting the Five Identified Problems}
-\label{fig:dependency-layers}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig10-dependency-layers.png}
+    \caption{Dependency Layers Connecting the Five Identified Problems}
+    \label{fig:dependency-layers}
 \end{figure}
 
 % ----------------------------------------------------------------
@@ -3934,40 +3260,10 @@ provides delivery reliability. Identity, RBAC, audit, redaction, data quality, b
 monitoring operate as cross-cutting controls across all three layers.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.98\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    box/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
-        minimum width=4.2cm, minimum height=1.05cm, align=center, font=\small\bfseries},
-    user/.style={draw=purple!70!black, rounded corners=3pt, fill=purple!7,
-        minimum width=2.8cm, minimum height=.85cm, align=center},
-    cross/.style={draw=orange!70!black, rounded corners=3pt, fill=orange!9,
-        minimum width=12.0cm, minimum height=.9cm, align=center, font=\small\bfseries},
-    core/.style={draw=blue!65!black, rounded corners=3pt, fill=blue!8,
-        minimum width=9.8cm, minimum height=1.1cm, align=center, font=\small\bfseries},
-    arrow/.style={-{Latex[length=2.5mm]}, thick, draw=black!65}
-]
-\node[user] (client) at (0,3.0) {Clients};
-\node[user] (pm) at (3.2,3.0) {Project Managers};
-\node[user] (dev) at (6.4,3.0) {Developers / QA};
-\node[user] (ops) at (9.6,3.0) {HR / Finance / Ops};
-\node[user] (mgmt) at (12.8,3.0) {Management};
-
-\node[box] (workflow) at (3.2,1.2) {Configured Collaboration\\\& Workflow Tool};
-\node[box] (devops) at (9.6,1.2) {DevOps, QA\\\& Observability};
-\node[core] (data) at (6.4,-.55) {Integration Core --- Canonical Data, APIs, and Webhooks};
-\node[cross] (security) at (6.4,-2.05) {Cross-Cutting Controls: Identity, RBAC, Audit, Redaction, Data Quality, Backup, and Monitoring};
-
-\foreach \u in {client,pm,dev,ops,mgmt}{\draw[arrow] (\u.south) -- ++(0,-.35) -| (workflow.north);}
-\draw[arrow] (dev.south) -- ++(0,-.6) -| (devops.north);
-\draw[arrow] (workflow.south) -- (data.north);
-\draw[arrow] (devops.south) -- (data.north);
-\draw[arrow] (data.south) -- (security.north);
-\end{tikzpicture}%
-}
-\caption{Recommended Target Architecture for the Configure Strategy}
-\label{fig:integrated-target-architecture}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch4-fig11-target-architecture.png}
+    \caption{Recommended Target Architecture for the Configure Strategy}
+    \label{fig:integrated-target-architecture}
 \end{figure}
 
 \textbf{Why this strategy over the alternatives.}
@@ -4201,114 +3497,15 @@ integration core. Cross-cutting controls (identity, RBAC, audit, redaction) are
 shown as a single block that wraps the new architecture.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    entity/.style={draw=primary, fill=secondary, very thick, text width=2.4cm,
-        align=center, minimum height=1.0cm, font=\small\bfseries},
-    procnew/.style={draw=accent, fill=softteal, very thick, text width=3.0cm,
-        align=center, minimum size=2.5cm, font=\small\bfseries},
-    proclegacy/.style={draw=accent!50!gray, fill=softteal!40, text width=2.4cm,
-        align=center, minimum size=2.0cm, font=\small\itshape},
-    storenew/.style={draw=blue!65!black, fill=blue!8, text width=4.2cm,
-        align=center, minimum height=1.0cm, font=\small\bfseries},
-    storlegacy/.style={draw=blue!50!gray, fill=blue!5, text width=2.4cm,
-        align=center, minimum height=0.85cm, font=\scriptsize\itshape},
-    cross/.style={draw=orange!70!black, rounded corners=3pt, fill=orange!10,
-        text width=12.0cm, align=center, minimum height=0.9cm,
-        font=\small\bfseries},
-    flow/.style={-{Latex[length=2.4mm]}, thick, color=primary!80!black},
-    flowsync/.style={-{Latex[length=2.0mm]}, thick, dashed, color=accent!80!black},
-    flab/.style={font=\scriptsize\sffamily, align=center}
-]
-
-% --- External entities (same as existing context diagram) ---
-\node[entity] (cust) at (0,    5.4) {\textbf{E1}\\Customers};
-\node[entity] (ceo)  at (-6.5, 0) {\textbf{E2}\\Management\\(CEO)};
-\node[entity] (emp)  at (6.5,  0) {\textbf{E3}\\Employees};
-\node[entity] (hr)   at (0,   -5.4) {\textbf{E4}\\HR\\Department};
-
-% --- New system processes (replacing P0) ---
-\node[procnew] (pcollab) at (-3.6, 1.6) {P-new-collab\\Configured\\Collaboration\\\& Workflow};
-\node[procnew] (pcore)   at (0,    1.6) {P-new-core\\Integration\\Core\\(API, Webhooks,\\Review Queue)};
-\node[procnew] (pdevops) at (3.6,  1.6) {P-new-devops\\DevOps, QA\\\& Observability};
-
-% --- New canonical store ---
-\node[storenew] (dcanon) at (0, 3.6) {D-canonical --- Canonical Store: Customer, Project,
-    Requirement, Approval, Task, BillingRecord, Incident, AuditLog};
-
-% --- Legacy stores (existing D1--D13) shown faded on the right ---
-\node[storlegacy] (lstore) at (6.0, 0) {Legacy stores D1--D13 (from Ch.4):\\WhatsApp, Email,
-    Sheets, GitHub, Ad-hoc Notes,\\PM's Personal Notes};
-\node[proclegacy] (p0) at (6.0, -2.2) {(legacy)\\P0\\Existing Manual\\Procedures\\(informal)};
-
-% --- Cross-cutting controls ---
-\node[cross] (security) at (0, -3.6)
-    {Cross-Cutting Controls: Identity, RBAC, Audit Log, Redaction, Data Quality, Backup, Monitoring};
-
-% --- Customer flows (same as existing context diagram) ---
-\draw[flow] ([xshift=-10pt]cust.south) -- ([xshift=-10pt]dcanon.north)
-    node[flab, midway, left] {Requirements, Approvals,\\Payments};
-\draw[flow] ([xshift=10pt]dcanon.north) -- ([xshift=10pt]cust.south)
-    node[flab, midway, right] {Deliverables,\\Invoices, Updates};
-
-% --- Management (CEO) flows ---
-\draw[flow] ([yshift=8pt]ceo.east) -- ([yshift=8pt]pcore.west)
-    node[flab, midway, above] {Policies, Decisions};
-\draw[flow] ([yshift=-8pt]pcore.west) -- ([yshift=-8pt]ceo.east)
-    node[flab, midway, below] {Reports};
-
-% --- Employees flows ---
-\draw[flow] ([yshift=8pt]emp.west) -- ([yshift=8pt]pcollab.east)
-    node[flab, midway, above] {Task Updates};
-\draw[flow] ([yshift=-8pt]pcollab.east) -- ([yshift=-8pt]emp.west)
-    node[flab, midway, below] {Tasks, Instructions};
-
-% --- HR flows ---
-\draw[flow] ([xshift=-10pt]hr.north) -- ([xshift=-10pt]pcore.south)
-    node[flab, midway, left] {Employee\\Information};
-\draw[flow] ([xshift=10pt]pcore.south) -- ([xshift=10pt]hr.north)
-    node[flab, midway, right] {Staffing\\Requests};
-
-% --- Internal new-system flows ---
-\draw[flow] (pcollab.south) -- (dcanon.south west);
-\draw[flow] (pcore.south) -- (dcanon.south);
-\draw[flow] (pdevops.south) -- (dcanon.south east);
-
-% --- New system bridges legacy stores (sync) ---
-\draw[flowsync] (pcore.east) -- node[flab, midway, above]{\scriptsize Two-way sync\\(bidirectional)} (lstore.west);
-\draw[flowsync] (lstore.north) -- node[flab, midway, right]{\scriptsize continues in use} (dcanon.south east);
-
-% --- Legacy process P0 fades to the new system (migration) ---
-\draw[flow, dashed, color=gray!70!black] (p0.north) -- node[flab, midway, left]{\scriptsize replaced} (pcore.south east);
-
-% --- Cross-cutting controls wrap the new architecture ---
-\draw[flow] (security.north) -- (pcollab.south west);
-\draw[flow] (security.north) -- (pcore.south);
-\draw[flow] (security.north) -- (pdevops.south east);
-
-% --- Legend ---
-\node[anchor=west, font=\scriptsize, align=left] at (-7.0, -4.7) {%
-    \textbf{Legend:} \textbf{External entities} (corners) match the existing context
-    diagram (Ch.~4 Fig.~\ref{fig:dfd_context}).\\
-    \textbf{Solid arrows} = primary data flow (replaces existing flow). \textbf{Dashed
-    arrows} = two-way synchronisation between new integration core and legacy stores.};
-\node[anchor=west, font=\scriptsize, align=left] at (-7.0, -5.3) {%
-    \textbf{P0 (struck through)} marks the existing undifferentiated manual procedures,
-    which are progressively replaced by the new processes P-new-collab, P-new-core,
-    P-new-devops. The legacy stores D1--D13 remain in use but are no longer the
-    system of record --- D-canonical is.};
-
-\end{tikzpicture}%
-}
-\caption{Complete System DFD --- the recommended new system drawn on top of
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig1-dfd-complete-system.png}
+    \caption{Complete System DFD --- the recommended new system drawn on top of
 the existing context diagram. External entities (E1--E4) are the same as
 Chapter~4, Figure~\ref{fig:dfd_context}; the undifferentiated process P0 is
 replaced by three new processes (P-new-collab, P-new-core, P-new-devops) and
 one canonical store (D-canonical). The existing data stores D1--D13 remain in
 use but are now bridged to the canonical store through the integration core.}
-\label{fig:dfd-complete-system}
+    \label{fig:dfd-complete-system}
 \end{figure}
 
 \noindent The diagram makes three architectural decisions visible that are
@@ -4348,121 +3545,15 @@ Chapter~1 it solves, so the design can be read as a direct response to the
 analysis rather than as a generic target architecture.
 
 \begin{figure}[H]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    entity/.style={draw=primary, fill=secondary, very thick, text width=2.2cm,
-        align=center, minimum height=0.9cm, font=\small\bfseries},
-    procold/.style={draw=accent!50!gray, fill=softteal!40, text width=2.0cm,
-        align=center, minimum size=1.8cm, font=\scriptsize\itshape},
-    procnew/.style={draw=accent, fill=softteal, text width=2.4cm,
-        align=center, minimum size=2.2cm, font=\small\bfseries},
-    ptag/.style={circle, draw=primary, fill=secondary, inner sep=1.2pt,
-        font=\scriptsize\bfseries, minimum size=3.6mm},
-    flow/.style={-{Latex[length=2.0mm]}, thick, color=primary!80!black},
-    flownew/.style={-{Latex[length=2.0mm]}, thick, color=accent!80!black},
-    flab/.style={font=\scriptsize\sffamily, align=center},
-    fnlab/.style={font=\scriptsize\sffamily, align=center, color=accent!80!black}
-]
-
-% =====================================================
-% EXISTING SYSTEM (LEFT HALF)  --- mirrors Ch.4 Fig. 4.1
-% =====================================================
-
-% External entities (left half)
-\node[entity] (e1L) at (-7.0, 4.4) {\textbf{E1}\\Customers};
-\node[entity] (e2L) at (-9.5, 0)  {\textbf{E2}\\Management};
-\node[entity] (e3L) at (-7.0, -4.4) {\textbf{E3}\\Employees};
-\node[entity] (e4L) at (-4.5, 0)  {\textbf{E4}\\HR};
-
-% Existing process P0 (single undifferentiated, in the centre-left)
-\node[procold] (p0) at (-6.0, 0) {P0\\Existing System\\(informal + manual)};
-
-% Existing flow labels (mirroring Ch.4 Fig. 4.1)
-\draw[flow] (e1L.south) -- node[flab, midway, left]{\scriptsize Requirements,\\Approvals} (p0.north);
-\draw[flow] (p0.north) -- node[flab, midway, right]{\scriptsize Deliverables,\\Updates} (e1L.south);
-\draw[flow] (e2L.east) -- node[flab, midway, above]{\scriptsize Policies} (p0.west);
-\draw[flow] (p0.west) -- node[flab, midway, below]{\scriptsize Reports} (e2L.east);
-\draw[flow] (e3L.west) -- node[flab, midway, above]{\scriptsize Updates} (p0.east);
-\draw[flow] (p0.east) -- node[flab, midway, below]{\scriptsize Tasks} (e3L.west);
-\draw[flow] (e4L.north) -- node[flab, midway, left]{\scriptsize Staffing} (p0.south);
-\draw[flow] (p0.south) -- node[flab, midway, right]{\scriptsize Employee\\info} (e4L.north);
-
-% Label for existing system
-\node[font=\small\bfseries, color=primary] at (-7.0, 5.3) {Existing System (Ch.4)};
-
-% =====================================================
-% NEW SYSTEM (RIGHT HALF)  --- replaces P0
-% =====================================================
-
-% External entities (right half, same labels)
-\node[entity] (e1R) at ( 4.5, 0)  {\textbf{E1}\\Customers};
-\node[entity] (e2R) at ( 7.0, 4.4) {\textbf{E2}\\Management};
-\node[entity] (e3R) at ( 7.0,-4.4) {\textbf{E3}\\Employees};
-\node[entity] (e4R) at ( 4.5, 0)  {\textbf{E4}\\HR};
-
-% New processes (replacing P0)
-\node[procnew] (pcollab) at (1.5, 2.5) {P-new-collab\\Collaboration\\\& Workflow};
-\node[procnew] (pcore)   at (1.5, 0)   {P-new-core\\Integration\\Core};
-\node[procnew] (pdevops) at (1.5,-2.5) {P-new-devops\\DevOps,\\QA \& Obs.};
-
-% Canonical store (between processes and external entities)
-\node[procnew, text width=2.2cm, minimum size=1.0cm, fill=blue!8, draw=blue!65!black]
-    (canon) at (4.0, 0) {D-canonical\\Customer,\\Project, Req,\\Task, \ldots};
-
-% Problem badges near the new flows they address
-\node[ptag] (p1) at (0.0,  3.5) {P1};
-\node[ptag] (p2) at (3.5,  2.5) {P2};
-\node[ptag] (p3) at (3.5,  0.0) {P3};
-\node[ptag] (p4) at (3.5, -1.5) {P4};
-\node[ptag] (p5) at (0.0, -3.5) {P5};
-
-% New data flows (with problem tags implicitly on the diagrams below)
-% e1 (Customers) -> P-new-collab (P1 fix: capture informal request)
-\draw[flownew] (e1R.west) -- node[fnlab, midway, above]{\scriptsize Requirements\\(P1)} (pcollab.east);
-\draw[flownew] (pcollab.east) -- node[fnlab, midway, below]{\scriptsize Deliverables} (e1R.west);
-% e2 (Management) -> P-new-core (reports)
-\draw[flownew] (e2R.west) -- node[fnlab, midway, left]{\scriptsize Policies} (pcore.north east);
-\draw[flownew] (pcore.north east) -- node[fnlab, midway, right]{\scriptsize Reports (P3)} (e2R.west);
-% e3 (Employees) -> P-new-devops (tasks/updates)
-\draw[flownew] (e3R.west) -- node[fnlab, midway, below]{\scriptsize Updates} (pdevops.east);
-\draw[flownew] (pdevops.east) -- node[fnlab, midway, above]{\scriptsize Tasks (P5)} (e3R.west);
-% e4 (HR) -> P-new-core (employee info / staffing)
-\draw[flownew] (e4R.east) -- node[fnlab, midway, above]{\scriptsize Employee\\info} (pcore.east);
-\draw[flownew] (pcore.east) -- node[fnlab, midway, below]{\scriptsize Staffing} (e4R.east);
-
-% New processes -> canonical store (P2, P3)
-\draw[flownew] (pcollab.south) -- node[fnlab, midway, right]{\scriptsize Req/Approval\\(P2)} (canon.north west);
-\draw[flownew] (pcore.east) -- node[fnlab, midway, above]{\scriptsize Sync\\(P3)} (canon.west);
-\draw[flownew] (pdevops.north) -- node[fnlab, midway, right]{\scriptsize Release\\evidence (P2)} (canon.south west);
-
-% Cross-cutting (P4) shown as a halo around the new system
-\node[draw=orange!70!black, dashed, rounded corners, fill=orange!10,
-    fit=(pcollab)(pcore)(pdevops)(canon), inner sep=10pt,
-    label={[font=\small\bfseries, color=orange!80!black]above:{P4 --- Cross-Cutting Controls (Identity, RBAC, Audit, Redaction, DQ)}}] (halo) {};
-
-% Label for new system
-\node[font=\small\bfseries, color=accent!80!black] at (1.5, 4.5) {New System (Ch.5 --- Configure)};
-
-% =====================================================
-% MIGRATION ARROW (existing -> new)
-% =====================================================
-\draw[flow, dashed, very thick, color=primary] (-4.0, 0) -- node[flab, midway, above]{\textit{(legacy P0 replaced by new system)}} (-2.0, 0);
-
-% "P0" struck-through effect, drawn manually as a node
-\node[font=\small\bfseries, color=primary] at (-2.7, 0.6) {P0};
-\draw[line width=1pt, color=primary] (-3.0, 0.65) -- (-2.4, 0.55);
-
-\end{tikzpicture}%
-}
-\caption{Problem-Solving System DFD --- side-by-side comparison of the
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig2-dfd-problem-solving.png}
+    \caption{Problem-Solving System DFD --- side-by-side comparison of the
 existing system (left, from Chapter~4 Figure~\ref{fig:dfd_context}) and
 the new system (right, replacing P0). External entities (E1--E4) are
 the same in both halves. The problem badges (P1--P5) on the new flows
 indicate which of the five Chapter~1 problems each flow addresses; the
 full mapping is given in Table~\ref{tab:problem-flow-mapping}.}
-\label{fig:dfd-problem-solving}
+    \label{fig:dfd-problem-solving}
 \end{figure}
 
 \noindent Figure~\ref{fig:dfd-problem-solving} is read as a left-to-right
@@ -4585,69 +3676,10 @@ system relies on. The subsystem DFD in Figure~\ref{fig:dfd-integration-core} sho
 the internal sub-processes of the integration core.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    ext/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
-        minimum width=2.4cm, minimum height=.85cm, align=center},
-    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
-        minimum width=2.6cm, minimum height=1.0cm, align=center, font=\small\bfseries},
-    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.6cm,
-        minimum height=1.0cm, align=center, font=\small\bfseries},
-    service/.style={draw=black!60, rounded corners=2pt, fill=black!3,
-        minimum width=2.6cm, minimum height=.85cm, align=center},
-    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
-]
-
-% External connectors (left)
-\node[ext] (wa) at (-4.0,3.0) {WhatsApp / Slack};
-\node[ext] (sheet) at (-4.0,1.6) {Sheets / Excel};
-\node[ext] (git) at (-4.0,0.2) {GitHub};
-\node[ext] (email) at (-4.0,-1.2) {Email};
-
-% Inbound gateway process
-\node[proc] (gateway) at (-1.0,1.0) {P1.1\\API \& Webhook\\Gateway};
-
-% Validation and dedupe
-\node[proc] (validate) at (2.0,2.0) {P1.2\\Validate\\\& Dedupe};
-\node[proc] (review) at (2.0,0.0) {P1.3\\Operator Review\\Queue};
-
-% Canonical store
-\node[store] (canonical) at (5.5,1.0) {D1\\Canonical Store\\(Customer, Project,\\Requirement, Approval,\\Task, Billing,\\Incident, Audit)};
-
-% Outbound services (right)
-\node[service] (audit) at (9.5,2.5) {Audit Log\\\& Lineage};
-\node[service] (iam) at (9.5,1.0) {Identity\\\& RBAC};
-\node[service] (dash) at (9.5,-0.5) {Reporting\\\& Dashboards};
-\node[service] (dq) at (9.5,-2.0) {Data Quality\\\& Reconciliation};
-
-% Flows from connectors into gateway
-\foreach \n in {wa,sheet,git,email}{\draw[arrow] (\n.east) -- (gateway.west);}
-
-% Gateway to validation / review
-\draw[arrow] (gateway.east) -- ++(0.6,0) |- (validate.west);
-\draw[arrow] (gateway.east) -- ++(0.6,0) |- (review.west);
-
-% Validation / review into canonical
-\draw[arrow] (validate.east) -- (canonical.west);
-\draw[arrow] (review.east) -- (canonical.west);
-
-% Cross-cutting services around canonical
-\draw[arrow] (canonical.east) -- (audit.west);
-\draw[arrow] (canonical.east) -- (iam.west);
-\draw[arrow] (canonical.east) -- (dash.west);
-\draw[arrow] (canonical.east) -- (dq.west);
-
-% Background label
-\node[font=\scriptsize\itshape, color=darkgray] at (-1.0,-1.8) {Inbound integration layer};
-\node[font=\scriptsize\itshape, color=darkgray] at (5.5,-1.8) {Persistent canonical layer};
-\node[font=\scriptsize\itshape, color=darkgray] at (9.5,-3.2) {Cross-cutting services};
-
-\end{tikzpicture}%
-}
-\caption{Integration Core Subsystem DFD}
-\label{fig:dfd-integration-core}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig3-dfd-integration-core.png}
+    \caption{Integration Core Subsystem DFD}
+    \label{fig:dfd-integration-core}
 \end{figure}
 
 \noindent The integration core is organised into three functional bands.
@@ -4692,66 +3724,10 @@ Figure~\ref{fig:dfd-collaboration} shows the internal sub-processes and the flow
 to and from the integration core.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    actor/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
-        minimum width=2.4cm, minimum height=.85cm, align=center},
-    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
-        minimum width=2.6cm, minimum height=1.0cm, align=center, font=\small\bfseries},
-    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.6cm,
-        minimum height=1.0cm, align=center, font=\small\bfseries},
-    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
-]
-
-% Actors (left)
-\node[actor] (client) at (-4.5,2.6) {Client};
-\node[actor] (pm) at (-4.5,0.6) {Project Manager};
-\node[actor] (dev) at (-4.5,-1.4) {Developer / QA};
-
-% Workflow processes (centre)
-\node[proc] (intake) at (0.0,2.6) {P2.1\\Requirement\\Intake};
-\node[proc] (approve) at (0.0,0.6) {P2.2\\Approval\\Capture};
-\node[proc] (task) at (0.0,-1.4) {P2.3\\Task\\Assignment};
-\node[proc] (escalate) at (4.0,2.6) {P2.4\\Escalation\\\& Reminder};
-\node[proc] (onboard) at (4.0,0.6) {P2.5\\Onboarding\\Workflow};
-\node[proc] (template) at (4.0,-1.4) {P2.6\\Template\\Library};
-
-% Stores
-\node[store] (issue) at (8.0,2.6) {D2\\Issue / Ticket\\Repository};
-\node[store] (conf) at (8.0,0.6) {D3\\Workflow\\Configuration};
-\node[store] (know) at (8.0,-1.4) {D4\\Knowledge\\Base};
-
-% Cross-cutting link
-\node[font=\scriptsize\itshape, color=darkgray, align=center] at (4.0,-3.2) {All processes read/write the integration core (Section 5.2.2)};
-
-% Actor to process flows
-\draw[arrow] (client.east) -- (intake.west);
-\draw[arrow] (pm.east) -- (approve.west);
-\draw[arrow] (pm.east) -- (task.west);
-\draw[arrow] (dev.east) -- (task.west);
-
-% Process internal flows
-\draw[arrow] (intake.east) -- (approve.north);
-\draw[arrow] (intake.east) -- (template.north);
-\draw[arrow] (approve.east) -- (escalate.north);
-\draw[arrow] (approve.east) -- (template.north);
-\draw[arrow] (task.east) -- (escalate.north);
-\draw[arrow] (task.east) -- (template.north);
-
-% Process to store flows
-\draw[arrow] (intake.east) -- (issue.west);
-\draw[arrow] (approve.east) -- (issue.west);
-\draw[arrow] (task.east) -- (issue.west);
-\draw[arrow] (escalate.east) -- (conf.west);
-\draw[arrow] (onboard.east) -- (know.west);
-\draw[arrow] (template.east) -- (conf.west);
-
-\end{tikzpicture}%
-}
-\caption{Configured Collaboration \& Workflow Subsystem DFD}
-\label{fig:dfd-collaboration}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig4-dfd-collaboration.png}
+    \caption{Configured Collaboration \& Workflow Subsystem DFD}
+    \label{fig:dfd-collaboration}
 \end{figure}
 
 \noindent The subsystem has six sub-processes organised in two columns.
@@ -4814,71 +3790,10 @@ DFD in Figure~\ref{fig:dfd-devops} shows the pipeline from code commit to
 production, with the observability loop that closes it.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    actor/.style={draw=purple!70!black, rounded corners=2pt, fill=purple!7,
-        minimum width=2.4cm, minimum height=.85cm, align=center},
-    proc/.style={draw=teal!70!black, rounded corners=3pt, fill=teal!8,
-        minimum width=2.4cm, minimum height=1.0cm, align=center, font=\small\bfseries},
-    store/.style={draw=blue!65!black, fill=blue!7, minimum width=2.4cm,
-        minimum height=1.0cm, align=center, font=\small\bfseries},
-    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=black!65}
-]
-
-% Actors
-\node[actor] (dev) at (-3.5,0.5) {Developer};
-\node[actor] (qa) at (-3.5,-1.4) {QA Engineer};
-\node[actor] (sre) at (-3.5,-3.3) {SRE / Lead};
-
-% Pipeline
-\node[proc] (commit) at (0.5,0.5) {P3.1\\Commit\\\& Branch};
-\node[proc] (ci) at (3.0,0.5) {P3.2\\CI Build\\\& Tests};
-\node[proc] (security) at (5.5,0.5) {P3.3\\Security\\\& Quality};
-\node[proc] (staging) at (8.0,0.5) {P3.4\\Staging\\Deploy};
-\node[proc] (release) at (10.5,0.5) {P3.5\\Release\\Approval};
-\node[proc] (prod) at (13.0,0.5) {P3.6\\Production};
-
-% Observability layer
-\node[proc] (monitor) at (3.0,-1.4) {P3.7\\Monitor\\\& Alert};
-\node[proc] (incident) at (5.5,-1.4) {P3.8\\Incident\\Workflow};
-\node[proc] (rollback) at (8.0,-1.4) {P3.9\\Rollback};
-
-% Stores
-\node[store] (repo) at (0.5,-3.3) {D5\\Source\\Repository};
-\node[store] (art) at (3.0,-3.3) {D6\\Artifact\\Registry};
-\node[store] (logs) at (5.5,-3.3) {D7\\Logs / Metrics\\Registry};
-\node[store] (tickets) at (8.0,-3.3) {D8\\Incident\\Tickets};
-
-% Main pipeline flow
-\draw[arrow] (dev.east) -- (commit.west);
-\draw[arrow] (commit) -- (ci);
-\draw[arrow] (ci) -- (security);
-\draw[arrow] (security) -- (staging);
-\draw[arrow] (staging) -- (release);
-\draw[arrow] (release) -- (prod);
-
-% Cross-cutting loops
-\draw[arrow] (prod.south) -- ++(0,-0.4) -| (monitor.east);
-\draw[arrow] (monitor.east) -- ++(0.5,0) |- (incident.west);
-\draw[arrow] (incident.east) -- ++(0.5,0) |- (rollback.west);
-\draw[arrow] (rollback.north) -- ++(0,0.4) -| (staging.south);
-
-% Stores
-\draw[arrow] (commit.south) -- (repo.north);
-\draw[arrow] (ci.south) -- (art.north);
-\draw[arrow] (monitor.south) -- (logs.north);
-\draw[arrow] (incident.south) -- (tickets.north);
-
-% QA gate
-\draw[arrow] (qa.east) -- ++(0.5,0) |- (security.south);
-\draw[arrow] (sre.east) -- ++(0.5,0) |- (prod.south);
-
-\end{tikzpicture}%
-}
-\caption{DevOps, QA, and Observability Subsystem DFD}
-\label{fig:dfd-devops}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig5-dfd-devops.png}
+    \caption{DevOps, QA, and Observability Subsystem DFD}
+    \label{fig:dfd-devops}
 \end{figure}
 
 \noindent The subsystem is a linear pipeline (top row) closed by an observability
@@ -4990,59 +3905,10 @@ modelled as a first-class relationship from every canonical entity to the
 AuditLog table.
 
 \begin{figure}[H]
-\centering
-\resizebox{0.95\textwidth}{!}{%
-\begin{tikzpicture}[
-    font=\small,
-    entity/.style={draw=primary, fill=secondary, thick, minimum width=2.2cm,
-        minimum height=0.9cm, align=center, font=\bfseries},
-    rel/.style={draw=accent, thick, align=center, font=\scriptsize},
-    arrow/.style={-{Latex[length=2.4mm]}, thick, draw=primary!70!black}
-]
-
-% Top row: Customer, Project
-\node[entity] (customer) at (0,4) {Customer};
-\node[entity] (project) at (5,4) {Project};
-\node[entity] (employee) at (10,4) {Employee};
-\node[entity] (user) at (13,4) {User / Role};
-
-% Middle row: Requirement, Approval, Task
-\node[entity] (requirement) at (0,1.5) {Requirement};
-\node[entity] (approval) at (4,1.5) {Approval};
-\node[entity] (task) at (8,1.5) {Task};
-
-% Bottom row: Billing, Incident, AuditLog, SourceMessage
-\node[entity] (billing) at (0,-1) {BillingRecord};
-\node[entity] (incident) at (4,-1) {Incident};
-\node[entity] (audit) at (8,-1) {AuditLog};
-\node[entity] (source) at (13,-1) {SourceMessage};
-
-% Cross-cutting center
-\node[entity, fill=softcream] (xref) at (8,4) {\shortstack{Cross-Cutting\\Controls}};
-
-% Relationships (top row -> middle row)
-\draw[arrow] (customer) -- node[left, font=\scriptsize]{1} (requirement);
-\draw[arrow] (project) -- node[left, font=\scriptsize]{1} (requirement);
-\draw[arrow] (requirement) -- node[above, font=\scriptsize]{0..N} (approval);
-\draw[arrow] (requirement) -- node[above, font=\scriptsize]{1..N} (task);
-\draw[arrow] (employee) -- node[left, font=\scriptsize]{1} (task);
-\draw[arrow] (user) -- node[above, font=\scriptsize]{1..N} (audit);
-
-% Middle row -> bottom row
-\draw[arrow] (task) -- node[right, font=\scriptsize]{0..N} (billing);
-\draw[arrow] (task) -- node[above, font=\scriptsize]{0..N} (incident);
-\draw[arrow] (approval) -- node[above, font=\scriptsize]{0..N} (audit);
-\draw[arrow] (requirement) -- node[above, font=\scriptsize]{0..N} (audit);
-\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (requirement);
-\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (approval);
-\draw[arrow] (source) -- node[above, font=\scriptsize]{0..N} (task);
-\draw[arrow] (xref) -- (audit);
-\draw[arrow] (xref) -- (user);
-
-\end{tikzpicture}%
-}
-\caption{ER Diagram --- Canonical Data Model}
-\label{fig:er-diagram}
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/ch5-fig6-er-diagram.png}
+    \caption{ER Diagram --- Canonical Data Model}
+    \label{fig:er-diagram}
 \end{figure}
 
 \noindent The cardinality of the principal relationships is:
