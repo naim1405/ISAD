@@ -1,6 +1,6 @@
-# NextStepBD ISAD Report — Mermaid Diagram Source
+# NextStepBD ISAD Report — Mermaid Diagram Source (Selected Figures)
 
-This file contains the Mermaid source for **all 23 node/edge diagrams** in
+This file contains the Mermaid source for the **14 node/edge diagrams** in
 `report.tex` that are being replaced with rendered image files.
 
 > **For each figure, do the following:**
@@ -15,234 +15,56 @@ This file contains the Mermaid source for **all 23 node/edge diagrams** in
 
 ## Filename scheme
 
-`ch{N}-fig{K}-{slug}.png`
+`images/fig-{N}-{M}.png`
 
-* `N` = chapter number (1–5)
-* `K` = figure number within the chapter, in source order
-* `slug` = short, kebab-case identifier (usually derived from the LaTeX
-  `\label{}` or the figure caption)
+* `N` = chapter number
+* `M` = figure number within the chapter (i.e. the rendered figure number is
+  `N.M`)
+
+So figure **4.17** → `images/fig-4-17.png`, figure **5.6** →
+`images/fig-5-6.png`, etc.
+
+## Figures included (14 total)
+
+| Figure | Caption | File |
+|---|---|---|
+| 4.1 | Current Engineering & Delivery Workflow | `images/fig-4-1.png` |
+| 4.2 | Current Billing and Support Workflows | `images/fig-4-2.png` |
+| 4.17 | Level 1 DFD — Problem 1: Fragmented Communication & Collaboration | `images/fig-4-17.png` |
+| 4.18 | Level 1 DFD — Problem 2: System Fragmentation & Lack of Integration | `images/fig-4-18.png` |
+| 4.19 | Level 1 DFD — Problem 3: Data Management & Governance Deficiencies | `images/fig-4-19.png` |
+| 4.20 | Level 1 DFD — Problem 4: Security & Access Control Risks | `images/fig-4-20.png` |
+| 4.21 | Level 1 DFD — Problem 5: Scalability & Operational Bottlenecks | `images/fig-4-21.png` |
+| 4.22 | Comparative Feasibility Framework — Three Alternative Solution Strategies | `images/fig-4-22.png` |
+| 5.1 | Complete System DFD — the recommended new system on top of the existing context diagram | `images/fig-5-1.png` |
+| 5.2 | Problem-Solving System DFD — side-by-side comparison (existing vs. new) | `images/fig-5-2.png` |
+| 5.3 | Integration Core Subsystem DFD | `images/fig-5-3.png` |
+| 5.4 | Configured Collaboration & Workflow Subsystem DFD | `images/fig-5-4.png` |
+| 5.5 | DevOps, QA, and Observability Subsystem DFD | `images/fig-5-5.png` |
+| 5.6 | ER Diagram — Canonical Data Model | `images/fig-5-6.png` |
 
 ## Rendering notes
 
 * All diagrams are **Mermaid `flowchart` or `graph`** (left-to-right) unless
   marked otherwise.
-* The ER diagram (Ch5 `fig:er-diagram`) uses Mermaid `erDiagram` syntax.
-* Edge labels (`|"…"|>`) are used to carry the original TikZ arrow labels
-  onto the edges.
+* The ER diagram (Figure 5.6) uses Mermaid `erDiagram` syntax.
+* Edge labels (`|"…"|>`) carry the original TikZ arrow labels.
 * Subgraphs (`subgraph … end`) are used to reproduce group boxes (e.g.
   "Messaging", "Records", "Engineering" lanes).
 * Shape syntax used:
   * `id["text"]` — rectangle (process / store / tool)
-  * `id("text")` — rounded (with stadium/circle for "process" bubbles)
+  * `id(("text"))` — circle (process bubbles, central node, problem badges)
   * `id[("text")]` — cylindrical (data stores in DFDs)
-  * `id{"text"}` — diamond (decisions)
-  * `id(("text"))` — circle (badges, central process)
-  * `id>"text"]` — asymmetric (external entities / actors)
 * Direction is `LR` (left-to-right) for DFDs and most workflow diagrams,
-  and `TD` (top-down) for layered / swimlane / framework diagrams.
+  and `TD` (top-down) for layered / framework diagrams.
 
 ---
 
-# Chapter 1 — Recognition of Need (4 figures)
+## Figure 4.1 — Current Engineering & Delivery Workflow
 
-## Ch 1 — Fig 1: Principal Tools and Dominant Information Flows in the Current System
+**Filename:** `images/fig-4-1.png`
 
-**Filename:** `images/ch1-fig1-tools-flows.png`
-
-**Source location in `report.tex`:** lines 500–551
-**LaTeX label:** (none)
-
-```mermaid
-graph LR
-    subgraph Messaging["<b>Messaging</b>"]
-        WA["WhatsApp"]
-        EM["Email"]
-    end
-    subgraph Records["<b>Records</b>"]
-        GS["Google Sheets"]
-        SD["Shared Docs"]
-    end
-    subgraph Engineering["<b>Engineering</b>"]
-        GH["GitHub"]
-        CI["CI/CD Scripts"]
-    end
-    WA -- "conversations &amp; approvals" --> GS
-    WA -- "approvals &amp; files" --> SD
-    GH -- "code &amp; PRs" --> CI
-    GS -- "billing &amp; trackers" --> SD
-    EM -- "formal comms" --> GS
-```
-
----
-
-## Ch 1 — Fig 2: Current Tool-Based Operational Environment
-
-**Filename:** `images/ch1-fig2-tool-environment.png`
-
-**Source location in `report.tex`:** lines 556–602
-**LaTeX label:** (none)
-
-```mermaid
-graph TD
-    CO(("Current<br/>Operations"))
-    WA["WhatsApp"]
-    SL["Slack"]
-    EM["Email"]
-    GH["GitHub"]
-    XL["Excel"]
-    GS["Google Sheets"]
-    WA --> CO
-    SL --> CO
-    EM --> CO
-    GH --> CO
-    XL --> CO
-    GS --> CO
-```
-
----
-
-## Ch 1 — Fig 3: Current Workflow for Handling a Client Request
-
-**Filename:** `images/ch1-fig3-workflow-request.png`
-
-**Source location in `report.tex`:** lines 620–671
-**LaTeX label:** (none)
-
-```mermaid
-graph TD
-    CL["Client message<br/>(WhatsApp / Email)"]
-    PM["Project Manager"]
-    SH["Google Sheets"]
-    DV["Developer"]
-    GH["GitHub"]
-    PR["Production"]
-    FI["Finance / Reporting"]
-    CL -- "request" --> PM
-    PM -- "copy request" --> SH
-    PM -- "assign work" --> DV
-    DV -- "push code" --> GH
-    GH -- "pull request" --> PM
-    PM -- "approve in chat" --> DV
-    GH -- "deploy via scripts" --> PR
-    SH -- "status &amp; billing updates" --> FI
-    PR -- "release notes" --> SH
-```
-
----
-
-## Ch 1 — Fig 4: Current Operational Swimlane Diagram Showing the PM Bottleneck
-
-**Filename:** `images/ch1-fig4-swimlane-bottleneck.png`
-
-**Source location in `report.tex`:** lines 676–741
-**LaTeX label:** (none)
-
-**Note:** A swimlane diagram maps to `flowchart LR` with `subgraph`s used
-as the three lanes (Client / PM / Developer). The original figure has a
-shaded "High Dependency & Fragmentation Zone" between PM and Developer
-lanes; in the Mermaid rendering this is reproduced as a sub-subgraph
-highlighted with a stroke.
-
-```mermaid
-graph LR
-    subgraph ClientLane["<b>Client</b>"]
-        REQ["Send Requirement<br/>(WhatsApp / Email)"]
-        DEL["Final Delivery<br/>(Email / Slack)"]
-    end
-    subgraph PMLane["<b>Project Manager</b>"]
-        LOG["Manual Sorting &amp;<br/>Logging (Sheets)"]
-        ASN["Assign Task<br/>(WhatsApp Group)"]
-        RPT["Compile Report<br/>(Excel / Sheets)"]
-    end
-    subgraph DevLane["<b>Developer (Team)</b>"]
-        COD["Write Code &amp;<br/>Commit (GitHub)"]
-        NOT["Notify Done<br/>(WhatsApp)"]
-    end
-    REQ -- "Unstructured Data" --> LOG
-    LOG --> ASN
-    ASN -- "Informal Comm." --> COD
-    COD --> NOT
-    NOT -- "Manual Ping" --> RPT
-    RPT -- "Shared Link" --> DEL
-```
-
----
-
-# Chapter 2 — Initial Feasibility Study (1 figure)
-
-## Ch 2 — Fig 1: Initial Feasibility Governance Cycle for NextStepBD
-
-**Filename:** `images/ch2-fig1-feasibility-cycle.png`
-
-**Source location in `report.tex`:** lines 963–1009
-**LaTeX label:** (none)
-
-**Note:** The original is a cyclic governance flow with a "Decision"
-diamond that can branch to "Feasible → Pilot → Monitoring → Scale → Need
-(recursive)" or to "Revise / Defer (dashed back to Analysis)". In
-Mermaid this is rendered as a top-down flowchart with a dashed feedback
-edge from Decision back to Analysis.
-
-```mermaid
-graph TD
-    NEED["Need<br/>Recognition"]
-    ANA["TEO<br/>Analysis"]
-    DEC{"Decision"}
-    PIL["Pilot<br/>Implementation"]
-    MON["Monitoring<br/>and Feedback"]
-    SCL["Full-Scale<br/>Adoption"]
-    NEED --> ANA --> DEC
-    DEC -- "Feasible" --> PIL
-    PIL --> MON --> SCL
-    SCL --> NEED
-    DEC -. "Revise / Defer" .-> ANA
-```
-
----
-
-# Chapter 3 — Project Planning (1 figure)
-
-## Ch 3 — Fig 1: Project Governance Structure for the Planning Initiative
-
-**Filename:** `images/ch3-fig1-governance-structure.png`
-
-**Source location in `report.tex`:** lines 1380–1420
-**LaTeX label:** (none)
-
-**Note:** Sponsor → PM (solid), Sponsor ↔ Committee (dashed) and
-Committee ↔ PM (dashed). PM → all 4 team members (solid arrows).
-PM ↔ External Consultants (dashed orange). Team members grouped
-implicitly by a sub-subgraph.
-
-```mermaid
-graph TD
-    SP["<b>Executive Sponsor</b><br/>Senior Partner"]
-    SC["<b>Steering Committee</b><br/>Delivery · Ops · Finance"]
-    PM["<b>Project Manager</b><br/>PM / PO"]
-    BE["Backend<br/>Developer"]
-    INT["Integration<br/>Specialist"]
-    QA["QA / DevOps<br/>Engineer"]
-    BA["Business<br/>Analyst"]
-    EXT["External<br/>Consultants"]
-    SP --> PM
-    SP -.-> SC
-    SC -.-> PM
-    PM --> BE
-    PM --> INT
-    PM --> QA
-    PM --> BA
-    PM -.-> EXT
-```
-
----
-
-# Chapter 4 — Analysis (11 figures)
-
-## Ch 4 — Fig 1: Current Engineering & Delivery Workflow
-
-**Filename:** `images/ch4-fig1-eng-delivery-workflow.png`
-
-**Source location in `report.tex`:** lines 1982–2014
+**Source location in `report.tex`:** lines 1978–2010 (pre-splice)
 **LaTeX label:** (none)
 
 ```mermaid
@@ -267,11 +89,11 @@ graph TD
 
 ---
 
-## Ch 4 — Fig 2: Current Billing and Support Workflows
+## Figure 4.2 — Current Billing and Support Workflows
 
-**Filename:** `images/ch4-fig2-billing-support.png`
+**Filename:** `images/fig-4-2.png`
 
-**Source location in `report.tex`:** lines 2016–2053
+**Source location in `report.tex`:** lines 2012–2049 (pre-splice)
 **LaTeX label:** (none)
 
 **Note:** Two subgraphs (Billing Process, Incident Management) with their
@@ -299,37 +121,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 3: Context Diagram (Level 0) of the Existing Information System
+## Figure 4.17 — Level 1 DFD: Problem 1 (Fragmented Communication & Collaboration)
 
-**Filename:** `images/ch4-fig3-dfd-context.png`
+**Filename:** `images/fig-4-17.png`
 
-**Source location in `report.tex`:** lines 2928–2974
-**LaTeX label:** `fig:dfd_context`
-
-```mermaid
-graph LR
-    P0(("P0<br/>NextStepBD Existing<br/>Information System"))
-    E1["<b>E1</b><br/>Customers"]
-    E2["<b>E2</b><br/>Management (CEO)"]
-    E3["<b>E3</b><br/>Employees"]
-    E4["<b>E4</b><br/>HR Department"]
-    E1 -- "Requirements,<br/>Approvals, Payments" --> P0
-    P0 -- "Deliverables,<br/>Invoices, Updates" --> E1
-    E2 -- "Policies, Decisions" --> P0
-    P0 -- "Reports" --> E2
-    E3 -- "Task Updates" --> P0
-    P0 -- "Tasks, Instructions" --> E3
-    E4 -- "Employee<br/>Information" --> P0
-    P0 -- "Staffing<br/>Requests" --> E4
-```
-
----
-
-## Ch 4 — Fig 4: Level 1 DFD — Problem 1: Fragmented Communication & Collaboration
-
-**Filename:** `images/ch4-fig4-dfd-prob1.png`
-
-**Source location in `report.tex`:** lines 2992–3042
+**Source location in `report.tex`:** lines 2988–3038 (pre-splice)
 **LaTeX label:** `fig:dfd_prob1`
 
 **Note:** Three informal-channel stores D1, D2, D3 are shared bidirectionally
@@ -367,11 +163,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 5: Level 1 DFD — Problem 2: System Fragmentation & Lack of Integration
+## Figure 4.18 — Level 1 DFD: Problem 2 (System Fragmentation & Lack of Integration)
 
-**Filename:** `images/ch4-fig5-dfd-prob2.png`
+**Filename:** `images/fig-4-18.png`
 
-**Source location in `report.tex`:** lines 3055–3107
+**Source location in `report.tex`:** lines 3051–3103 (pre-splice)
 **LaTeX label:** `fig:dfd_prob2`
 
 **Note:** Five disconnected data stores (D4–D8). The fragmentation is
@@ -411,11 +207,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 6: Level 1 DFD — Problem 3: Data Management & Governance Deficiencies
+## Figure 4.19 — Level 1 DFD: Problem 3 (Data Management & Governance Deficiencies)
 
-**Filename:** `images/ch4-fig6-dfd-prob3.png`
+**Filename:** `images/fig-4-19.png`
 
-**Source location in `report.tex`:** lines 3120–3170
+**Source location in `report.tex`:** lines 3116–3166 (pre-splice)
 **LaTeX label:** `fig:dfd_prob3`
 
 ```mermaid
@@ -450,11 +246,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 7: Level 1 DFD — Problem 4: Security & Access Control Risks
+## Figure 4.20 — Level 1 DFD: Problem 4 (Security & Access Control Risks)
 
-**Filename:** `images/ch4-fig7-dfd-prob4.png`
+**Filename:** `images/fig-4-20.png`
 
-**Source location in `report.tex`:** lines 3183–3230
+**Source location in `report.tex`:** lines 3179–3226 (pre-splice)
 **LaTeX label:** `fig:dfd_prob4`
 
 ```mermaid
@@ -486,11 +282,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 8: Level 1 DFD — Problem 5: Scalability & Operational Bottlenecks
+## Figure 4.21 — Level 1 DFD: Problem 5 (Scalability & Operational Bottlenecks)
 
-**Filename:** `images/ch4-fig8-dfd-prob5.png`
+**Filename:** `images/fig-4-21.png`
 
-**Source location in `report.tex`:** lines 3243–3295
+**Source location in `report.tex`:** lines 3239–3291 (pre-splice)
 **LaTeX label:** `fig:dfd_prob5`
 
 ```mermaid
@@ -527,11 +323,11 @@ graph LR
 
 ---
 
-## Ch 4 — Fig 9: Comparative Feasibility Framework — Three Alternative Solution Strategies
+## Figure 4.22 — Comparative Feasibility Framework
 
-**Filename:** `images/ch4-fig9-feasibility-framework.png`
+**Filename:** `images/fig-4-22.png`
 
-**Source location in `report.tex`:** lines 3347–3410
+**Source location in `report.tex`:** lines 3343–3406 (pre-splice)
 **LaTeX label:** `fig:feasibility-framework`
 
 **Note:** Five problems across the top, three strategy boxes in the
@@ -582,70 +378,11 @@ graph TD
 
 ---
 
-## Ch 4 — Fig 10: Dependency Layers Connecting the Five Identified Problems
+## Figure 5.1 — Complete System DFD (new system on top of existing context diagram)
 
-**Filename:** `images/ch4-fig10-dependency-layers.png`
+**Filename:** `images/fig-5-1.png`
 
-**Source location in `report.tex`:** lines 3563–3582
-**LaTeX label:** `fig:dependency-layers`
-
-**Note:** Three horizontal layers stacked vertically with arrow labels
-on the right and a dashed feedback edge from the delivery layer back
-to the foundation layer (left side).
-
-```mermaid
-graph TD
-    F["<b>Foundation Layer</b><br/>Canonical data, identifiers, identity,<br/>RBAC, audit, backup, integration standards"]
-    P["<b>Process Layer</b><br/>Requirements, approvals, assignment,<br/>escalation, reporting, billing evidence, onboarding"]
-    D["<b>Delivery Layer</b><br/>Source control, QA, CI/CD, release approval,<br/>monitoring, incident management, learning"]
-    F -- "enables reliable workflows" --> P
-    P -- "provides controlled inputs" --> D
-    D -. "performance and incident feedback" .-> F
-```
-
----
-
-## Ch 4 — Fig 11: Recommended Target Architecture for the Configure Strategy
-
-**Filename:** `images/ch4-fig11-target-architecture.png`
-
-**Source location in `report.tex`:** lines 3936–3971
-**LaTeX label:** `fig:integrated-target-architecture`
-
-**Note:** Five user roles on top → two configured tool boxes (Workflow,
-DevOps) → Integration Core → Cross-Cutting Controls at the bottom.
-
-```mermaid
-graph TD
-    CL["Clients"]
-    PM["Project Managers"]
-    DEV["Developers / QA"]
-    OPS["HR / Finance / Ops"]
-    MGT["Management"]
-    WF["<b>Configured Collaboration</b><br/>&amp; Workflow Tool"]
-    DO["<b>DevOps, QA</b><br/>&amp; Observability"]
-    IC["<b>Integration Core</b><br/>Canonical Data, APIs, and Webhooks"]
-    XC["<b>Cross-Cutting Controls</b><br/>Identity, RBAC, Audit, Redaction,<br/>Data Quality, Backup, and Monitoring"]
-    CL --> WF
-    PM --> WF
-    DEV --> WF
-    OPS --> WF
-    MGT --> WF
-    DEV --> DO
-    WF --> IC
-    DO --> IC
-    IC --> XC
-```
-
----
-
-# Chapter 5 — Design (6 figures)
-
-## Ch 5 — Fig 1: Complete System DFD — the recommended new system drawn on top of the existing context diagram
-
-**Filename:** `images/ch5-fig1-dfd-complete-system.png`
-
-**Source location in `report.tex`:** lines 4203–4312
+**Source location in `report.tex`:** lines 4200–4309 (pre-splice)
 **LaTeX label:** `fig:dfd-complete-system`
 
 **Note:** External entities (E1–E4) match the Ch4 context diagram
@@ -689,11 +426,11 @@ graph LR
 
 ---
 
-## Ch 5 — Fig 2: Problem-Solving System DFD — side-by-side comparison (existing vs. new)
+## Figure 5.2 — Problem-Solving System DFD (side-by-side: existing vs. new)
 
-**Filename:** `images/ch5-fig2-dfd-problem-solving.png`
+**Filename:** `images/fig-5-2.png`
 
-**Source location in `report.tex`:** lines 4350–4466
+**Source location in `report.tex`:** lines 4347–4463 (pre-splice)
 **LaTeX label:** `fig:dfd-problem-solving`
 
 **Note:** Left half is the existing system (Ch.4 context diagram
@@ -757,11 +494,11 @@ graph LR
 
 ---
 
-## Ch 5 — Fig 3: Integration Core Subsystem DFD
+## Figure 5.3 — Integration Core Subsystem DFD
 
-**Filename:** `images/ch5-fig3-dfd-integration-core.png`
+**Filename:** `images/fig-5-3.png`
 
-**Source location in `report.tex`:** lines 4587–4651
+**Source location in `report.tex`:** lines 4584–4648 (pre-splice)
 **LaTeX label:** `fig:dfd-integration-core`
 
 ```mermaid
@@ -794,11 +531,11 @@ graph LR
 
 ---
 
-## Ch 5 — Fig 4: Configured Collaboration & Workflow Subsystem DFD
+## Figure 5.4 — Configured Collaboration & Workflow Subsystem DFD
 
-**Filename:** `images/ch5-fig4-dfd-collaboration.png`
+**Filename:** `images/fig-5-4.png`
 
-**Source location in `report.tex`:** lines 4694–4755
+**Source location in `report.tex`:** lines 4691–4752 (pre-splice)
 **LaTeX label:** `fig:dfd-collaboration`
 
 ```mermaid
@@ -835,11 +572,11 @@ graph LR
 
 ---
 
-## Ch 5 — Fig 5: DevOps, QA, and Observability Subsystem DFD
+## Figure 5.5 — DevOps, QA, and Observability Subsystem DFD
 
-**Filename:** `images/ch5-fig5-dfd-devops.png`
+**Filename:** `images/fig-5-5.png`
 
-**Source location in `report.tex`:** lines 4816–4882
+**Source location in `report.tex`:** lines 4813–4879 (pre-splice)
 **LaTeX label:** `fig:dfd-devops`
 
 ```mermaid
@@ -880,11 +617,11 @@ graph LR
 
 ---
 
-## Ch 5 — Fig 6: ER Diagram — Canonical Data Model
+## Figure 5.6 — ER Diagram (Canonical Data Model)
 
-**Filename:** `images/ch5-fig6-er-diagram.png`
+**Filename:** `images/fig-5-6.png`
 
-**Source location in `report.tex`:** lines 4992–5046
+**Source location in `report.tex`:** lines 4989–5043 (pre-splice)
 **LaTeX label:** `fig:er-diagram`
 
 **Note:** Uses Mermaid `erDiagram` syntax (the only diagram in the
@@ -978,6 +715,6 @@ erDiagram
 
 # End of diagrams
 
-When all 23 PNGs are placed under `images/`, recompile `report.tex` (the
-LaTeX file has already been updated to reference these filenames via
+When all 14 PNGs are placed under `images/`, recompile `report.tex` (the
+LaTeX file is already updated to reference these filenames via
 `\includegraphics{images/<FILENAME>}`).
