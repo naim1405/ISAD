@@ -3805,411 +3805,220 @@ change-management plan --- these are deferred to Chapter~6.
 \end{highlightBox}
 
 % ----------------------------------------------------------------
+
 \section{Data Flow Diagrams of the Proposed System}
 \label{sec:design-dfds}
 
 The Data Flow Diagrams in this section model the information architecture of the
-recommended Configure strategy. The diagrams are organised hierarchically: a single
-top-level diagram shows the complete proposed system, and three subsystem diagrams
-decompose the most operationally critical processes into their constituent
-sub-processes, revealing the internal data flows and logic that drive each functional
-area.
+recommended Configure strategy. Each diagram shows how the new centralized system
+replaces the informal, fragmented processes identified in Chapter~4, while keeping
+the same external entities in the same positions so the reader can easily trace
+the transformation.
 
-The Gane--Sarson DFD notation used here is identical to the notation used in the
-existing-state DFDs of Chapter~4, so the visual language remains consistent across
-analysis and design. The diagrams that follow are intentionally compact: each
-subsystem DFD carries only the entities, processes, and stores that are new or
-substantially modified relative to the existing state, with cross-cutting controls
-(identity, audit, redaction) shown as a single block at the top level rather than
-repeated at every level.
-
-The new-system DFDs in this section are deliberately drawn \emph{as a delta on top
-of} the existing-state DFDs of Chapter~4 (Figures~\ref{fig:dfd_context}--\ref{fig:dfd_prob5})
-rather than as a standalone target architecture. The same four external entities
-(E1 Customers, E2 Management/CEO, E3 Employees, E4 HR Department) appear in both
-the existing and the new context diagrams, and the existing data stores (D1--D13 in
-the Chapter~4 level-1 DFDs --- WhatsApp, email, Sheets, GitHub, etc.) are shown
-as \emph{legacy stores} in the new diagrams, retained in use but now connected to
-a single new canonical store (D-canonical) through the integration core. The
-two new top-level DFDs in this section make this migration visible: the first
-shows the new system as a replacement for the undifferentiated process P0 of the
-existing context diagram, and the second shows the same architecture with
-labelled data flows and problem tags so the reader can see which flow addresses
-which of the five problems identified in Chapter~1.
+The Gane--Sarson DFD notation used here matches the existing-state DFDs of
+Chapter~4 for visual consistency. Color coding is applied uniformly:
+\textbf{blue} for external entities (unchanged from the existing system),
+\textbf{green} for new system processes, and \textbf{yellow} for the new canonical
+data store. This color convention applies to every diagram in this section.
 
 % ----------------------------------------------------------------
-\subsection{Complete System DFD (New System Replacing P0)}
-\label{sec:dfd-complete}
+\subsection{Context Diagram (Level 0) --- New Centralized System}
+\label{sec:dfd-context-new}
 
-Figure~\ref{fig:dfd-complete-system} shows the top-level DFD of the recommended
-new system, drawn with the same four external entities as the existing context
-diagram (Chapter~4, Figure~\ref{fig:dfd_context}). The single undifferentiated
-process P0 of the existing diagram is replaced by a structured set of new
-processes: the integration core (P-new-core), the configured collaboration and
-workflow tool (P-new-collab), and the DevOps, QA, and observability stack
-(P-new-devops). The existing data stores D1--D13 from the level-1 DFDs in
-Chapter~4 are shown in the diagram as legacy stores that remain in use but are
-now bridged to a single new canonical store (D-canonical) through the
-integration core. Cross-cutting controls (identity, RBAC, audit, redaction) are
-shown as a single block that wraps the new architecture.
+Figure~\ref{fig:dfd-context-new} shows the Level~0 context diagram of the proposed
+new system. Like the existing context diagram (Chapter~4,
+Figure~\ref{fig:dfd_context}), it shows four external entities --- Customers (E1),
+Management/CEO (E2), Employees (E3), and the HR Department (E4) --- interacting with
+a single central process. The difference is that the central process P0 is no longer
+labelled as the informal, disconnected existing system. Instead, it is replaced by
+a structured, centralized information system that coordinates all business processes
+through a canonical data store.
+
+The flow labels on the context diagram are intentionally identical to the existing
+context diagram so the reader can see that the same business transactions occur ---
+requirements, approvals, reports, task updates --- but that the new system handles
+them through structured, auditable, integrated processes rather than informal,
+disconnected procedures. The five problem-specific DFDs that follow (Sections~5.2.2
+through 5.2.6) show in detail what processes and data stores operate inside this
+central system.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.95\textwidth]{images/fig-5-1.png}
-    \caption{Complete System DFD --- the recommended new system drawn on top of
-the existing context diagram. External entities (E1--E4) are the same as
-Chapter~4, Figure~\ref{fig:dfd_context}; the undifferentiated process P0 is
-replaced by three new processes (P-new-collab, P-new-core, P-new-devops) and
-one canonical store (D-canonical). The existing data stores D1--D13 remain in
-use but are now bridged to the canonical store through the integration core.}
-    \label{fig:dfd-complete-system}
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+    every node/.style={font=\sffamily\small},
+    entity/.style={rectangle, draw=primary, fill=secondary, very thick, text width=2.6cm, align=center, minimum height=1.1cm},
+    proc/.style={circle, draw=accent, fill=softteal, very thick, text width=2.8cm, align=center, minimum size=3.2cm},
+    flow/.style={-{Latex[length=2.4mm]}, thick, color=primary!80!black},
+    flab/.style={font=\footnotesize\sffamily, align=center}
+]
+
+% Central process (P0 replaced)
+\node[proc] (p0) at (0,0) {\textbf{P0}\\New Centralized Information System};
+
+% External entities (corners)
+\node[entity] (cust) at (0,5)    {\textbf{E1}\\Customers};
+\node[entity] (ceo)  at (-6.5,0) {\textbf{E2}\\Management (CEO)};
+\node[entity] (emp)  at (6.5,0)  {\textbf{E3}\\Employees};
+\node[entity] (hr)   at (0,-5)   {\textbf{E4}\\HR Department};
+
+% Customer flows
+\draw[flow] ([xshift=-12pt]cust.south) -- ([xshift=-12pt]p0.north)
+    node[flab, midway, left] {Requirements,\\Approvals};
+\draw[flow] ([xshift=12pt]p0.north) -- ([xshift=12pt]cust.south)
+    node[flab, midway, right] {Deliverables,\\Invoices};
+
+% CEO flows
+\draw[flow] ([yshift=10pt]ceo.east) -- ([yshift=10pt]p0.west)
+    node[flab, midway, above] {Policies, Decisions};
+\draw[flow] ([yshift=-10pt]p0.west) -- ([yshift=-10pt]ceo.east)
+    node[flab, midway, below] {Reports};
+
+% Employees flows
+\draw[flow] ([yshift=10pt]emp.west) -- ([yshift=10pt]p0.east)
+    node[flab, midway, above] {Task Updates};
+\draw[flow] ([yshift=-10pt]p0.east) -- ([yshift=-10pt]emp.west)
+    node[flab, midway, below] {Tasks, Instructions};
+
+% HR flows
+\draw[flow] ([xshift=-12pt]hr.north) -- ([xshift=-12pt]p0.south)
+    node[flab, midway, left] {Employee\\Information};
+\draw[flow] ([xshift=12pt]p0.south) -- ([xshift=12pt]hr.north)
+    node[flab, midway, right] {Staffing\\Requests};
+
+\end{tikzpicture}
+}
+\caption{Context Diagram (Level 0) of the New Centralized Information System ---
+the single process P0 replaces the informal, disconnected system of the existing
+diagram with a structured system that coordinates all business processes through a
+canonical data store. External entities (E1--E4) are unchanged from the existing
+context diagram (Chapter~4, Figure~\ref{fig:dfd_context}).}
+\label{fig:dfd-context-new}
 \end{figure}
 
-\noindent The diagram makes three architectural decisions visible that are
-not visible in the existing-state DFDs of Chapter~4.
+\noindent The context diagram shows that the same four external entities perform the
+same categories of transactions, but through a structured system rather than through
+disconnected manual procedures. The detail of what processes and data stores operate
+inside P0 in the new system is shown in the five problem-specific DFDs that follow.
 
-\begin{itemize}[leftmargin=1.6em]
-    \item \textbf{The new system has structure where P0 had none.} The
-          existing context diagram collapses all operations into a single
-          process P0, which is exactly the abstraction that hides the
-          fragmentation problem. The new diagram breaks P0 into three
-          explicit new processes --- collaboration, integration core, and
-          DevOps --- so the reader can see which layer is responsible for
-          what, and so the governance controls can be attached to the
-          right layer.
-    \item \textbf{Legacy stores D1--D13 are kept but demoted.} The
-          existing tools (WhatsApp, Sheets, GitHub, email, etc.) do not
-          disappear. They remain in use, but they are no longer the
-          \emph{system of record} --- the canonical store D-canonical is. The
-          dashed arrows show the two-way synchronisation between the
-          integration core and each legacy store. This is the Configure
-          strategy in picture form: keep the tools the team already uses,
-          layer governance over them, do not replace them.
-    \item \textbf{Cross-cutting controls wrap the new architecture.} The
-          existing system has no equivalent to the cross-cutting controls
-          block. In the new system, identity, RBAC, audit, redaction, data
-          quality, backup, and monitoring are implemented once in the
-          integration core and enforced across every other layer, which
-          is the structural answer to Problems~2 (fragmentation) and~4
-          (security).
-\end{itemize}
+% ----------------------------------------------------------------
+\subsection{New System DFD --- Problem 1: Fragmented Communication \& Collaboration}
+\label{sec:dfd-new-prob1}
 
-\noindent The same architecture, drawn with the data flows that the new
-system actually carries and the problems those flows address, is shown in
-Figure~\ref{fig:dfd-problem-solving}. That figure makes explicit \emph{why}
-each flow exists and \emph{which} of the five problems identified in
-Chapter~1 it solves, so the design can be read as a direct response to the
-analysis rather than as a generic target architecture.
+Figure~\ref{fig:dfd-new-prob1} shows how the new system addresses the fragmented
+communication problem (Problem~1). In the existing system, requirements and approvals
+passed through informal channels (WhatsApp, email) with no structured capture. The
+new system replaces this with a formal intake portal (JSM), a PM triage and approval
+workflow, and a canonical store that records every requirement and approval
+with full provenance. External entities (Customer, PM, Developer, QA) appear in the
+same positions as in the corresponding Chapter~4 DFD so the transformation is
+immediately visible.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig-5-2.png}
-    \caption{Problem-Solving System DFD --- side-by-side comparison of the
-existing system (left, from Chapter~4 Figure~\ref{fig:dfd_context}) and
-the new system (right, replacing P0). External entities (E1--E4) are
-the same in both halves. The problem badges (P1--P5) on the new flows
-indicate which of the five Chapter~1 problems each flow addresses; the
-full mapping is given in Table~\ref{tab:problem-flow-mapping}.}
-    \label{fig:dfd-problem-solving}
+    \caption{New System DFD --- Problem 1: Fragmented Communication \& Collaboration.
+    Structured requirement intake, PM approval, and canonical record replace
+    informal chat-based communication.}
+    \label{fig:dfd-new-prob1}
 \end{figure}
 
-\noindent Figure~\ref{fig:dfd-problem-solving} is read as a left-to-right
-migration: the existing P0 on the left is replaced by the new processes
-(P-new-collab, P-new-core, P-new-devops) and the new canonical store on
-the right, with the same four external entities (E1--E4) and the same flow
-categories as the existing context diagram. Every new flow is tagged with
-the problem it addresses (P1--P5). The full mapping, including the specific
-record or evidence that each new flow produces, is given in
-Table~\ref{tab:problem-flow-mapping}.
-
-\begin{table}[H]
-\centering
-\caption{Problem-to-Flow Mapping --- which new flow addresses which
-problem, and the canonical record or evidence it produces.}
-\label{tab:problem-flow-mapping}
-\small
-\renewcommand{\arraystretch}{1.30}
-\setlength{\tabcolsep}{6pt}
-\rowcolors{2}{roweven}{rowodd}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.3cm}
-                                >{\raggedright\arraybackslash}p{3.6cm}
-                                >{\raggedright\arraybackslash}p{4.6cm}
-                                >{\raggedright\arraybackslash}X}
-\toprule
-\textbf{Prob.} & \textbf{New Flow} & \textbf{Canonical Record / Evidence} & \textbf{What Changes for the User} \\
-\midrule
-P1 & Customer $\rightarrow$ Requirement Intake
-      & \texttt{Requirements} (with \texttt{SourceMessage} provenance)
-      & A chat message becomes a queryable record, not a forgotten thread. \\
-P1 & PM $\rightarrow$ Approval Capture
-      & \texttt{Approvals} (approver, decision, source, timestamp)
-      & An informal "OK" in chat becomes evidence that the scope was approved. \\
-P2 & All flows $\rightarrow$ Canonical Store (D-canonical)
-      & One row per entity, one source of truth
-      & A change in one tool automatically appears in the other connected tools. \\
-P2 & Legacy stores D1--D13 $\leftrightarrow$ Integration Core
-      & Two-way sync (dashed arrows)
-      & Sheets, GitHub, chat, email keep working but are no longer the system of record. \\
-P3 & Finance / Mgmt $\rightarrow$ Reporting
-      & \texttt{BillingRecords} with \texttt{evidence\_bundle} JSON
-      & Invoices are produced from a query, not from a manual reconciliation. \\
-P3 & Integration Core $\rightarrow$ Data Quality service
-      & \texttt{DataQuality} reports and exception queue
-      & Inconsistencies between tools are surfaced, not hidden. \\
-P4 & Cross-cutting controls (Identity, RBAC, Audit, Redaction)
-      & \texttt{AuditLog}, RBAC roles, redacted fields
-      & Every sensitive action is logged and access is governed by role, not by who happens to be in a chat. \\
-P5 & Dev $\rightarrow$ Task \& Incident Workflow
-      & \texttt{Tasks}, \texttt{Incidents} (template-driven, role-based)
-      & Tasks are assigned through templates and capacity tags, not by a single coordinator. \\
-P5 & Onboarding workflow (under P-new-collab)
-      & \texttt{Users.capacity\_tag}, \texttt{Users.is\_mentor}
-      & New hires are productive in weeks 1--2, not 4--6. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\noindent The five problems and the five architectural responses, in
-summary, are:
-
-\begin{itemize}[leftmargin=1.6em]
-    \item \textbf{P1 (Fragmented Communication)} $\rightarrow$ Requirement
-          Intake, Approval Capture, and SourceMessage provenance. Every
-          informal decision becomes a canonical record.
-    \item \textbf{P2 (System Fragmentation)} $\rightarrow$ Integration Core
-          as single source of truth, with two-way sync to every connected
-          tool. Legacy stores D1--D13 remain in use but are demoted.
-    \item \textbf{P3 (Data Governance)} $\rightarrow$ Canonical schema with
-          mandatory fields, validation, and a data-quality service that
-          runs reconciliation and surfaces exceptions. Invoices are produced
-          from a query, not from a manual reconciliation.
-    \item \textbf{P4 (Security \& Access Control)} $\rightarrow$ Identity
-          and RBAC, audit log, and redaction built in as cross-cutting
-          services rather than as after-the-fact policies. Every sensitive
-          action is logged; access is governed by role.
-    \item \textbf{P5 (Scalability Bottlenecks)} $\rightarrow$ Templates,
-          auto-assignment, role-based routing, and an onboarding workflow
-          that does not depend on a single coordinator.
-\end{itemize}
-
-\noindent The diagram has four layers.
-
-\begin{enumerate}[leftmargin=1.6em]
-    \item \textbf{User layer (top)}: the five user groups interact primarily
-          through the configured collaboration tool, with developers and QA
-          additionally accessing the DevOps, QA, and observability stack for
-          build, test, and release activities.
-    \item \textbf{Functional layer (middle)}: the configured collaboration tool
-          (e.g., Jira, ClickUp, Notion, or Linear) hosts the human-facing
-          workflow for requirements, approvals, tasks, and onboarding. The
-          DevOps, QA, and observability stack provides build, test, staging,
-          release approval, monitoring, and incident management.
-    \item \textbf{Integration core (bottom)}: a small canonical store with
-          APIs and webhooks that records the canonical entities and exchanges
-          data with both functional layers, ensuring that the collaboration
-          tool, the DevOps stack, and any retained legacy system (Sheets, GitHub,
-          email) stay synchronised around one source of truth.
-    \item \textbf{Cross-cutting controls (foundation)}: identity, RBAC, audit,
-          redaction, data quality, backup, and monitoring are implemented once
-          in the integration core and enforced across every layer, so that
-          security and governance are not bolted on after the fact.
-\end{enumerate}
-
-\noindent The three subsystem DFDs that follow (5.2.2, 5.2.3, 5.2.4) decompose
-each of the three functional layers and the integration core, in turn, into the
-sub-processes that each layer is responsible for.
-
 % ----------------------------------------------------------------
-\subsection{Integration Core Subsystem DFD}
-\label{sec:dfd-integration-core}
+\subsection{New System DFD --- Problem 2: System Fragmentation \& Lack of Integration}
+\label{sec:dfd-new-prob2}
 
-The integration core is the foundation of the Configure strategy. It owns the
-canonical record of the business entities (customer, project, requirement, approval,
-task, billing record, incident, employee-capacity), provides the API and webhook
-gateway through which the collaboration tool, the DevOps stack, and the retained
-legacy systems exchange data, and implements the cross-cutting controls (identity,
-RBAC, audit, redaction, data quality, backup, monitoring) that the rest of the
-system relies on. The subsystem DFD in Figure~\ref{fig:dfd-integration-core} shows
-the internal sub-processes of the integration core.
+Figure~\ref{fig:dfd-new-prob2} shows how the new system addresses system fragmentation
+(Problem~2). In the existing system, five disconnected tools (Sheets, GitHub, WhatsApp,
+email, docs) held project data in isolation, requiring manual copy-paste between them.
+The new system introduces an integration core with an API gateway and webhook handler
+that automatically synchronizes data from all connected tools into a single canonical
+store. No manual re-entry is required; data changes in one tool are reflected across
+the system automatically.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig-5-3.png}
-    \caption{Integration Core Subsystem DFD}
-    \label{fig:dfd-integration-core}
+    \caption{New System DFD --- Problem 2: System Fragmentation \& Lack of Integration.
+    An integration core with automated synchronization replaces manual data copying
+    across disconnected tools.}
+    \label{fig:dfd-new-prob2}
 \end{figure}
 
-\noindent The integration core is organised into three functional bands.
-
-\begin{itemize}[leftmargin=1.6em]
-    \item \textbf{Inbound integration layer (left band).} The gateway (P1.1)
-          receives webhooks and scheduled imports from the retained legacy
-          tools --- WhatsApp / Slack, Sheets / Excel, GitHub, and email ---
-          and normalises them into candidate records. The validator (P1.2)
-          applies the canonical schema, runs duplicate detection, and either
-          persists the record or, when the match is ambiguous, escalates it
-          to the operator review queue (P1.3).
-    \item \textbf{Persistent canonical layer (centre).} The canonical store
-          (D1) holds the authoritative record of every business entity, with
-          provenance metadata that records the source tool, the operator who
-          approved the record (if any), and the timestamp of each change. Audit
-          lineage is derived from these provenance fields rather than from a
-          separate system.
-    \item \textbf{Cross-cutting services (right band).} The canonical store
-          exposes a query and event API to four services: an audit log and
-          lineage service, an identity and RBAC service, a reporting and
-          dashboards service, and a data quality and reconciliation service.
-          These services are the cross-cutting controls (Section~4.4) made
-          concrete.
-\end{itemize}
-
-The review queue (P1.3) is the human-in-the-loop exception path. Its purpose is to
-keep the system from forcing low-confidence records into the canonical store; it is
-the operational expression of the "operator review" component from the high-level
-architecture and is critical for the chat-approval capture workflow described in
-the configured collaboration subsystem (5.2.3).
-
 % ----------------------------------------------------------------
-\subsection{Configured Collaboration \& Workflow Subsystem DFD}
-\label{sec:dfd-collaboration}
+\subsection{New System DFD --- Problem 3: Data Management \& Governance Deficiencies}
+\label{sec:dfd-new-prob3}
 
-The configured collaboration and workflow subsystem is where the human-facing work
-of the system happens. It is built on a best-of-breed commercial tool (e.g., Jira,
-ClickUp, Notion, or Linear) configured with templates, automation rules, and
-approval flows that match NextStepBD's operational reality. The subsystem DFD in
-Figure~\ref{fig:dfd-collaboration} shows the internal sub-processes and the flows
-to and from the integration core.
+Figure~\ref{fig:dfd-new-prob3} shows how the new system addresses data management and
+governance deficiencies (Problem~3). In the existing system, customer records, project
+data, and billing information were maintained in separate disconnected spreadsheets,
+requiring manual reconciliation to produce reports. The new system consolidates all
+core entities (customer, project, requirement, task, billing) into a single canonical
+store, with validation, audit logging, and automated reporting --- eliminating
+manual copy-paste and producing consistent, auditable reports from real-time data.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig-5-4.png}
-    \caption{Configured Collaboration \& Workflow Subsystem DFD}
-    \label{fig:dfd-collaboration}
+    \caption{New System DFD --- Problem 3: Data Management \& Governance Deficiencies.
+    A single canonical store replaces five disconnected data stores, with automated
+    data flow and real-time reporting.}
+    \label{fig:dfd-new-prob3}
 \end{figure}
 
-\noindent The subsystem has six sub-processes organised in two columns.
-
-\begin{itemize}[leftmargin=1.6em]
-    \item \textbf{Left column --- the core request-to-task flow.}
-          \begin{itemize}
-              \item P2.1 \textbf{Requirement Intake}: a client or internal
-                    user submits a requirement through a form (Section~5.4.1)
-                    or a structured channel. The requirement is recorded in
-                    the issue / ticket repository (D2) and a corresponding
-                    canonical record is created in the integration core
-                    (Section~5.2.2).
-              \item P2.2 \textbf{Approval Capture}: an approval that happened
-                    informally in chat or email is captured into the
-                    workflow tool through a one-click confirmation, then
-                    promoted into the canonical approval record. This is
-                    the principal fix for Problem~1 (fragmented
-                    communication).
-              \item P2.3 \textbf{Task Assignment}: tasks are created from
-                    requirements, linked to owners, and dispatched to
-                    developers. Templates from the template library (P2.6)
-                    are applied for routine task types.
-          \end{itemize}
-    \item \textbf{Right column --- the supporting processes.}
-          \begin{itemize}
-              \item P2.4 \textbf{Escalation \& Reminder}: automated
-                    escalation timers, reminder rules, and role-based
-                    notifications ensure that work items are not blocked
-                    by a single absent stakeholder. The escalation policy is
-                    stored in the workflow configuration (D3).
-              \item P2.5 \textbf{Onboarding Workflow}: new hires are
-                    onboarded through a structured workflow with checklists,
-                    mentorship assignments, and a skills-tag capture that
-                    feeds the integration core's employee-capacity record.
-                    This is the principal fix for Problem~5 (scalability).
-              \item P2.6 \textbf{Template Library}: a curated set of
-                    templates for requirements, approvals, tasks, incidents,
-                    and onboarding flows. Templates are the lever by which
-                    process standardisation scales without adding per-team
-                    customisation overhead.
-          \end{itemize}
-\end{itemize}
-
-All six processes read and write the canonical store through the integration core
-(5.2.2). The bidirectional connection is the structural reason why the
-collaboration tool does not become yet another silo: every meaningful event in the
-tool is captured as a canonical record, and every canonical record can be surfaced
-back in the tool through a linked view.
-
 % ----------------------------------------------------------------
-\subsection{DevOps, QA \& Observability Subsystem DFD}
-\label{sec:dfd-devops}
+\subsection{New System DFD --- Problem 4: Security \& Access Control Risks}
+\label{sec:dfd-new-prob4}
 
-The DevOps, QA, and observability subsystem is responsible for the technical
-delivery pipeline. It standardises build, test, staging, release, monitoring, and
-incident management for the pilot projects, and it links deployment evidence back
-to the canonical requirements and approvals in the integration core. The subsystem
-DFD in Figure~\ref{fig:dfd-devops} shows the pipeline from code commit to
-production, with the observability loop that closes it.
+Figure~\ref{fig:dfd-new-prob4} shows how the new system addresses security and access
+control risks (Problem~4). In the existing system, sensitive data (PII, credentials,
+contracts) was shared via informal channels (WhatsApp, email attachments) with no
+access controls, audit trails, or credential management. The new system introduces
+role-based access control (RBAC), a formal audit and compliance process, and secure
+credential management. All sensitive data is stored in the canonical store with
+appropriate access restrictions and a complete change history.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{images/fig-5-5.png}
-    \caption{DevOps, QA, and Observability Subsystem DFD}
-    \label{fig:dfd-devops}
+    \caption{New System DFD --- Problem 4: Security \& Access Control Risks.
+    Secure intake, credential management, RBAC, and audit logging replace informal
+    sharing of sensitive data.}
+    \label{fig:dfd-new-prob4}
 \end{figure}
 
-\noindent The subsystem is a linear pipeline (top row) closed by an observability
-loop (middle row) and supported by four stores (bottom row).
+% ----------------------------------------------------------------
+\subsection{New System DFD --- Problem 5: Scalability \& Operational Bottlenecks}
+\label{sec:dfd-new-prob5}
 
-\begin{itemize}[leftmargin=1.6em]
-    \item \textbf{Top row --- the delivery pipeline.}
-          \begin{itemize}
-              \item P3.1 \textbf{Commit \& Branch}: developer pushes code to
-                    the source repository (D5) following the project's
-                    branching policy.
-              \item P3.2 \textbf{CI Build \& Tests}: continuous integration
-                    runs the build, unit tests, integration tests, and
-                    regression tests. Successful builds produce an
-                    immutable artifact in the artifact registry (D6).
-              \item P3.3 \textbf{Security \& Quality}: automated security
-                    scanning, dependency checks, linting, and code-quality
-                    gates run on every build. QA engineers review and
-                    sign off the test report before staging.
-              \item P3.4 \textbf{Staging Deploy}: the artifact is deployed
-                    to a staging environment that mirrors production.
-                    Smoke tests and integration tests run against staging.
-              \item P3.5 \textbf{Release Approval}: a formal release
-                    approval is recorded against the deployment, linked
-                    to the requirement or task that drove the change. This
-                    is where the canonical store receives a \emph{release
-                    evidence} record.
-              \item P3.6 \textbf{Production}: the artifact is deployed to
-                    production with health checks in place.
-          \end{itemize}
-    \item \textbf{Middle row --- the observability loop.}
-          \begin{itemize}
-              \item P3.7 \textbf{Monitor \& Alert}: continuous monitoring of
-                    logs, metrics, and uptime (D7) produces alerts on
-                    service-level breaches.
-              \item P3.8 \textbf{Incident Workflow}: an alert opens an
-                    incident ticket (D8) in the collaboration tool, linked
-                    to the affected requirement or task.
-              \item P3.9 \textbf{Rollback}: an incident can trigger a
-                    rollback to the previous production artifact.
-          \end{itemize}
-\end{itemize}
+Figure~\ref{fig:dfd-new-prob5} shows how the new system addresses scalability and
+operational bottlenecks (Problem~5). In the existing system, all requests were routed
+through the PM as a single point of control, creating a bottleneck that slowed progress
+whenever the PM was unavailable. The new system introduces automated task routing with
+capacity-based recommendations, while preserving PM oversight through a manual override
+path. The onboarding workflow is also formalized, reducing the time required for new
+staff to become productive.
 
-The observability loop closes back to the staging stage: when monitoring detects a
-regression, the system can roll forward to a known-good artifact or roll back to
-the previous one. The release approval (P3.5) is the operational moment at which
-the canonical record of "what was deployed, by whom, against which requirement"
-is created; that record is the evidence that the system can use for change
-tracking, billing evidence, and audit.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/fig-5-6.png}
+    \caption{New System DFD --- Problem 5: Scalability \& Operational Bottlenecks.
+    Automated task routing with capacity recommendations and a formal onboarding
+    workflow remove the single-point-of-failure dependency on the PM.}
+    \label{fig:dfd-new-prob5}
+\end{figure}
 
 % ----------------------------------------------------------------
 \section{Database Design}
 \label{sec:design-database}
 
+
+\label{sec:design-database}
+
 The database design is the persistent foundation of the recommended system. It
-specifies exactly how the canonical entities identified in Section~5.2.2 are
-structured, constrained, and related, so that the data model is internally
-consistent, supports the workflows of Section~5.2.3, and persists the release and
-incident evidence created by Section~5.2.4.
+specifies exactly how the canonical entities identified in the DFDs of
+Section~5.2 are structured, constrained, and related, so that the data model is
+internally consistent, supports the workflows described in Section~5.2, and
+persists the release and incident evidence created by the new system processes.
 
 The database architecture for the proposed system addresses five requirement
 buckets that were identified through the root cause analysis and the comparative
@@ -4263,7 +4072,7 @@ AuditLog table.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/fig-5-6.png}
+    \includegraphics[width=0.95\textwidth]{images/fig-5-7.png}
     \caption{ER Diagram --- Canonical Data Model}
     \label{fig:er-diagram}
 \end{figure}
@@ -4550,7 +4359,7 @@ approvals were operator-verified vs. self-captured).
 The Tasks table is the operational unit of work. Each task is created from a
 requirement (or, in incident-driven cases, from an Incident) and assigned to an
 employee. Tasks are the principal entity consumed by the DevOps, QA, and
-observability subsystem (Section~5.2.4).
+observability processes shown in the new system DFDs of Section~5.2.
 
 \begin{table}[H]
 \centering
@@ -5298,7 +5107,8 @@ Section~4.4.
 
 \begin{enumerate}[leftmargin=1.6em]
     \item \textbf{Small canonical core over monolithic build.} The
-          integration core (Section~5.2.2) is the single piece of
+          integration core (shown in the Level~0 context diagram and the
+          Problem~2 system DFD in Section~5.2) is the single piece of
           in-house software in the recommended architecture. It owns the
           canonical record of customers, projects, requirements, approvals,
           tasks, billing, and incidents, and provides the API and webhook
@@ -5313,7 +5123,8 @@ Section~4.4.
           trust, and layers governance over them rather than replacing
           them.
     \item \textbf{Familiar tooling over disruptive replacement.} The
-          configured collaboration and workflow subsystem (Section~5.2.3)
+          configured collaboration and workflow system (shown in the
+          Level~0 context diagram and the Problem~1 system DFD in Section~5.2)
           is built on a commercial product that NextStepBD staff already
           know how to use. The system does not ask the team to learn a
           new tool; it asks them to use the tool they already have, with
